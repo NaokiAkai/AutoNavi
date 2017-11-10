@@ -1,0 +1,8 @@
+prefix=/home/akai/Dropbox/work/AutoNavi/ros/install
+
+Name: laser_sim
+Description: Description of laser_sim
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/akai/Dropbox/work/AutoNavi/ros/install/lib 
+Requires: 
