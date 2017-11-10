@@ -1,12 +1,11 @@
 <!-- robot sim -->
 <launch >
 	<!-- arguments -->
-	<arg name="map_yaml_file" default="$(find robot_sim)/maps/nic_garage/ogm.yaml" />
+	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm_with_cars.yaml" />
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 world map 100" />
 	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="-0.05 0.0 0.2 0.0 0.0 0.0 base_link laser 100" />
-	<node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 ground_truth base_link 100" />
 
 	<!-- map server -->
 	<node name="laser_sim_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >

@@ -251,13 +251,17 @@ void RobotSim::robot_sim_init(void)
 	tf::TransformListener tf_listener;
 	tf::StampedTransform tf_base_link2laser;
 	ros::Rate loop_rate(10);
-	while (ros::ok()) {
-		try {
+	while (ros::ok())
+	{
+		try
+		{
 			ros::Time now = ros::Time::now();
 			tf_listener.waitForTransform(base_link_frame, laser_frame, now, ros::Duration(1));
 			tf_listener.lookupTransform(base_link_frame, laser_frame, now, tf_base_link2laser);
 			break;
-		} catch (tf::TransformException ex) {
+		}
+		catch (tf::TransformException ex)
+		{
 			ROS_ERROR("%s", ex.what());
 			loop_rate.sleep();
 		}
