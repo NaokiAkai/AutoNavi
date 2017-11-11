@@ -1,0 +1,8 @@
+prefix=/home/akai/Dropbox/work/AutoNavi/ros/install
+
+Name: trajectory_tools
+Description: Description of trajectory_tools
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/akai/Dropbox/work/AutoNavi/ros/install/lib 
+Requires: 

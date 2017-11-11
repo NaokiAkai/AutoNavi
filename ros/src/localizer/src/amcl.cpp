@@ -13,7 +13,8 @@
 
 #include "common.h"
 
-typedef struct {
+typedef struct
+{
 	pose_t pose;
 	double w;
 } particle_t;

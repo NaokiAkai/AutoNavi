@@ -838,6 +838,45 @@ topic_tools_generate_messages_py/fast:
 	$(MAKE) -f localizer/CMakeFiles/topic_tools_generate_messages_py.dir/build.make localizer/CMakeFiles/topic_tools_generate_messages_py.dir/build
 .PHONY : topic_tools_generate_messages_py/fast
 
+#=============================================================================
+# Target rules for targets named trajectory_drawer
+
+# Build rule for target.
+trajectory_drawer: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 trajectory_drawer
+.PHONY : trajectory_drawer
+
+# fast build rule for target.
+trajectory_drawer/fast:
+	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/build
+.PHONY : trajectory_drawer/fast
+
+#=============================================================================
+# Target rules for targets named trajectory_follower
+
+# Build rule for target.
+trajectory_follower: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 trajectory_follower
+.PHONY : trajectory_follower
+
+# fast build rule for target.
+trajectory_follower/fast:
+	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/build
+.PHONY : trajectory_follower/fast
+
+#=============================================================================
+# Target rules for targets named trajectory_recorder
+
+# Build rule for target.
+trajectory_recorder: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 trajectory_recorder
+.PHONY : trajectory_recorder
+
+# fast build rule for target.
+trajectory_recorder/fast:
+	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/build
+.PHONY : trajectory_recorder/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -904,6 +943,9 @@ help:
 	@echo "... topic_tools_generate_messages_cpp"
 	@echo "... topic_tools_generate_messages_lisp"
 	@echo "... topic_tools_generate_messages_py"
+	@echo "... trajectory_drawer"
+	@echo "... trajectory_follower"
+	@echo "... trajectory_recorder"
 .PHONY : help
 
 

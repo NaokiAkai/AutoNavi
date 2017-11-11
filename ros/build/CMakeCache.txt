@@ -317,7 +317,7 @@ laser_sim_BINARY_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/build/laser_sim
 laser_sim_SOURCE_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/src/laser_sim
 
 //Path to a library.
-lib:FILEPATH=/opt/ros/indigo/lib/libkdl_conversions.so
+lib:FILEPATH=/opt/ros/indigo/lib/libtf2.so
 
 //Value Computed by CMake
 localizer_BINARY_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/build/localizer
@@ -421,6 +421,12 @@ tf_conversions_DIR:PATH=/opt/ros/indigo/share/tf_conversions/cmake
 //The directory containing a CMake configuration file for topic_tools.
 topic_tools_DIR:PATH=/opt/ros/indigo/share/topic_tools/cmake
 
+//Value Computed by CMake
+trajectory_tools_BINARY_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/build/trajectory_tools
+
+//Value Computed by CMake
+trajectory_tools_SOURCE_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/src/trajectory_tools
+
 //The directory containing a CMake configuration file for xmlrpcpp.
 xmlrpcpp_DIR:PATH=/opt/ros/indigo/share/xmlrpcpp/cmake
 
@@ -518,7 +524,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=3
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=4
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

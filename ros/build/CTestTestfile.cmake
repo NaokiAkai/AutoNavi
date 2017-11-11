@@ -6,3 +6,4 @@
 # testing this directory and lists subdirectories to be tested as well.
 SUBDIRS(robot_sim)
 SUBDIRS(localizer)
+SUBDIRS(trajectory_tools)

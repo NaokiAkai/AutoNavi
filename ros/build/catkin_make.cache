@@ -1,2 +1,2 @@
-localizer:robot_sim
+localizer:robot_sim:trajectory_tools
 -DCMAKE_BUILD_TYPE=Release -DCATKIN_DEVEL_PREFIX=/home/akai/Dropbox/work/AutoNavi/ros/devel -DCMAKE_INSTALL_PREFIX=/home/akai/Dropbox/work/AutoNavi/ros/install -G Unix Makefiles

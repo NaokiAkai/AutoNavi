@@ -14,7 +14,8 @@
 
 #include "common.h"
 
-typedef struct {
+typedef struct
+{
 	bool is_active;
 	pose_t pose;
 	double v;

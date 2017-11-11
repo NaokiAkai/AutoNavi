@@ -17,11 +17,15 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "localizer/catkin_generated/package.cmake"
   "robot_sim/catkin_generated/ordered_paths.cmake"
   "robot_sim/catkin_generated/package.cmake"
+  "trajectory_tools/catkin_generated/ordered_paths.cmake"
+  "trajectory_tools/catkin_generated/package.cmake"
   "/home/akai/Dropbox/work/AutoNavi/ros/src/CMakeLists.txt"
   "/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/CMakeLists.txt"
   "/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/package.xml"
   "/home/akai/Dropbox/work/AutoNavi/ros/src/robot_sim/CMakeLists.txt"
   "/home/akai/Dropbox/work/AutoNavi/ros/src/robot_sim/package.xml"
+  "/home/akai/Dropbox/work/AutoNavi/ros/src/trajectory_tools/CMakeLists.txt"
+  "/home/akai/Dropbox/work/AutoNavi/ros/src/trajectory_tools/package.xml"
   "/opt/ros/indigo/share/actionlib/cmake/actionlib-msg-extras.cmake"
   "/opt/ros/indigo/share/actionlib/cmake/actionlibConfig-version.cmake"
   "/opt/ros/indigo/share/actionlib/cmake/actionlibConfig.cmake"
@@ -102,6 +106,9 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/opt/ros/indigo/share/gencpp/cmake/gencpp-extras.cmake"
   "/opt/ros/indigo/share/gencpp/cmake/gencppConfig-version.cmake"
   "/opt/ros/indigo/share/gencpp/cmake/gencppConfig.cmake"
+  "/opt/ros/indigo/share/geneus/cmake/geneus-extras.cmake"
+  "/opt/ros/indigo/share/geneus/cmake/geneusConfig-version.cmake"
+  "/opt/ros/indigo/share/geneus/cmake/geneusConfig.cmake"
   "/opt/ros/indigo/share/genlisp/cmake/genlisp-extras.cmake"
   "/opt/ros/indigo/share/genlisp/cmake/genlispConfig-version.cmake"
   "/opt/ros/indigo/share/genlisp/cmake/genlispConfig.cmake"
@@ -237,6 +244,7 @@ SET(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "robot_sim/CMakeFiles/CMakeDirectoryInformation.cmake"
   "localizer/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "trajectory_tools/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
@@ -294,4 +302,7 @@ SET(CMAKE_DEPEND_INFO_FILES
   "localizer/CMakeFiles/topic_tools_generate_messages_cpp.dir/DependInfo.cmake"
   "localizer/CMakeFiles/topic_tools_generate_messages_lisp.dir/DependInfo.cmake"
   "localizer/CMakeFiles/topic_tools_generate_messages_py.dir/DependInfo.cmake"
+  "trajectory_tools/CMakeFiles/trajectory_drawer.dir/DependInfo.cmake"
+  "trajectory_tools/CMakeFiles/trajectory_follower.dir/DependInfo.cmake"
+  "trajectory_tools/CMakeFiles/trajectory_recorder.dir/DependInfo.cmake"
   )
