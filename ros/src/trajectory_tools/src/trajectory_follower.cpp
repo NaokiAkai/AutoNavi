@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <geometry_msgs/TwistStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 
@@ -9,14 +10,17 @@ class TrajectoryFollower
 {
 private:
 	ros::NodeHandle nh;
+	ros::Subscriber pose_sub;
 	std::string map_frame, base_link_frame;
 	std::string path_file_name;
 	std::string output_twist_topic_name;
 	double look_ahead_dist, max_vel, kv;
 	double publish_hz;
+	int nearest_path_index, prev_nearest_path_index;
 
 public:
 	TrajectoryFollower();
+	void initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
 };
 
 TrajectoryFollower::TrajectoryFollower():
@@ -28,7 +32,8 @@ TrajectoryFollower::TrajectoryFollower():
 	look_ahead_dist(1.0),
 	max_vel(1.0),
 	kv(0.6),
-	publish_hz(20.0)	
+	publish_hz(20.0),
+	prev_nearest_path_index(-1)
 {
 	// read parameters
 	nh.param("/trajectory_follower/map_frame", map_frame, map_frame);
@@ -39,6 +44,8 @@ TrajectoryFollower::TrajectoryFollower():
 	nh.param("/trajectory_follower/max_vel", max_vel, max_vel);
 	nh.param("/trajectory_follower/kv", kv, kv);
 	nh.param("/trajectory_follower/publish_hz", publish_hz, publish_hz);
+	// subscriber
+	pose_sub = nh.subscribe("/initialpose", 1, &TrajectoryFollower::initial_pose_callback, this);
 	// publisher
 	ros::Publisher twist_pub = nh.advertise<geometry_msgs::TwistStamped>(output_twist_topic_name, 100);
 	ros::Rate loop_rate(publish_hz);
@@ -65,7 +72,7 @@ TrajectoryFollower::TrajectoryFollower():
 		ros::Time now = ros::Time::now();
 		try
 		{
-			tf_listener.waitForTransform(map_frame, base_link_frame, now, ros::Duration(0.1));
+			tf_listener.waitForTransform(map_frame, base_link_frame, now, ros::Duration(1.0));
 			tf_listener.lookupTransform(map_frame, base_link_frame, now, map2base_link);
 		}
 		catch (tf::TransformException ex)
@@ -84,14 +91,28 @@ TrajectoryFollower::TrajectoryFollower():
 		tf::Matrix3x3 m(q);
 		m.getRPY(roll, pitch, yaw);
 		// search the nearest path point
-		int nearest_path_index;
 		double min_dist;
-		for (int i = 1; i < path.size(); i++)
+		int i0, i1;
+		if (prev_nearest_path_index < 0)
+		{
+			i0 = 1;
+			i1 = path.size();
+		}
+		else
+		{
+			i0 = prev_nearest_path_index - 30;
+			i1 = prev_nearest_path_index + 30;
+			if (i0 < 1)
+				i0 = 1;
+			if (i1 >= path.size())
+				i1 = path.size();
+		}
+		for (int i = i0; i < i1; i++)
 		{
 			double dx = path[i].x - x;
 			double dy = path[i].y - y;
 			double dl = sqrt(dx * dx + dy * dy);
-			if (i == 1)
+			if (i == i0)
 			{
 				nearest_path_index = i;
 				min_dist = dl;
@@ -102,6 +123,7 @@ TrajectoryFollower::TrajectoryFollower():
 				min_dist = dl;
 			}
 		}
+		prev_nearest_path_index = nearest_path_index;
 		// search the target path point
 		int target_path_index = -1;
 		for (int i = nearest_path_index; i < path.size(); i++)
@@ -152,8 +174,14 @@ TrajectoryFollower::TrajectoryFollower():
 		twist_cmd.twist.linear.x = 0.0;
 		twist_cmd.twist.angular.z = 0.0;
 		twist_pub.publish(twist_cmd);
+		ros::spinOnce();
 		usleep(100000);
 	}
+}
+
+void TrajectoryFollower::initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
+{
+	prev_nearest_path_index = -1;
 }
 
 int main(int argc, char** argv)

@@ -38,7 +38,9 @@ private:
 	std::string sensor_type;
 	nav_msgs::OccupancyGrid map;
 	sensor_msgs::LaserScan scan;
-	bool is_tf_initialized, is_map_data, is_odom_initialized;
+	nav_msgs::Odometry odom;
+	geometry_msgs::PoseStamped pose;
+	bool is_tf_initialized, is_map_data;
 	pose_t robot_pose, base_link2laser;
 
 public:
@@ -46,6 +48,7 @@ public:
 	void twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg);
 	void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg);
 	void robot_sim_init(void);
+	void publish_odom_pose_and_tf(void);
 	void publish_scan_data(void);
 	nav_msgs::OccupancyGrid make_virtual_environmental_map(void);
 
@@ -94,8 +97,7 @@ RobotSim::RobotSim():
 	moving_object_std_size(0.5),
 	sensor_type("top_urg"),
 	is_tf_initialized(false),
-	is_map_data(false),
-	is_odom_initialized(false)
+	is_map_data(false)
 {
 	// read parameters
 	nh.param("/robot_sim/input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
@@ -119,6 +121,15 @@ RobotSim::RobotSim():
 		ROS_ERROR("unsupported sensor type is selected. top_urg, classic_urg, or tough_urg must be selected.");
 		exit(1);
 	}
+	// set initial state
+	odom.header.frame_id = pose.header.frame_id = map_frame;
+	odom.child_frame_id = "/ground_truth";
+	robot_pose.x = robot_pose.y = robot_pose.yaw = 0.0;
+	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
+	odom.pose.pose.position.x = pose.pose.position.x = robot_pose.x;
+	odom.pose.pose.position.y = pose.pose.position.y = robot_pose.y;
+	odom.pose.pose.position.z = pose.pose.position.z = 0.0;
+	odom.pose.pose.orientation = pose.pose.orientation = odom_quat;
 	// Subscriber
 	twist_sub = nh.subscribe(input_twist_topic_name, 100, &RobotSim::twist_callback, this);
 	map_sub = nh.subscribe(input_map_topic_name, 1, &RobotSim::map_callback, this);
@@ -134,6 +145,7 @@ RobotSim::RobotSim():
 	ros::Rate loop_rate(1.0 / scan.scan_time);
 	while (ros::ok())
 	{
+		publish_odom_pose_and_tf();
 		publish_scan_data();
 		ros::spinOnce();
 		printf("x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", robot_pose.x, robot_pose.y, robot_pose.yaw * 180.0 / M_PI);
@@ -143,16 +155,22 @@ RobotSim::RobotSim():
 
 void RobotSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
+	static bool is_first = true;
 	static double prev_time;
-	if (!is_odom_initialized) 
+	if (is_first) 
 	{
 		prev_time = msg->header.stamp.toSec();
-		is_odom_initialized = true;
+		is_first = false;
 		return;
 	}
 	// update robot pose based on twist command
 	double curr_time = msg->header.stamp.toSec();
 	double delta_time = curr_time - prev_time;
+	if (delta_time > 1.0)
+	{
+		prev_time = curr_time;
+		return;
+	}
 	double delta_dist = msg->twist.linear.x * delta_time;
 	double delta_yaw = msg->twist.angular.z * delta_time;
 	robot_pose.x += delta_dist * cos(robot_pose.yaw + delta_yaw / 2.0);
@@ -160,29 +178,15 @@ void RobotSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
 	robot_pose.yaw += delta_yaw;
 	mod_yaw(&robot_pose.yaw);
 	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
-	nav_msgs::Odometry odom_msg;
-	geometry_msgs::PoseStamped pose;
-	odom_msg.header.stamp = pose.header.stamp = msg->header.stamp;
-	odom_msg.header.frame_id = pose.header.frame_id = map_frame;
-	odom_msg.child_frame_id = "/ground_truth";
-	odom_msg.pose.pose.position.x = pose.pose.position.x = robot_pose.x;
-	odom_msg.pose.pose.position.y = pose.pose.position.y = robot_pose.y;
-	odom_msg.pose.pose.position.z = pose.pose.position.z = 0.0;
-	odom_msg.pose.pose.orientation = pose.pose.orientation = odom_quat;
-	odom_msg.twist.twist.linear.x = msg->twist.linear.x;
-	odom_msg.twist.twist.linear.y = odom_msg.twist.twist.linear.z = 0.0;
-	odom_msg.twist.twist.angular.z = msg->twist.angular.z;
-	odom_msg.twist.twist.angular.x = odom_msg.twist.twist.angular.y = 0.0;
-	odom_pub.publish(odom_msg);
-	pose_pub.publish(pose);
-	// boradcast tf of robot pose
-	tf::Transform transform;
-	tf::Quaternion q;
-	transform.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
-	q.setRPY(0.0, 0.0, robot_pose.yaw);
-	transform.setRotation(q);
-	static tf::TransformBroadcaster br;
-	br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), map_frame, "/ground_truth"));
+	odom.header.stamp = pose.header.stamp = msg->header.stamp;
+	odom.pose.pose.position.x = pose.pose.position.x = robot_pose.x;
+	odom.pose.pose.position.y = pose.pose.position.y = robot_pose.y;
+	odom.pose.pose.position.z = pose.pose.position.z = 0.0;
+	odom.pose.pose.orientation = pose.pose.orientation = odom_quat;
+	odom.twist.twist.linear.x = msg->twist.linear.x;
+	odom.twist.twist.linear.y = odom.twist.twist.linear.z = 0.0;
+	odom.twist.twist.angular.z = msg->twist.angular.z;
+	odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
 	prev_time = curr_time;
 }
 
@@ -282,12 +286,25 @@ void RobotSim::robot_sim_init(void)
 	is_tf_initialized = true;
 }
 
+void RobotSim::publish_odom_pose_and_tf(void)
+{
+	odom_pub.publish(odom);
+	pose_pub.publish(pose);
+	tf::Transform transform;
+	tf::Quaternion q;
+	transform.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
+	q.setRPY(0.0, 0.0, robot_pose.yaw);
+	transform.setRotation(q);
+	static tf::TransformBroadcaster br;
+	br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), map_frame, "/ground_truth"));
+}
+
 void RobotSim::publish_scan_data(void)
 {
 	static unsigned int cnt;
-	if (!is_odom_initialized || !is_map_data || !is_tf_initialized)
+	if (!is_map_data || !is_tf_initialized)
 	{
-		ROS_ERROR("twist, map, or tf data is invalid");
+		ROS_ERROR("map or tf data is invalid");
 		return;
 	}
 	// make scan data

@@ -34,6 +34,7 @@ private:
 	double odom_noise_dist_dist, odom_noise_dist_head, odom_noise_head_dist, odom_noise_head_head;
 	double start_x, start_y, start_yaw;
 	double initial_cov_xx, initial_cov_yy, initial_cov_yawyaw;
+	double pose_publish_hz;
 	pose_t robot_pose, base_link2laser;
 	std::vector<particle_t> particles;
 	nav_msgs::OccupancyGrid map;
@@ -102,6 +103,7 @@ AMCL::AMCL():
 	initial_cov_xx(0.5),
 	initial_cov_yy(0.5),
 	initial_cov_yawyaw(3.0),
+	pose_publish_hz(20.0),
 	is_map_data(false),
 	is_first_time(true),
 	is_tf_initialized(false)
@@ -132,6 +134,7 @@ AMCL::AMCL():
 	nh.param("/amcl/initial_cov_xx", initial_cov_xx, initial_cov_xx);
 	nh.param("/amcl/initial_cov_yy", initial_cov_yy, initial_cov_yy);
 	nh.param("/amcl/initial_cov_yawyaw", initial_cov_yawyaw, initial_cov_yawyaw);
+	nh.param("/amcl/pose_publish_hz", pose_publish_hz, pose_publish_hz);
 	particle_num = min_particle_num;
 	// check values
 	if (resample_threshold < 0.0 || 1.0 < resample_threshold)
@@ -154,7 +157,24 @@ AMCL::AMCL():
 	// initialization
 	amcl_init();
 	// wait for odometry and scan topics
-	ros::spin();
+	ros::Rate loop_rate(pose_publish_hz);
+	while (ros::ok())
+	{
+		ros::spinOnce();
+		// publish tf
+		tf::Transform tf;
+		tf::Quaternion q;
+		static tf::TransformBroadcaster br;
+		tf.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
+		q.setRPY(0.0, 0.0, robot_pose.yaw);
+		tf.setRotation(q);
+		br.sendTransform(tf::StampedTransform(tf, ros::Time::now(), map_frame, "/amcl_frame"));
+		// publish pose and particle cloud
+		publish_pose();
+		publish_particles();
+		// sleep
+		loop_rate.sleep();
+	}
 }
 
 void AMCL::reset_particles(double xo, double yo, double yawo)
@@ -315,6 +335,11 @@ void AMCL::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 	}
 	double curr_time = msg->header.stamp.toSec();
 	double d_time = curr_time - prev_time;
+	if (d_time > 100.0)
+	{
+		prev_time = curr_time;
+		return;
+	}
 	double d_dist = msg->twist.twist.linear.x * d_time;
 	double d_yaw = msg->twist.twist.angular.z * d_time;
 	delta_dist += d_dist;
@@ -335,17 +360,6 @@ void AMCL::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 		while (particles[i].pose.yaw > M_PI)	particles[i].pose.yaw -= 2.0 * M_PI;
 	}
 	prev_time = curr_time;
-	// publish tf
-	tf::Transform tf;
-	tf::Quaternion q;
-	static tf::TransformBroadcaster br;
-	tf.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
-	q.setRPY(0.0, 0.0, robot_pose.yaw);
-	tf.setRotation(q);
-	br.sendTransform(tf::StampedTransform(tf, ros::Time::now(), map_frame, "/amcl_frame"));
-	// publish pose and particle cloud
-	publish_pose();
-	publish_particles();
 }
 
 void AMCL::evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan)

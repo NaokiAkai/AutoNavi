@@ -9,8 +9,8 @@
 		<param name="/base_link_frame" value="/base_link" type="string" />
 		<param name="/path_file_name" value="$(arg path_file)" type="string" />
 		<param name="/look_ahead_dist" value="1.5" type="double" />
-		<param name="/max_vel" value="2.0" type="double" />
-		<param name="/kv" value="0.6" type="double" />
+		<param name="/max_vel" value="1.0" type="double" />
+		<param name="/kv" value="0.8" type="double" />
 		<param name="/publish_hz" value="20.0" type="double" />
 	</node >
 

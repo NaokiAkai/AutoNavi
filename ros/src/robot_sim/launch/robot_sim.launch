@@ -2,22 +2,25 @@
 <launch >
 	<!-- arguments -->
 	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm_with_cars.yaml" />
+	<arg name="use_ground_truth_tf" default="false" />
+	<arg name="use_keyboard_controller" default="true" />
 
 	<!-- tf -->
-	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 world map 100" />
-	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="-0.05 0.0 0.2 0.0 0.0 0.0 base_link laser 100" />
+	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
+	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="-0.05 0 0.2 0 0 0 base_link laser 100" />
+	<node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 ground_truth base_link 100" if="$(arg use_ground_truth_tf)"/>
 
 	<!-- map server -->
 	<node name="laser_sim_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >
 		<remap from="/map" to="/laser_sim_map_source" />
-		<remap from="/map_metadata" to="/laser_sim_map_metadata_source" />
+		<remap from="/map_metadata" to="/laser_sim_map_source_metadata" />
 	</node >
 
 	<!-- keyboard node for key_to_twist_cmd -->
-	<node name="keyboard" pkg="keyboard" type="keyboard" />
+	<node name="keyboard" pkg="keyboard" type="keyboard" if="$(arg use_keyboard_controller)" />
 
 	<!-- twist command generator -->
-	<node name="key_to_twist_cmd" pkg="robot_sim" type="key_to_twist_cmd" >
+	<node name="key_to_twist_cmd" pkg="robot_sim" type="key_to_twist_cmd" if="$(arg use_keyboard_controller)" >
 		<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
 		<param name="/trans_vel_step" value="0.2" type="double" />
 		<param name="/angle_vel_step" value="0.03" type="double" />

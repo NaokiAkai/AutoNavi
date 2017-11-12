@@ -11,6 +11,8 @@ trajectory_tools/CMakeFiles/trajectory_follower.dir/src/trajectory_follower.cpp.
  /opt/ros/indigo/include/geometry_msgs/PointStamped.h
  /opt/ros/indigo/include/geometry_msgs/Pose.h
  /opt/ros/indigo/include/geometry_msgs/PoseStamped.h
+ /opt/ros/indigo/include/geometry_msgs/PoseWithCovariance.h
+ /opt/ros/indigo/include/geometry_msgs/PoseWithCovarianceStamped.h
  /opt/ros/indigo/include/geometry_msgs/Quaternion.h
  /opt/ros/indigo/include/geometry_msgs/QuaternionStamped.h
  /opt/ros/indigo/include/geometry_msgs/Transform.h

@@ -4,7 +4,7 @@
 	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
 
 	<!-- tf -->
-	<node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 amcl_frame base_link 100" />
+	<node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 amcl_frame base_link 100" />
 
 	<!-- map server -->
 	<node name="amcl_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >
@@ -39,5 +39,6 @@
 		<param name="/initial_cov_xx" value="0.5" type="double" />
 		<param name="/initial_cov_yy" value="0.5" type="double" />
 		<param name="/initial_cov_yawyaw" value="3.0" type="double" />
+		<param name="/pose_publish_hz" value="30.0" type="double" />
 	</node >
 </launch >

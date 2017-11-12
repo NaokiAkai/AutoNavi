@@ -48,7 +48,7 @@ TrajectoryRecorder::TrajectoryRecorder():
 		ros::Time now = ros::Time::now();
 		try
 		{
-			tf_listener.waitForTransform(map_frame, base_link_frame, now, ros::Duration(0.1));
+			tf_listener.waitForTransform(map_frame, base_link_frame, now, ros::Duration(1.0));
 			tf_listener.lookupTransform(map_frame, base_link_frame, now, map2base_link);
 		}
 		catch (tf::TransformException ex)
