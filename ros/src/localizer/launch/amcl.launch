@@ -33,6 +33,7 @@
 		<param name="/odom_noise_dist_head" value="0.03" type="double" />
 		<param name="/odom_noise_head_dist" value="0.03" type="double" />
 		<param name="/odom_noise_head_head" value="0.6" type="double" />
+		<param name="/dynamic_scan_points_prob_threshold" value="0.95" type="double" />
 		<param name="/start_x" value="0.0" type="double" />
 		<param name="/start_y" value="0.0" type="double" />
 		<param name="/start_yaw" value="0.0" type="double" />

@@ -7,7 +7,7 @@
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
-	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="-0.05 0 0.2 0 0 0 base_link laser 100" />
+	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="1.0 0 0.4 0 0 0 base_link laser 100" />
 	<node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 ground_truth base_link 100" if="$(arg use_ground_truth_tf)"/>
 
 	<!-- map server -->
