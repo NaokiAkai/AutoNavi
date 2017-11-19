@@ -638,7 +638,7 @@ void AMCL::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 	printf("\n");
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "amcl");
 	AMCL node;
