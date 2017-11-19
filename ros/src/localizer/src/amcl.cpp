@@ -16,7 +16,6 @@
 typedef struct
 {
 	pose_t pose;
-	std::vector<double> dynamic_scan_point_probs;
 	double w;
 } particle_t;
 
@@ -38,7 +37,8 @@ private:
 	double pose_publish_hz;
 	pose_t robot_pose, base_link2laser;
 	std::vector<particle_t> particles;
-	std::vector<bool> is_valid_scan_points;
+	std::vector<bool> is_valid_scan_points, is_dynamic_scan_points;
+	int max_particle_likelihood_num;
 	sensor_msgs::PointCloud dynamic_scan_points;
 	double dynamic_scan_points_prob_threshold;
 	nav_msgs::OccupancyGrid map;
@@ -399,6 +399,48 @@ void AMCL::evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan)
 	double z_hit_denom = 0.08;
 	double z_rand = 0.05;
 	double z_rand_mult = 0.033333;
+	double max = 0.0;
+	// detect dynamic scan points
+	for (int i = 0; i < scan->ranges.size(); i++)
+	{
+		if (!is_valid_scan_points[i])
+		{
+			is_dynamic_scan_points[i] = false;
+			continue;
+		}
+		double w = 0.0;
+		for (int j = 0; j < particle_num; j++)
+		{
+			double c = cos(particles[j].pose.yaw);
+			double s = sin(particles[j].pose.yaw);
+			double xo = base_link2laser.x * c - base_link2laser.y * s + particles[j].pose.x;
+			double yo = base_link2laser.x * s + base_link2laser.y * c + particles[j].pose.y;
+			double angle = scan->angle_min + scan->angle_increment * (double)i;
+			double yaw = angle + particles[j].pose.yaw;
+			double r = scan->ranges[i];
+			double x = r * cos(yaw) + xo;
+			double y = r * sin(yaw) + yo;
+			int u, v;
+			xy2uv(x, y, &u, &v);
+			if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
+			{
+				int node = v * map.info.width + u;
+				double z = dist_map.at<float>(v, u);
+				double zz = exp(-(z * z) / z_hit_denom);
+				w += 1.0 - zz;
+			}
+			else
+			{
+				w += 1.0;
+			}
+		}
+		w /= (int)particle_num;
+		if (w > dynamic_scan_points_prob_threshold)
+			is_dynamic_scan_points[i] = true;
+		else
+			is_dynamic_scan_points[i] = false;
+	}
+	// evaluate particles
 	for (int i = 0; i < particle_num; i++)
 	{
 		double w = 0.0;
@@ -406,9 +448,9 @@ void AMCL::evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan)
 		double s = sin(particles[i].pose.yaw);
 		double xo = base_link2laser.x * c - base_link2laser.y * s + particles[i].pose.x;
 		double yo = base_link2laser.x * s + base_link2laser.y * c + particles[i].pose.y;
-		for (int j = 0; j < scan->ranges.size(); j++)
+		for (int j = 0; j < scan->ranges.size(); j += scan_step)
 		{
-			if (!is_valid_scan_points[j])
+			if (!is_valid_scan_points[j] || is_dynamic_scan_points[j])
 				continue;
 			double angle = scan->angle_min + scan->angle_increment * (double)j;
 			double yaw = angle + particles[i].pose.yaw;
@@ -424,21 +466,31 @@ void AMCL::evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan)
 				double z = dist_map.at<float>(v, u);
 				double zz = exp(-(z * z) / z_hit_denom);
 				pz += z_hit * zz;
-				particles[i].dynamic_scan_point_probs[j] = 1.0 - zz;
 			}
 			else
 			{
 				pz += z_hit * max_dist_prob;
-				particles[i].dynamic_scan_point_probs[j] = 1.0;
 			}
 			pz += z_rand * z_rand_mult;
 			if (pz < 0.0)	pz = 0.0;
 			if (pz > 1.0)	pz = 1.0;
-			if (j % scan_step == 0)
-				w += log(pz);
+			w += log(pz);
 		}
 		double weight = exp(w);
 		particles[i].w *= weight;
+		if (i == 0)
+		{
+			max_particle_likelihood_num = i;
+			max = particles[i].w;
+		}
+		else
+		{
+			if (max < particles[i].w)
+			{
+				max_particle_likelihood_num = i;
+				max = particles[i].w;
+			}
+		}
 	}
 }
 
@@ -503,10 +555,7 @@ void AMCL::estimate_dynamic_scan_points(const sensor_msgs::LaserScan::ConstPtr& 
 	dpoints.header = scan->header;
 	for (int i = 0; i < scan->ranges.size(); i++)
 	{
-		double w = 0.0;
-		for (int j = 0; j < particle_num; j++)
-			w += particles[j].dynamic_scan_point_probs[i] * particles[j].w;
-		if (w > dynamic_scan_points_prob_threshold)
+		if (is_dynamic_scan_points[i])
 		{
 			double r = scan->ranges[i];
 			double yaw = scan->angle_min + (double)i * scan->angle_increment;
@@ -576,8 +625,7 @@ void AMCL::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 	{
 		int scan_num = msg->ranges.size();
 		is_valid_scan_points.resize(scan_num);
-		for (int i = 0; i < particles.size(); i++)
-			particles[i].dynamic_scan_point_probs.resize(scan_num);
+		is_dynamic_scan_points.resize(scan_num);
 		is_first = false;
 	}
 	resample_particles();
