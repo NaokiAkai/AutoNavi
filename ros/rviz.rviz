@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 520
   - Class: rviz/Selection
@@ -52,23 +53,23 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
-        amcl_frame:
-          Value: true
+        All Enabled: false
         base_link:
           Value: true
         ground_truth:
           Value: true
+        ground_truth_front_link:
+          Value: true
         laser:
-          Value: true
+          Value: false
         map:
-          Value: true
+          Value: false
         odom:
-          Value: true
+          Value: false
         odom_frame:
-          Value: true
+          Value: false
         world:
-          Value: true
+          Value: false
       Marker Scale: 10
       Name: TF
       Show Arrows: false
@@ -76,11 +77,11 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
-          amcl_frame:
+          ground_truth:
             base_link:
               laser:
                 {}
-          ground_truth:
+          ground_truth_front_link:
             {}
           map:
             {}
@@ -90,11 +91,11 @@ Visualization Manager:
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: false
+      Enabled: true
       Name: Laser simulation map
       Topic: /laser_sim_map
       Unreliable: false
-      Value: false
+      Value: true
     - Alpha: 0.7
       Class: rviz/Map
       Color Scheme: map
@@ -212,7 +213,7 @@ Visualization Manager:
         Value: false
       Name: Current View
       Near Clip Distance: 0.01
-      Scale: 25.0534
+      Scale: 34.6914
       Target Frame: base_link
       Value: TopDownOrtho (rviz)
       X: 0
@@ -234,5 +235,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1225
-  X: 494
-  Y: 224
+  X: 474
+  Y: 204

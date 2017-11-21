@@ -213,6 +213,8 @@ clean: CMakeFiles/tests.dir/clean
 # Convenience name for "all" pass in the directory.
 robot_sim/all: robot_sim/CMakeFiles/add_noise_to_sensor_data.dir/all
 robot_sim/all: robot_sim/CMakeFiles/key_to_twist_cmd.dir/all
+robot_sim/all: robot_sim/CMakeFiles/laser_sim.dir/all
+robot_sim/all: robot_sim/CMakeFiles/odom_sim.dir/all
 robot_sim/all: robot_sim/CMakeFiles/robot_sim.dir/all
 .PHONY : robot_sim/all
 
@@ -228,6 +230,8 @@ robot_sim/clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/cl
 robot_sim/clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/key_to_twist_cmd.dir/clean
+robot_sim/clean: robot_sim/CMakeFiles/laser_sim.dir/clean
+robot_sim/clean: robot_sim/CMakeFiles/odom_sim.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/robot_sim.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
@@ -603,13 +607,83 @@ clean: robot_sim/CMakeFiles/key_to_twist_cmd.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target robot_sim/CMakeFiles/laser_sim.dir
+
+# All Build rule for target.
+robot_sim/CMakeFiles/laser_sim.dir/all:
+	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/depend
+	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
+	@echo "Built target laser_sim"
+.PHONY : robot_sim/CMakeFiles/laser_sim.dir/all
+
+# Include target in all.
+all: robot_sim/CMakeFiles/laser_sim.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+robot_sim/CMakeFiles/laser_sim.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 1
+	$(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/laser_sim.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : robot_sim/CMakeFiles/laser_sim.dir/rule
+
+# Convenience name for target.
+laser_sim: robot_sim/CMakeFiles/laser_sim.dir/rule
+.PHONY : laser_sim
+
+# clean rule for target.
+robot_sim/CMakeFiles/laser_sim.dir/clean:
+	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/clean
+.PHONY : robot_sim/CMakeFiles/laser_sim.dir/clean
+
+# clean rule for target.
+clean: robot_sim/CMakeFiles/laser_sim.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target robot_sim/CMakeFiles/odom_sim.dir
+
+# All Build rule for target.
+robot_sim/CMakeFiles/odom_sim.dir/all:
+	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/depend
+	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
+	@echo "Built target odom_sim"
+.PHONY : robot_sim/CMakeFiles/odom_sim.dir/all
+
+# Include target in all.
+all: robot_sim/CMakeFiles/odom_sim.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+robot_sim/CMakeFiles/odom_sim.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 1
+	$(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/odom_sim.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : robot_sim/CMakeFiles/odom_sim.dir/rule
+
+# Convenience name for target.
+odom_sim: robot_sim/CMakeFiles/odom_sim.dir/rule
+.PHONY : odom_sim
+
+# clean rule for target.
+robot_sim/CMakeFiles/odom_sim.dir/clean:
+	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/clean
+.PHONY : robot_sim/CMakeFiles/odom_sim.dir/clean
+
+# clean rule for target.
+clean: robot_sim/CMakeFiles/odom_sim.dir/clean
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target robot_sim/CMakeFiles/robot_sim.dir
 
 # All Build rule for target.
 robot_sim/CMakeFiles/robot_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
 	@echo "Built target robot_sim"
 .PHONY : robot_sim/CMakeFiles/robot_sim.dir/all
 
@@ -1815,7 +1889,7 @@ trajectory_tools/preinstall:
 trajectory_tools/CMakeFiles/trajectory_drawer.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
 	@echo "Built target trajectory_drawer"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_drawer.dir/all
 
@@ -1850,7 +1924,7 @@ clean: trajectory_tools/CMakeFiles/trajectory_drawer.dir/clean
 trajectory_tools/CMakeFiles/trajectory_follower.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  8
 	@echo "Built target trajectory_follower"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_follower.dir/all
 
@@ -1885,7 +1959,7 @@ clean: trajectory_tools/CMakeFiles/trajectory_follower.dir/clean
 trajectory_tools/CMakeFiles/trajectory_recorder.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9
 	@echo "Built target trajectory_recorder"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_recorder.dir/all
 

@@ -304,6 +304,34 @@ key_to_twist_cmd/fast:
 .PHONY : key_to_twist_cmd/fast
 
 # Convenience name for target.
+robot_sim/CMakeFiles/laser_sim.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/laser_sim.dir/rule
+.PHONY : robot_sim/CMakeFiles/laser_sim.dir/rule
+
+# Convenience name for target.
+laser_sim: robot_sim/CMakeFiles/laser_sim.dir/rule
+.PHONY : laser_sim
+
+# fast build rule for target.
+laser_sim/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/build
+.PHONY : laser_sim/fast
+
+# Convenience name for target.
+robot_sim/CMakeFiles/odom_sim.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/odom_sim.dir/rule
+.PHONY : robot_sim/CMakeFiles/odom_sim.dir/rule
+
+# Convenience name for target.
+odom_sim: robot_sim/CMakeFiles/odom_sim.dir/rule
+.PHONY : odom_sim
+
+# fast build rule for target.
+odom_sim/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/build
+.PHONY : odom_sim/fast
+
+# Convenience name for target.
 robot_sim/CMakeFiles/robot_sim.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/robot_sim.dir/rule
 .PHONY : robot_sim/CMakeFiles/robot_sim.dir/rule
@@ -617,6 +645,54 @@ src/key_to_twist_cmd.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/src/key_to_twist_cmd.cpp.s
 .PHONY : src/key_to_twist_cmd.cpp.s
 
+src/laser_sim.o: src/laser_sim.cpp.o
+.PHONY : src/laser_sim.o
+
+# target to build an object file
+src/laser_sim.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/src/laser_sim.cpp.o
+.PHONY : src/laser_sim.cpp.o
+
+src/laser_sim.i: src/laser_sim.cpp.i
+.PHONY : src/laser_sim.i
+
+# target to preprocess a source file
+src/laser_sim.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/src/laser_sim.cpp.i
+.PHONY : src/laser_sim.cpp.i
+
+src/laser_sim.s: src/laser_sim.cpp.s
+.PHONY : src/laser_sim.s
+
+# target to generate assembly for a file
+src/laser_sim.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/src/laser_sim.cpp.s
+.PHONY : src/laser_sim.cpp.s
+
+src/odom_sim.o: src/odom_sim.cpp.o
+.PHONY : src/odom_sim.o
+
+# target to build an object file
+src/odom_sim.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/src/odom_sim.cpp.o
+.PHONY : src/odom_sim.cpp.o
+
+src/odom_sim.i: src/odom_sim.cpp.i
+.PHONY : src/odom_sim.i
+
+# target to preprocess a source file
+src/odom_sim.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/src/odom_sim.cpp.i
+.PHONY : src/odom_sim.cpp.i
+
+src/odom_sim.s: src/odom_sim.cpp.s
+.PHONY : src/odom_sim.s
+
+# target to generate assembly for a file
+src/odom_sim.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/src/odom_sim.cpp.s
+.PHONY : src/odom_sim.cpp.s
+
 src/robot_sim.o: src/robot_sim.cpp.o
 .PHONY : src/robot_sim.o
 
@@ -662,7 +738,9 @@ help:
 	@echo "... install/local"
 	@echo "... install/strip"
 	@echo "... key_to_twist_cmd"
+	@echo "... laser_sim"
 	@echo "... list_install_components"
+	@echo "... odom_sim"
 	@echo "... rebuild_cache"
 	@echo "... robot_sim"
 	@echo "... roscpp_generate_messages_cpp"
@@ -690,6 +768,12 @@ help:
 	@echo "... src/key_to_twist_cmd.o"
 	@echo "... src/key_to_twist_cmd.i"
 	@echo "... src/key_to_twist_cmd.s"
+	@echo "... src/laser_sim.o"
+	@echo "... src/laser_sim.i"
+	@echo "... src/laser_sim.s"
+	@echo "... src/odom_sim.o"
+	@echo "... src/odom_sim.i"
+	@echo "... src/odom_sim.s"
 	@echo "... src/robot_sim.o"
 	@echo "... src/robot_sim.i"
 	@echo "... src/robot_sim.s"

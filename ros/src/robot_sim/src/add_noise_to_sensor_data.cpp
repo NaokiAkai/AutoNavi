@@ -158,7 +158,8 @@ void AddNoise::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 	points_pub.publish(points);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv)
+{
 	ros::init(argc, argv, "add_noise_to_sensor_data");
 	AddNoise node;
 	return 0;

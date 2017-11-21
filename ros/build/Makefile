@@ -358,6 +358,32 @@ key_to_twist_cmd/fast:
 .PHONY : key_to_twist_cmd/fast
 
 #=============================================================================
+# Target rules for targets named laser_sim
+
+# Build rule for target.
+laser_sim: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 laser_sim
+.PHONY : laser_sim
+
+# fast build rule for target.
+laser_sim/fast:
+	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/build
+.PHONY : laser_sim/fast
+
+#=============================================================================
+# Target rules for targets named odom_sim
+
+# Build rule for target.
+odom_sim: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 odom_sim
+.PHONY : odom_sim
+
+# fast build rule for target.
+odom_sim/fast:
+	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/build
+.PHONY : odom_sim/fast
+
+#=============================================================================
 # Target rules for targets named robot_sim
 
 # Build rule for target.
@@ -906,6 +932,8 @@ help:
 	@echo "... geometry_msgs_generate_messages_lisp"
 	@echo "... geometry_msgs_generate_messages_py"
 	@echo "... key_to_twist_cmd"
+	@echo "... laser_sim"
+	@echo "... odom_sim"
 	@echo "... robot_sim"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_lisp"

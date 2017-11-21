@@ -1,16 +1,12 @@
 #include <ros/ros.h>
 #include <time.h>
 #include <std_msgs/Time.h>
-#include <geometry_msgs/TwistStamped.h>
-#include <nav_msgs/Odometry.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
 #include <geometry_msgs/Point32.h>
-#include <geometry_msgs/PoseStamped.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-#include <visualization_msgs/Marker.h>
 
 #include "common.h"
 
@@ -22,14 +18,14 @@ typedef struct
 	double size;
 } moving_object_t;
 
-class RobotSim
+class LaserSim
 {
 private:
 	ros::NodeHandle nh;
-	ros::Subscriber twist_sub, map_sub;
-	ros::Publisher odom_pub, scan_pub, points_pub, pose_pub, map_pub;
-	std::string input_twist_topic_name, input_map_topic_name;
-	std::string output_odom_topic_name, output_scan_topic_name, output_scan_points_topic_name;
+	ros::Subscriber map_sub;
+	ros::Publisher scan_pub, points_pub, map_pub;
+	std::string input_map_topic_name;
+	std::string output_scan_topic_name, output_scan_points_topic_name;
 	std::string map_frame, laser_frame, base_link_frame;
 	int moving_object_num;
 	double moving_object_mean_x, moving_object_mean_y, moving_object_mean_v, moving_object_mean_size;
@@ -38,18 +34,16 @@ private:
 	std::string sensor_type;
 	nav_msgs::OccupancyGrid map;
 	sensor_msgs::LaserScan scan;
-	nav_msgs::Odometry odom;
-	geometry_msgs::PoseStamped pose;
 	bool is_tf_initialized, is_map_data;
 	pose_t robot_pose, base_link2laser;
+	tf::TransformListener tf_listener;
 
 public:
-	RobotSim();
-	void twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg);
+	LaserSim();
 	void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg);
-	void robot_sim_init(void);
-	void publish_odom_pose_and_tf(void);
-	void publish_scan_data(void);
+	void laser_sim_init(void);
+	bool get_ground_truth_robot_pose(void);
+	void publish_scan(void);
 	nav_msgs::OccupancyGrid make_virtual_environmental_map(void);
 
 	inline double nrand(double n)
@@ -76,11 +70,9 @@ public:
 	}
 };
 
-RobotSim::RobotSim():
+LaserSim::LaserSim():
 	nh("~"),
-	input_twist_topic_name("/twist_cmd"),
 	input_map_topic_name("/laser_sim_map_source"),
-	output_odom_topic_name("/odom_robot_sim"),
 	output_scan_topic_name("/scan_robot_sim"),
 	output_scan_points_topic_name("/scan_points_robot_sim"),
 	map_frame("/world"),
@@ -96,101 +88,53 @@ RobotSim::RobotSim():
 	moving_object_std_v(1.0),
 	moving_object_std_size(0.5),
 	sensor_type("top_urg"),
+	tf_listener(),
 	is_tf_initialized(false),
 	is_map_data(false)
 {
 	// read parameters
-	nh.param("/robot_sim/input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
-	nh.param("/robot_sim/input_map_topic_name", input_map_topic_name, input_map_topic_name);
-	nh.param("/robot_sim/output_odom_topic_name", output_odom_topic_name, output_odom_topic_name);
-	nh.param("/robot_sim/output_scan_topic_name", output_scan_topic_name, output_scan_topic_name);
-	nh.param("/robot_sim/output_scan_points_topic_name", output_scan_points_topic_name, output_scan_points_topic_name);
-	nh.param("/robot_sim/laser_frame", laser_frame, laser_frame);
-	nh.param("/robot_sim/moving_object_num", moving_object_num, moving_object_num);
-	nh.param("/robot_sim/moving_object_mean_x", moving_object_mean_x, moving_object_mean_x);
-	nh.param("/robot_sim/moving_object_mean_y", moving_object_mean_y, moving_object_mean_y);
-	nh.param("/robot_sim/moving_object_mean_v", moving_object_mean_v, moving_object_mean_v);
-	nh.param("/robot_sim/moving_object_mean_size", moving_object_mean_size, moving_object_mean_size);
-	nh.param("/robot_sim/moving_object_std_x", moving_object_std_x, moving_object_std_x);
-	nh.param("/robot_sim/moving_object_std_y", moving_object_std_y, moving_object_std_y);
-	nh.param("/robot_sim/moving_object_std_v", moving_object_std_v, moving_object_std_v);
-	nh.param("/robot_sim/moving_object_std_size", moving_object_std_size, moving_object_std_size);
-	nh.param("/robot_sim/sensor_type", sensor_type, sensor_type);
+	nh.param("/laser_sim/input_map_topic_name", input_map_topic_name, input_map_topic_name);
+	nh.param("/laser_sim/output_scan_topic_name", output_scan_topic_name, output_scan_topic_name);
+	nh.param("/laser_sim/output_scan_points_topic_name", output_scan_points_topic_name, output_scan_points_topic_name);
+	nh.param("/laser_sim/laser_frame", laser_frame, laser_frame);
+	nh.param("/laser_sim/moving_object_num", moving_object_num, moving_object_num);
+	nh.param("/laser_sim/moving_object_mean_x", moving_object_mean_x, moving_object_mean_x);
+	nh.param("/laser_sim/moving_object_mean_y", moving_object_mean_y, moving_object_mean_y);
+	nh.param("/laser_sim/moving_object_mean_v", moving_object_mean_v, moving_object_mean_v);
+	nh.param("/laser_sim/moving_object_mean_size", moving_object_mean_size, moving_object_mean_size);
+	nh.param("/laser_sim/moving_object_std_x", moving_object_std_x, moving_object_std_x);
+	nh.param("/laser_sim/moving_object_std_y", moving_object_std_y, moving_object_std_y);
+	nh.param("/laser_sim/moving_object_std_v", moving_object_std_v, moving_object_std_v);
+	nh.param("/laser_sim/moving_object_std_size", moving_object_std_size, moving_object_std_size);
+	nh.param("/laser_sim/sensor_type", sensor_type, sensor_type);
 	if (sensor_type != "top_urg" && sensor_type != "classic_urg" && sensor_type != "tough_urg")
 	{
 		ROS_ERROR("unsupported sensor type is selected. top_urg, classic_urg, or tough_urg must be selected.");
 		exit(1);
 	}
-	// set initial state
-	odom.header.frame_id = pose.header.frame_id = map_frame;
-	odom.child_frame_id = "/ground_truth";
-	robot_pose.x = robot_pose.y = robot_pose.yaw = 0.0;
-	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
-	odom.pose.pose.position.x = pose.pose.position.x = robot_pose.x;
-	odom.pose.pose.position.y = pose.pose.position.y = robot_pose.y;
-	odom.pose.pose.position.z = pose.pose.position.z = 0.0;
-	odom.pose.pose.orientation = pose.pose.orientation = odom_quat;
 	// Subscriber
-	twist_sub = nh.subscribe(input_twist_topic_name, 100, &RobotSim::twist_callback, this);
-	map_sub = nh.subscribe(input_map_topic_name, 1, &RobotSim::map_callback, this);
+	map_sub = nh.subscribe(input_map_topic_name, 1, &LaserSim::map_callback, this);
 	// Publisher
-	odom_pub = nh.advertise<nav_msgs::Odometry>(output_odom_topic_name, 100);
 	scan_pub = nh.advertise<sensor_msgs::LaserScan>(output_scan_topic_name, 100);
 	points_pub = nh.advertise<sensor_msgs::PointCloud>(output_scan_points_topic_name, 100);
-	pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/ground_truth_pose", 100);
 	map_pub = nh.advertise<nav_msgs::OccupancyGrid>("/laser_sim_map", 10);
 	// initialization
-	robot_sim_init();
+	laser_sim_init();
 	// main loop
 	ros::Rate loop_rate(1.0 / scan.scan_time);
 	while (ros::ok())
 	{
-		publish_odom_pose_and_tf();
-		publish_scan_data();
 		ros::spinOnce();
-		printf("x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", robot_pose.x, robot_pose.y, robot_pose.yaw * 180.0 / M_PI);
+		if (get_ground_truth_robot_pose())
+		{
+			publish_scan();
+			printf("x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", robot_pose.x, robot_pose.y, robot_pose.yaw * 180.0 / M_PI);
+		}
 		loop_rate.sleep();
 	}
 }
 
-void RobotSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
-{
-	static bool is_first = true;
-	static double prev_time;
-	if (is_first) 
-	{
-		prev_time = msg->header.stamp.toSec();
-		is_first = false;
-		return;
-	}
-	// update robot pose based on twist command
-	double curr_time = msg->header.stamp.toSec();
-	double delta_time = curr_time - prev_time;
-	if (delta_time > 1.0)
-	{
-		prev_time = curr_time;
-		return;
-	}
-	double delta_dist = msg->twist.linear.x * delta_time;
-	double delta_yaw = msg->twist.angular.z * delta_time;
-	robot_pose.x += delta_dist * cos(robot_pose.yaw + delta_yaw / 2.0);
-	robot_pose.y += delta_dist * sin(robot_pose.yaw + delta_yaw / 2.0);
-	robot_pose.yaw += delta_yaw;
-	mod_yaw(&robot_pose.yaw);
-	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
-	odom.header.stamp = pose.header.stamp = msg->header.stamp;
-	odom.pose.pose.position.x = pose.pose.position.x = robot_pose.x;
-	odom.pose.pose.position.y = pose.pose.position.y = robot_pose.y;
-	odom.pose.pose.position.z = pose.pose.position.z = 0.0;
-	odom.pose.pose.orientation = pose.pose.orientation = odom_quat;
-	odom.twist.twist.linear.x = msg->twist.linear.x;
-	odom.twist.twist.linear.y = odom.twist.twist.linear.z = 0.0;
-	odom.twist.twist.angular.z = msg->twist.angular.z;
-	odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
-	prev_time = curr_time;
-}
-
-void RobotSim::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
+void LaserSim::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
 	if (!is_map_data) {
 		map = *msg;
@@ -198,7 +142,7 @@ void RobotSim::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 	}
 }
 
-void RobotSim::robot_sim_init(void)
+void LaserSim::laser_sim_init(void)
 {
 	srand((unsigned)time(NULL));
 	// initilizatioin of simulated scan
@@ -253,7 +197,6 @@ void RobotSim::robot_sim_init(void)
 			moving_objects[i].is_active = false;
 	}
 	// initilizatioin of tf
-	tf::TransformListener tf_listener;
 	tf::StampedTransform tf_base_link2laser;
 	ros::Rate loop_rate(10);
 	while (ros::ok())
@@ -286,20 +229,33 @@ void RobotSim::robot_sim_init(void)
 	is_tf_initialized = true;
 }
 
-void RobotSim::publish_odom_pose_and_tf(void)
+bool LaserSim::get_ground_truth_robot_pose(void)
 {
-	odom_pub.publish(odom);
-	pose_pub.publish(pose);
-	tf::Transform transform;
-	tf::Quaternion q;
-	transform.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
-	q.setRPY(0.0, 0.0, robot_pose.yaw);
-	transform.setRotation(q);
-	static tf::TransformBroadcaster br;
-	br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), map_frame, "/ground_truth"));
+	tf::StampedTransform map2base_link;
+	ros::Time now = ros::Time::now();
+	try
+	{
+		tf_listener.waitForTransform(map_frame, "ground_truth", now, ros::Duration(0.1));
+		tf_listener.lookupTransform(map_frame, "ground_truth", now, map2base_link);
+	}
+	catch (tf::TransformException ex)
+	{
+		ROS_ERROR("%s", ex.what());
+		return false;
+	}
+	robot_pose.x = map2base_link.getOrigin().x();
+	robot_pose.y = map2base_link.getOrigin().y();
+	tf::Quaternion q(map2base_link.getRotation().x(),
+		map2base_link.getRotation().y(),
+		map2base_link.getRotation().z(),
+		map2base_link.getRotation().w());
+	double roll, pitch;
+	tf::Matrix3x3 m(q);
+	m.getRPY(roll, pitch, robot_pose.yaw);
+	return true;
 }
 
-void RobotSim::publish_scan_data(void)
+void LaserSim::publish_scan(void)
 {
 	static unsigned int cnt;
 	if (!is_map_data || !is_tf_initialized)
@@ -373,7 +329,7 @@ void RobotSim::publish_scan_data(void)
 	cnt++;
 }
 
-nav_msgs::OccupancyGrid RobotSim::make_virtual_environmental_map(void)
+nav_msgs::OccupancyGrid LaserSim::make_virtual_environmental_map(void)
 {
 	nav_msgs::OccupancyGrid env_map = map;
 	double dt = 1.0 / (1.0 / scan.scan_time);
@@ -420,9 +376,9 @@ nav_msgs::OccupancyGrid RobotSim::make_virtual_environmental_map(void)
 	return env_map;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "robot_sim");
-	RobotSim node;
+	ros::init(argc, argv, "laser_sim");
+	LaserSim node;
 	return 0;
 }

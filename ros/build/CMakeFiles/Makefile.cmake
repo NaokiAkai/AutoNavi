@@ -265,6 +265,8 @@ SET(CMAKE_DEPEND_INFO_FILES
   "robot_sim/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/DependInfo.cmake"
   "robot_sim/CMakeFiles/geometry_msgs_generate_messages_py.dir/DependInfo.cmake"
   "robot_sim/CMakeFiles/key_to_twist_cmd.dir/DependInfo.cmake"
+  "robot_sim/CMakeFiles/laser_sim.dir/DependInfo.cmake"
+  "robot_sim/CMakeFiles/odom_sim.dir/DependInfo.cmake"
   "robot_sim/CMakeFiles/robot_sim.dir/DependInfo.cmake"
   "robot_sim/CMakeFiles/roscpp_generate_messages_cpp.dir/DependInfo.cmake"
   "robot_sim/CMakeFiles/roscpp_generate_messages_lisp.dir/DependInfo.cmake"

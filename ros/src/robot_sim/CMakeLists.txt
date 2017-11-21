@@ -189,6 +189,12 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
+add_executable(odom_sim src/odom_sim.cpp)
+target_link_libraries(odom_sim ${catkin_LIBRARIES})
+
+add_executable(laser_sim src/laser_sim.cpp)
+target_link_libraries(laser_sim ${catkin_LIBRARIES})
+
 add_executable(robot_sim src/robot_sim.cpp)
 target_link_libraries(robot_sim ${catkin_LIBRARIES})
 
