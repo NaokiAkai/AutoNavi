@@ -1,4 +1,5 @@
 FILE(REMOVE_RECURSE
+  "CMakeFiles/amcl.dir/src/amcl_node.cpp.o"
   "CMakeFiles/amcl.dir/src/amcl.cpp.o"
   "/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl.pdb"
   "/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl"

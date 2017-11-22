@@ -425,6 +425,30 @@ src/amcl.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.s
 .PHONY : src/amcl.cpp.s
 
+src/amcl_node.o: src/amcl_node.cpp.o
+.PHONY : src/amcl_node.o
+
+# target to build an object file
+src/amcl_node.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o
+.PHONY : src/amcl_node.cpp.o
+
+src/amcl_node.i: src/amcl_node.cpp.i
+.PHONY : src/amcl_node.i
+
+# target to preprocess a source file
+src/amcl_node.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.i
+.PHONY : src/amcl_node.cpp.i
+
+src/amcl_node.s: src/amcl_node.cpp.s
+.PHONY : src/amcl_node.s
+
+# target to generate assembly for a file
+src/amcl_node.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.s
+.PHONY : src/amcl_node.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -459,6 +483,9 @@ help:
 	@echo "... src/amcl.o"
 	@echo "... src/amcl.i"
 	@echo "... src/amcl.s"
+	@echo "... src/amcl_node.o"
+	@echo "... src/amcl_node.i"
+	@echo "... src/amcl_node.s"
 .PHONY : help
 
 

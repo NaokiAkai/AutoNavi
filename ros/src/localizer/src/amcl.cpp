@@ -11,75 +11,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
 
-#include "common.h"
-
-typedef struct
-{
-	pose_t pose;
-	double w;
-} particle_t;
-
-class AMCL
-{
-private:
-	ros::NodeHandle nh;
-	std::string map_frame, laser_frame, base_link_frame;
-	std::string input_map_topic_name, input_odom_topic_name, input_scan_topic_name;
-	int particle_num, min_particle_num, max_particle_num;
-	double resample_threshold;
-	int scan_step;
-	double alpha_slow, alpha_fast;
-	double delta_dist, delta_yaw;
-	double update_dist, update_yaw, update_time;
-	double odom_noise_dist_dist, odom_noise_dist_head, odom_noise_head_dist, odom_noise_head_head;
-	double start_x, start_y, start_yaw;
-	double initial_cov_xx, initial_cov_yy, initial_cov_yawyaw;
-	double pose_publish_hz;
-	pose_t robot_pose, base_link2laser;
-	std::vector<particle_t> particles;
-	std::vector<bool> is_valid_scan_points, is_dynamic_scan_points;
-	int max_particle_likelihood_num;
-	sensor_msgs::PointCloud dynamic_scan_points;
-	double dynamic_scan_points_prob_threshold;
-	nav_msgs::OccupancyGrid map;
-	cv::Mat dist_map;
-	double effective_sample_size, total_weight, random_particle_rate, w_avg, w_slow, w_fast;
-	bool is_map_data, is_first_time, is_tf_initialized;
-	ros::Publisher pose_pub, particles_pub, dynamic_scan_points_pub;
-
-public:
-	AMCL();
-	void reset_particles(double xo, double yo, double yawo);
-	void amcl_init(void);
-	void initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
-	void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg);
-	void broadcast_tf(void);
-	void publish_pose(void);
-	void publish_particles(void);
-	void odom_callback(const nav_msgs::Odometry::ConstPtr& msg);
-	void check_scan_points_validity(const sensor_msgs::LaserScan::ConstPtr& scan);
-	void evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan);
-	void compute_total_weight_and_effective_sample_size(void);
-	void compute_random_particle_rate(void);
-	void estimate_robot_pose(void);
-	void estimate_dynamic_scan_points(const sensor_msgs::LaserScan::ConstPtr& scan);
-	void resample_particles(void);
-	void scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
-
-	inline double nrand(double n)
-	{
-		return (n * sqrt(-2.0 * log((double)rand() / RAND_MAX)) * cos(2.0 * M_PI * rand() / RAND_MAX));
-	}
-
-	// world frame point, xy, to grid map index, uv
-	inline void xy2uv(double x, double y, int* u, int* v)
-	{
-		double dx = x - map.info.origin.position.x;
-		double dy = y - map.info.origin.position.y;
-		*u = (int)(dx / map.info.resolution);
-		*v = (int)(dy / map.info.resolution);
-	}
-};
+#include "amcl.h"
 
 AMCL::AMCL():
 	nh("~"),
@@ -104,7 +36,6 @@ AMCL::AMCL():
 	odom_noise_dist_head(0.03),
 	odom_noise_head_dist(0.03),
 	odom_noise_head_head(0.6),
-	dynamic_scan_points_prob_threshold(0.8),
 	start_x(0.0),
 	start_y(0.0),
 	start_yaw(0.0),
@@ -113,6 +44,7 @@ AMCL::AMCL():
 	initial_cov_yawyaw(3.0),
 	pose_publish_hz(20.0),
 	is_map_data(false),
+	is_scan_data(false),
 	is_first_time(true),
 	is_tf_initialized(false)
 {
@@ -136,7 +68,6 @@ AMCL::AMCL():
 	nh.param("/amcl/odom_noise_dist_head", odom_noise_dist_head, odom_noise_dist_head);
 	nh.param("/amcl/odom_noise_head_dist", odom_noise_head_dist, odom_noise_head_dist);
 	nh.param("/amcl/odom_noise_head_head", odom_noise_head_head, odom_noise_head_head);
-	nh.param("/amcl/dynamic_scan_points_prob_threshold", dynamic_scan_points_prob_threshold, dynamic_scan_points_prob_threshold);
 	nh.param("/amcl/start_x", start_x, start_x);
 	nh.param("/amcl/start_y", start_y, start_y);
 	nh.param("/amcl/start_yaw", start_yaw, start_yaw);
@@ -144,57 +75,41 @@ AMCL::AMCL():
 	nh.param("/amcl/initial_cov_yy", initial_cov_yy, initial_cov_yy);
 	nh.param("/amcl/initial_cov_yawyaw", initial_cov_yawyaw, initial_cov_yawyaw);
 	nh.param("/amcl/pose_publish_hz", pose_publish_hz, pose_publish_hz);
-	particle_num = min_particle_num;
 	// check values
 	if (resample_threshold < 0.0 || 1.0 < resample_threshold)
 	{
 		ROS_ERROR("resample_threshold must be included from 0 to 1 (0.5 is recommended)");
 		exit(1);
 	}
-	if (dynamic_scan_points_prob_threshold < 0.0 || 1.0 < dynamic_scan_points_prob_threshold)
-	{
-		ROS_ERROR("dynamic_scan_points_prob_threshold must be included from 0 to 1 (0.95 is recommended)");
-		exit(1);
-	}
 	// convert degree to radian
 	update_yaw *= M_PI / 180.0;
 	start_yaw *= M_PI / 180.0;
 	initial_cov_yawyaw *= M_PI / 180.0;
+	// set initial state
+	robot_pose.x = start_x;
+	robot_pose.y = start_y;
+	robot_pose.yaw = start_yaw;
+	particle_num = min_particle_num;
 	// subscriber
-	ros::Subscriber initial_pose_sub = nh.subscribe("/initialpose", 1, &AMCL::initial_pose_callback, this);
-	ros::Subscriber map_sub = nh.subscribe(input_map_topic_name, 1, &AMCL::map_callback, this);
-	ros::Subscriber odom_sub = nh.subscribe(input_odom_topic_name, 100, &AMCL::odom_callback, this);
-	ros::Subscriber scan_sub = nh.subscribe(input_scan_topic_name, 1, &AMCL::scan_callback, this);
+	pose_sub = nh.subscribe("/initialpose", 1, &AMCL::initial_pose_callback, this);
+	map_sub = nh.subscribe(input_map_topic_name, 1, &AMCL::map_callback, this);
+	odom_sub = nh.subscribe(input_odom_topic_name, 100, &AMCL::odom_callback, this);
+	scan_sub = nh.subscribe(input_scan_topic_name, 1, &AMCL::scan_callback, this);
 	// publisher
 	pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/amcl_pose", 1);
 	particles_pub = nh.advertise<geometry_msgs::PoseArray>("/amcl_particles", 1);
-	dynamic_scan_points_pub = nh.advertise<sensor_msgs::PointCloud>("/dynamic_scan_points", 1);
 	// initialization
 	amcl_init();
-	// wait for odometry and scan topics
-	ros::Rate loop_rate(pose_publish_hz);
-	while (ros::ok())
-	{
-		ros::spinOnce();
-		broadcast_tf();
-		publish_pose();
-		publish_particles();
-		// sleep
-		loop_rate.sleep();
-	}
 }
 
-void AMCL::reset_particles(double xo, double yo, double yawo)
+void AMCL::reset_particles(void)
 {
 	double wo = 1.0 / (double)particle_num;
-	robot_pose.x = xo;
-	robot_pose.y = yo;
-	robot_pose.yaw = yawo;
 	for (int i = 0; i < particle_num; i++)
 	{
-		particles[i].pose.x = xo + nrand(initial_cov_xx);
-		particles[i].pose.y = yo + nrand(initial_cov_yy);
-		particles[i].pose.yaw = yawo + nrand(initial_cov_yawyaw);
+		particles[i].pose.x = robot_pose.x + nrand(initial_cov_xx);
+		particles[i].pose.y = robot_pose.y + nrand(initial_cov_yy);
+		particles[i].pose.yaw = robot_pose.yaw + nrand(initial_cov_yawyaw);
 		particles[i].w = wo;
 	}
 	w_slow = w_fast = 0.0;
@@ -204,7 +119,7 @@ void AMCL::amcl_init(void)
 {
 	// initilizatioin of pf
 	particles.resize(max_particle_num);
-	reset_particles(start_x, start_y, start_yaw);
+	reset_particles();
 	// initilizatioin of tf
 	tf::TransformListener tf_listener;
 	tf::StampedTransform tf_base_link2laser;
@@ -248,7 +163,10 @@ void AMCL::initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped:
 	double roll, pitch, yaw;
 	tf::Matrix3x3 m(q);
 	m.getRPY(roll, pitch, yaw);
-	reset_particles(msg->pose.pose.position.x, msg->pose.pose.position.y, yaw);
+	robot_pose.x = msg->pose.pose.position.x;
+	robot_pose.y = msg->pose.pose.position.y;
+	robot_pose.yaw = yaw;
+	reset_particles();
 	is_first_time = true;
 }
 
@@ -343,23 +261,29 @@ void AMCL::publish_particles(void)
 
 void AMCL::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 {
-	// update robot and particle pose by odometry
+	curr_odom = *msg;
+}
+
+void AMCL::update_particle_pose_by_odom(void)
+{
+	// update robot and particle pose based on odometry
 	static double prev_time;
+	nav_msgs::Odometry odom = curr_odom;
 	if (is_first_time)
 	{
-		prev_time = msg->header.stamp.toSec();
+		prev_time = odom.header.stamp.toSec();
 		is_first_time = false;
 		return;
 	}
-	double curr_time = msg->header.stamp.toSec();
+	double curr_time = odom.header.stamp.toSec();
 	double d_time = curr_time - prev_time;
 	if (d_time > 1.0)
 	{
 		prev_time = curr_time;
 		return;
 	}
-	double d_dist = msg->twist.twist.linear.x * d_time;
-	double d_yaw = msg->twist.twist.angular.z * d_time;
+	double d_dist = odom.twist.twist.linear.x * d_time;
+	double d_yaw = odom.twist.twist.angular.z * d_time;
 	delta_dist += d_dist;
 	delta_yaw += d_yaw;
 	robot_pose.x += d_dist * cos(robot_pose.yaw);
@@ -380,67 +304,26 @@ void AMCL::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 	prev_time = curr_time;
 }
 
-void AMCL::check_scan_points_validity(const sensor_msgs::LaserScan::ConstPtr& scan)
+void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
 {
-	for (int i = 0; i < scan->ranges.size(); i++)
+	for (int i = 0; i < scan.ranges.size(); i++)
 	{
-		double r = scan->ranges[i];
-		if (r < scan->range_min || scan->range_max < r)
+		double r = scan.ranges[i];
+		if (r < scan.range_min || scan.range_max < r)
 			is_valid_scan_points[i] = false;
 		else
 			is_valid_scan_points[i] = true;
 	}
 }
 
-void AMCL::evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan)
+void AMCL::evaluate_particles(sensor_msgs::LaserScan scan)
 {
 	double z_hit = 0.95;
 	double max_dist_prob = 0.043937;
 	double z_hit_denom = 0.08;
 	double z_rand = 0.05;
 	double z_rand_mult = 0.033333;
-	double max = 0.0;
-	// detect dynamic scan points
-	for (int i = 0; i < scan->ranges.size(); i++)
-	{
-		if (!is_valid_scan_points[i])
-		{
-			is_dynamic_scan_points[i] = false;
-			continue;
-		}
-		double w = 0.0;
-		for (int j = 0; j < particle_num; j++)
-		{
-			double c = cos(particles[j].pose.yaw);
-			double s = sin(particles[j].pose.yaw);
-			double xo = base_link2laser.x * c - base_link2laser.y * s + particles[j].pose.x;
-			double yo = base_link2laser.x * s + base_link2laser.y * c + particles[j].pose.y;
-			double angle = scan->angle_min + scan->angle_increment * (double)i;
-			double yaw = angle + particles[j].pose.yaw;
-			double r = scan->ranges[i];
-			double x = r * cos(yaw) + xo;
-			double y = r * sin(yaw) + yo;
-			int u, v;
-			xy2uv(x, y, &u, &v);
-			if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
-			{
-				int node = v * map.info.width + u;
-				double z = dist_map.at<float>(v, u);
-				double zz = exp(-(z * z) / z_hit_denom);
-				w += 1.0 - zz;
-			}
-			else
-			{
-				w += 1.0;
-			}
-		}
-		w /= (int)particle_num;
-		if (w > dynamic_scan_points_prob_threshold)
-			is_dynamic_scan_points[i] = true;
-		else
-			is_dynamic_scan_points[i] = false;
-	}
-	// evaluate particles
+	double max;
 	for (int i = 0; i < particle_num; i++)
 	{
 		double w = 0.0;
@@ -448,13 +331,13 @@ void AMCL::evaluate_particles(const sensor_msgs::LaserScan::ConstPtr& scan)
 		double s = sin(particles[i].pose.yaw);
 		double xo = base_link2laser.x * c - base_link2laser.y * s + particles[i].pose.x;
 		double yo = base_link2laser.x * s + base_link2laser.y * c + particles[i].pose.y;
-		for (int j = 0; j < scan->ranges.size(); j += scan_step)
+		for (int j = 0; j < scan.ranges.size(); j += scan_step)
 		{
-			if (!is_valid_scan_points[j] || is_dynamic_scan_points[j])
+			if (!is_valid_scan_points[j])
 				continue;
-			double angle = scan->angle_min + scan->angle_increment * (double)j;
+			double angle = scan.angle_min + scan.angle_increment * (double)j;
 			double yaw = angle + particles[i].pose.yaw;
-			double r = scan->ranges[j];
+			double r = scan.ranges[j];
 			double x = r * cos(yaw) + xo;
 			double y = r * sin(yaw) + yo;
 			int u, v;
@@ -549,26 +432,6 @@ void AMCL::estimate_robot_pose(void)
 	robot_pose = pose;
 }
 
-void AMCL::estimate_dynamic_scan_points(const sensor_msgs::LaserScan::ConstPtr& scan)
-{
-	sensor_msgs::PointCloud dpoints;
-	dpoints.header = scan->header;
-	for (int i = 0; i < scan->ranges.size(); i++)
-	{
-		if (is_dynamic_scan_points[i])
-		{
-			double r = scan->ranges[i];
-			double yaw = scan->angle_min + (double)i * scan->angle_increment;
-			geometry_msgs::Point32 p;
-			p.x = r * cos(yaw);
-			p.y = r * sin(yaw);
-			p.z = 0.0;
-			dpoints.points.push_back(p);
-		}
-	}
-	dynamic_scan_points = dpoints;
-}
-
 void AMCL::resample_particles(void)
 {
 	if (effective_sample_size > (double)particle_num * resample_threshold)
@@ -595,52 +458,10 @@ void AMCL::resample_particles(void)
 
 void AMCL::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-	if (!is_map_data)
+	curr_scan = *msg;
+	if (!is_scan_data)
 	{
-		ROS_ERROR("no map data");
-		return;
+		is_valid_scan_points.resize(msg->ranges.size());
+		is_scan_data = true;
 	}
-	if (!is_tf_initialized)
-	{
-		ROS_ERROR("tf is not initialized");
-		return;
-	}
-	static bool is_first = true;
-	static double prev_time;
-	double curr_time = msg->header.stamp.toSec();;
-	if (!is_first)
-	{
-		check_scan_points_validity(msg);
-		evaluate_particles(msg);
-		compute_total_weight_and_effective_sample_size();
-		estimate_robot_pose();
-		estimate_dynamic_scan_points(msg);
-		compute_random_particle_rate();
-		dynamic_scan_points_pub.publish(dynamic_scan_points);
-		double d_time = curr_time - prev_time;
-		if (fabs(delta_dist) < update_dist && fabs(delta_yaw) < update_yaw && d_time < update_time)
-			return;
-	}
-	else
-	{
-		int scan_num = msg->ranges.size();
-		is_valid_scan_points.resize(scan_num);
-		is_dynamic_scan_points.resize(scan_num);
-		is_first = false;
-	}
-	resample_particles();
-	prev_time = curr_time;
-	delta_dist = delta_yaw = 0.0;
-	printf("x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", robot_pose.x, robot_pose.y, robot_pose.yaw * 180.0 / M_PI);
-	printf("particle_num = %d\n", particle_num);
-	printf("effective_sample_size = %lf, total_weight = %lf\n", effective_sample_size, total_weight);
-	printf("random_particle_rate = %lf\n", random_particle_rate);
-	printf("\n");
-}
-
-int main(int argc, char** argv)
-{
-	ros::init(argc, argv, "amcl");
-	AMCL node;
-	return 0;
 }

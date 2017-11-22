@@ -5,6 +5,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.cpp" "/home/akai/Dropbox/work/AutoNavi/ros/build/localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o"
+  "/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp" "/home/akai/Dropbox/work/AutoNavi/ros/build/localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -2,8 +2,10 @@
 <launch >
 	<!-- arguments -->
 	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+	<!-- <arg name="map_yaml_file" default="$(env HOME)/maps/tc2017/ogm.yaml" /> -->
 
 	<!-- tf -->
+	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
 	<node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 amcl_frame base_link 100" />
 
 	<!-- map server -->

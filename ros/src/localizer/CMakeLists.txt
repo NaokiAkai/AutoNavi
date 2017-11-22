@@ -196,5 +196,5 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(amcl src/amcl.cpp)
+add_executable(amcl src/amcl_node.cpp src/amcl.cpp)
 target_link_libraries(amcl ${catkin_LIBRARIES} ${OpenCV_LIBS})

@@ -6,7 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.cpp
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
+
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp
 ros/ros.h
 -
 std_msgs/Header.h
@@ -31,10 +33,8 @@ cv_bridge/cv_bridge.h
 -
 opencv2/opencv.hpp
 -
-common.h
-/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/common.h
-
-/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/common.h
+amcl.h
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
 
 /opt/ros/indigo/include/XmlRpcDecl.h
 ros/macros.h

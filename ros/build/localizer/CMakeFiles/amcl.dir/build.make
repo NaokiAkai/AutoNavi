@@ -49,9 +49,32 @@ include localizer/CMakeFiles/amcl.dir/progress.make
 # Include the compile flags for this target's objects.
 include localizer/CMakeFiles/amcl.dir/flags.make
 
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: localizer/CMakeFiles/amcl.dir/flags.make
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o"
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build/localizer && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/amcl.dir/src/amcl_node.cpp.o -c /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp
+
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/amcl.dir/src/amcl_node.cpp.i"
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build/localizer && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp > CMakeFiles/amcl.dir/src/amcl_node.cpp.i
+
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/amcl.dir/src/amcl_node.cpp.s"
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build/localizer && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp -o CMakeFiles/amcl.dir/src/amcl_node.cpp.s
+
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.requires:
+.PHONY : localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.requires
+
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.provides: localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.requires
+	$(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.provides.build
+.PHONY : localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.provides
+
+localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.provides.build: localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o
+
 localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o: localizer/CMakeFiles/amcl.dir/flags.make
 localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o: /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o"
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build/localizer && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/amcl.dir/src/amcl.cpp.o -c /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.cpp
 
@@ -74,11 +97,13 @@ localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o.provides.build: localizer/CMakeFile
 
 # Object files for target amcl
 amcl_OBJECTS = \
+"CMakeFiles/amcl.dir/src/amcl_node.cpp.o" \
 "CMakeFiles/amcl.dir/src/amcl.cpp.o"
 
 # External object files for target amcl
 amcl_EXTERNAL_OBJECTS =
 
+/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl: localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o
 /home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl: localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o
 /home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl: localizer/CMakeFiles/amcl.dir/build.make
 /home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl: /opt/ros/indigo/lib/libcv_bridge.so
@@ -205,6 +230,7 @@ amcl_EXTERNAL_OBJECTS =
 localizer/CMakeFiles/amcl.dir/build: /home/akai/Dropbox/work/AutoNavi/ros/devel/lib/localizer/amcl
 .PHONY : localizer/CMakeFiles/amcl.dir/build
 
+localizer/CMakeFiles/amcl.dir/requires: localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o.requires
 localizer/CMakeFiles/amcl.dir/requires: localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o.requires
 .PHONY : localizer/CMakeFiles/amcl.dir/requires
 

@@ -578,7 +578,7 @@ clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
 robot_sim/CMakeFiles/key_to_twist_cmd.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  3
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
 	@echo "Built target key_to_twist_cmd"
 .PHONY : robot_sim/CMakeFiles/key_to_twist_cmd.dir/all
 
@@ -613,7 +613,7 @@ clean: robot_sim/CMakeFiles/key_to_twist_cmd.dir/clean
 robot_sim/CMakeFiles/laser_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
 	@echo "Built target laser_sim"
 .PHONY : robot_sim/CMakeFiles/laser_sim.dir/all
 
@@ -648,7 +648,7 @@ clean: robot_sim/CMakeFiles/laser_sim.dir/clean
 robot_sim/CMakeFiles/odom_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
 	@echo "Built target odom_sim"
 .PHONY : robot_sim/CMakeFiles/odom_sim.dir/all
 
@@ -683,7 +683,7 @@ clean: robot_sim/CMakeFiles/odom_sim.dir/clean
 robot_sim/CMakeFiles/robot_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
 	@echo "Built target robot_sim"
 .PHONY : robot_sim/CMakeFiles/robot_sim.dir/all
 
@@ -1308,7 +1308,7 @@ localizer/preinstall:
 localizer/CMakeFiles/amcl.dir/all:
 	$(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/depend
 	$(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  2
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  2 3
 	@echo "Built target amcl"
 .PHONY : localizer/CMakeFiles/amcl.dir/all
 
@@ -1318,7 +1318,7 @@ all: localizer/CMakeFiles/amcl.dir/all
 
 # Build rule for subdir invocation for target.
 localizer/CMakeFiles/amcl.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/amcl.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
 .PHONY : localizer/CMakeFiles/amcl.dir/rule
@@ -1889,7 +1889,7 @@ trajectory_tools/preinstall:
 trajectory_tools/CMakeFiles/trajectory_drawer.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  8
 	@echo "Built target trajectory_drawer"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_drawer.dir/all
 
@@ -1924,7 +1924,7 @@ clean: trajectory_tools/CMakeFiles/trajectory_drawer.dir/clean
 trajectory_tools/CMakeFiles/trajectory_follower.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  8
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9
 	@echo "Built target trajectory_follower"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_follower.dir/all
 
@@ -1959,7 +1959,7 @@ clean: trajectory_tools/CMakeFiles/trajectory_follower.dir/clean
 trajectory_tools/CMakeFiles/trajectory_recorder.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  10
 	@echo "Built target trajectory_recorder"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_recorder.dir/all
 
