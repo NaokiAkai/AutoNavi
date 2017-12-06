@@ -9,7 +9,6 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
 
 #include "amcl.h"
 
@@ -25,6 +24,7 @@ AMCL::AMCL():
 	max_particle_num(1000),
 	resample_threshold(0.5),
 	scan_step(20),
+	max_dist_to_obstacle(0.5),
 	alpha_slow(0.0001),
 	alpha_fast(0.1),
 	delta_dist(0.0),
@@ -32,10 +32,10 @@ AMCL::AMCL():
 	update_dist(0.2),
 	update_yaw(2.0),
 	update_time(5.0),
-	odom_noise_dist_dist(0.6),
-	odom_noise_dist_head(0.03),
-	odom_noise_head_dist(0.03),
-	odom_noise_head_head(0.6),
+	odom_noise_dist_dist(1.0),
+	odom_noise_dist_head(0.7),
+	odom_noise_head_dist(0.7),
+	odom_noise_head_head(1.0),
 	start_x(0.0),
 	start_y(0.0),
 	start_yaw(0.0),
@@ -59,6 +59,7 @@ AMCL::AMCL():
 	nh.param("/amcl/max_particle_num", max_particle_num, max_particle_num);
 	nh.param("/amcl/resample_threshold", resample_threshold, resample_threshold);
 	nh.param("/amcl/scan_step", scan_step, scan_step);
+	nh.param("/amcl/max_dist_to_obstacle", max_dist_to_obstacle, max_dist_to_obstacle);
 	nh.param("/amcl/alpha_slow", alpha_slow, alpha_slow);
 	nh.param("/amcl/alpha_fast", alpha_fast, alpha_fast);
 	nh.param("/amcl/update_dist", update_dist, update_dist);
@@ -102,6 +103,19 @@ AMCL::AMCL():
 	amcl_init();
 }
 
+double AMCL::nrand(double n)
+{
+	return (n * sqrt(-2.0 * log((double)rand() / RAND_MAX)) * cos(2.0 * M_PI * rand() / RAND_MAX));
+}
+
+void AMCL::xy2uv(double x, double y, int* u, int* v)
+{
+	double dx = x - map.info.origin.position.x;
+	double dy = y - map.info.origin.position.y;
+	*u = (int)(dx / map.info.resolution);
+	*v = (int)(dy / map.info.resolution);
+}
+
 void AMCL::reset_particles(void)
 {
 	double wo = 1.0 / (double)particle_num;
@@ -129,7 +143,7 @@ void AMCL::amcl_init(void)
 		try
 		{
 			ros::Time now = ros::Time::now();
-			tf_listener.waitForTransform(base_link_frame, laser_frame, now, ros::Duration(1));
+			tf_listener.waitForTransform(base_link_frame, laser_frame, now, ros::Duration(1.0));
 			tf_listener.lookupTransform(base_link_frame, laser_frame, now, tf_base_link2laser);
 			break;
 		}
@@ -175,30 +189,51 @@ void AMCL::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 	if (!is_map_data)
 	{
 		map = *msg;
-		cv::Mat occ_map(map.info.height, map.info.width, CV_8UC1);
-		for (int v = 0; v < occ_map.rows; v++)
+		// build distance map from a target point to the nearest obstacle (occupied cell)
+		int dr = (int)(max_dist_to_obstacle / map.info.resolution);
+		dist_map.resize(map.info.width);
+		for (int u = 0; u < map.info.width; u++)
+			dist_map[u].resize(map.info.height);
+		for (int u = 0; u < map.info.width; u++)
 		{
-			for (int u = 0; u < occ_map.cols; u++)
+			for (int v = 0; v < map.info.height; v++)
 			{
-				int node = v * map.info.width + u;
-				int val = map.data[node];
-				if (val == 100)
-					occ_map.at<uchar>(v, u) = 0;
+				float min_d;
+				bool is_first = true;
+				for (int uu = u - dr; uu <= u + dr; uu++)
+				{
+					for (int vv = v - dr; vv <= v + dr; vv++)
+					{
+						if (0 <= uu && uu < map.info.width && 0 <= vv && vv < map.info.height)
+						{
+							int node = vv * map.info.width + uu;
+							if (map.data[node] == 100)
+							{
+								if (is_first)
+								{
+									float du = (float)(uu - u);
+									float dv = (float)(vv - v);
+									min_d = sqrt(du * du + dv * dv);
+									is_first = false;
+								}
+								else
+								{
+									float du = (float)(uu - u);
+									float dv = (float)(vv - v);
+									float d = sqrt(du * du + dv * dv);
+									if (d < min_d)
+										min_d = d;
+								}
+							}
+						}
+					}
+				}
+				if (!is_first && min_d < max_dist_to_obstacle)
+					dist_map[u][v] = min_d * map.info.resolution;
 				else
-					occ_map.at<uchar>(v, u) = 1;
+					dist_map[u][v] = max_dist_to_obstacle;
 			}
 		}
-		cv::Mat dist(map.info.height, map.info.width, CV_32FC1);
-		cv::distanceTransform(occ_map, dist, CV_DIST_L2, 5);
-		for (int v = 0; v < occ_map.rows; v++)
-		{
-			for (int u = 0; u < occ_map.cols; u++)
-			{
-				float d = dist.at<float>(v, u) * map.info.resolution;
-				dist.at<float>(v, u) = d;
-			}
-		}
-		dist_map = dist;
 		is_map_data = true;
 	}
 }
@@ -284,6 +319,8 @@ void AMCL::update_particle_pose_by_odom(void)
 	}
 	double d_dist = odom.twist.twist.linear.x * d_time;
 	double d_yaw = odom.twist.twist.angular.z * d_time;
+	double d_dist2 = d_dist * d_dist;
+	double d_yaw2 = d_yaw * d_yaw;
 	delta_dist += d_dist;
 	delta_yaw += d_yaw;
 	robot_pose.x += d_dist * cos(robot_pose.yaw);
@@ -293,8 +330,8 @@ void AMCL::update_particle_pose_by_odom(void)
 	if (robot_pose.yaw > M_PI)	robot_pose.yaw -= 2.0 * M_PI;
 	for (int i = 0; i < particle_num; i++)
 	{
-		double dd = d_dist + nrand(d_dist * odom_noise_dist_dist + d_yaw * odom_noise_head_dist);
-		double dy = d_yaw + nrand(d_dist * odom_noise_dist_head + d_yaw * odom_noise_head_head);
+		double dd = d_dist + nrand(d_dist2 * odom_noise_dist_dist + d_yaw2 * odom_noise_head_dist);
+		double dy = d_yaw + nrand(d_dist2 * odom_noise_dist_head + d_yaw2 * odom_noise_head_head);
 		particles[i].pose.x += dd * cos(particles[i].pose.yaw);
 		particles[i].pose.y += dd * sin(particles[i].pose.yaw);
 		particles[i].pose.yaw += dy;
@@ -334,7 +371,13 @@ void AMCL::evaluate_particles(sensor_msgs::LaserScan scan)
 		for (int j = 0; j < scan.ranges.size(); j += scan_step)
 		{
 			if (!is_valid_scan_points[j])
+			{
+				double pz = z_hit * max_dist_prob + z_rand * z_rand_mult;
+				if (pz < 0.0)	pz = 0.0;
+				if (pz > 1.0)	pz = 1.0;
+				w += log(pz);
 				continue;
+			}
 			double angle = scan.angle_min + scan.angle_increment * (double)j;
 			double yaw = angle + particles[i].pose.yaw;
 			double r = scan.ranges[j];
@@ -346,7 +389,7 @@ void AMCL::evaluate_particles(sensor_msgs::LaserScan scan)
 			if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
 			{
 				int node = v * map.info.width + u;
-				double z = dist_map.at<float>(v, u);
+				double z = (double)dist_map[u][v];
 				double zz = exp(-(z * z) / z_hit_denom);
 				pz += z_hit * zz;
 			}

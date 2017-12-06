@@ -20,7 +20,6 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "amcl");
 	amcl = new AMCL;
 	ros::Rate loop_rate(amcl->pose_publish_hz);
-	bool is_first = true;
 	double prev_time = 0.0;
 	while (ros::ok())
 	{

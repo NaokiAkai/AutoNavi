@@ -345,6 +345,19 @@ geometry_msgs_generate_messages_py/fast:
 .PHONY : geometry_msgs_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named joy_to_twist_cmd
+
+# Build rule for target.
+joy_to_twist_cmd: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 joy_to_twist_cmd
+.PHONY : joy_to_twist_cmd
+
+# fast build rule for target.
+joy_to_twist_cmd/fast:
+	$(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build
+.PHONY : joy_to_twist_cmd/fast
+
+#=============================================================================
 # Target rules for targets named key_to_twist_cmd
 
 # Build rule for target.
@@ -735,6 +748,32 @@ dynamic_reconfigure_generate_messages_py/fast:
 .PHONY : dynamic_reconfigure_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named ndt_mapping
+
+# Build rule for target.
+ndt_mapping: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ndt_mapping
+.PHONY : ndt_mapping
+
+# fast build rule for target.
+ndt_mapping/fast:
+	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/build
+.PHONY : ndt_mapping/fast
+
+#=============================================================================
+# Target rules for targets named ndt_mcl
+
+# Build rule for target.
+ndt_mcl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ndt_mcl
+.PHONY : ndt_mcl
+
+# fast build rule for target.
+ndt_mcl/fast:
+	$(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/build
+.PHONY : ndt_mcl/fast
+
+#=============================================================================
 # Target rules for targets named nodelet_generate_messages_cpp
 
 # Build rule for target.
@@ -931,6 +970,7 @@ help:
 	@echo "... geometry_msgs_generate_messages_cpp"
 	@echo "... geometry_msgs_generate_messages_lisp"
 	@echo "... geometry_msgs_generate_messages_py"
+	@echo "... joy_to_twist_cmd"
 	@echo "... key_to_twist_cmd"
 	@echo "... laser_sim"
 	@echo "... odom_sim"
@@ -961,6 +1001,8 @@ help:
 	@echo "... dynamic_reconfigure_generate_messages_cpp"
 	@echo "... dynamic_reconfigure_generate_messages_lisp"
 	@echo "... dynamic_reconfigure_generate_messages_py"
+	@echo "... ndt_mapping"
+	@echo "... ndt_mcl"
 	@echo "... nodelet_generate_messages_cpp"
 	@echo "... nodelet_generate_messages_lisp"
 	@echo "... nodelet_generate_messages_py"

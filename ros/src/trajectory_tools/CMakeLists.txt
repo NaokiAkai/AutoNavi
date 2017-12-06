@@ -117,6 +117,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  /usr/local/include/eigen3
 )
 
 ## Declare a C++ library

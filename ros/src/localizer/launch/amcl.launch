@@ -22,7 +22,7 @@
 		<param name="/input_map_topic_name" value="/amcl_map" type="string" />
 		<param name="/input_odom_topic_name" value="/odom" type="string" />
 		<param name="/input_scan_topic_name" value="/scan" type="string" />
-		<param name="/min_particle_num" value="100" type="int" />
+		<param name="/min_particle_num" value="200" type="int" />
 		<param name="/max_particle_num" value="1000" type="int" />
 		<param name="/resample_threshold" value="0.5" type="double" />
 		<param name="/scan_step" value="20" type="double" />
@@ -31,17 +31,16 @@
 		<param name="/update_dist" value="0.2" type="double" />
 		<param name="/update_yaw" value="2.0" type="double" />
 		<param name="/update_time" value="5.0" type="double" />
-		<param name="/odom_noise_dist_dist" value="0.6" type="double" />
-		<param name="/odom_noise_dist_head" value="0.03" type="double" />
-		<param name="/odom_noise_head_dist" value="0.03" type="double" />
-		<param name="/odom_noise_head_head" value="0.6" type="double" />
-		<param name="/dynamic_scan_points_prob_threshold" value="0.95" type="double" />
+		<param name="/odom_noise_dist_dist" value="1.5" type="double" />
+		<param name="/odom_noise_dist_head" value="0.9" type="double" />
+		<param name="/odom_noise_head_dist" value="0.9" type="double" />
+		<param name="/odom_noise_head_head" value="2.5" type="double" />
 		<param name="/start_x" value="0.0" type="double" />
 		<param name="/start_y" value="0.0" type="double" />
 		<param name="/start_yaw" value="0.0" type="double" />
-		<param name="/initial_cov_xx" value="0.5" type="double" />
-		<param name="/initial_cov_yy" value="0.5" type="double" />
-		<param name="/initial_cov_yawyaw" value="3.0" type="double" />
-		<param name="/pose_publish_hz" value="30.0" type="double" />
+		<param name="/initial_cov_xx" value="0.2" type="double" />
+		<param name="/initial_cov_yy" value="0.2" type="double" />
+		<param name="/initial_cov_yawyaw" value="1.0" type="double" />
+		<param name="/pose_publish_hz" value="20.0" type="double" />
 	</node >
 </launch >

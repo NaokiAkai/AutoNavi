@@ -262,6 +262,34 @@ dynamic_reconfigure_generate_messages_py/fast:
 .PHONY : dynamic_reconfigure_generate_messages_py/fast
 
 # Convenience name for target.
+localizer/CMakeFiles/ndt_mapping.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/ndt_mapping.dir/rule
+.PHONY : localizer/CMakeFiles/ndt_mapping.dir/rule
+
+# Convenience name for target.
+ndt_mapping: localizer/CMakeFiles/ndt_mapping.dir/rule
+.PHONY : ndt_mapping
+
+# fast build rule for target.
+ndt_mapping/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/build
+.PHONY : ndt_mapping/fast
+
+# Convenience name for target.
+localizer/CMakeFiles/ndt_mcl.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/ndt_mcl.dir/rule
+.PHONY : localizer/CMakeFiles/ndt_mcl.dir/rule
+
+# Convenience name for target.
+ndt_mcl: localizer/CMakeFiles/ndt_mcl.dir/rule
+.PHONY : ndt_mcl
+
+# fast build rule for target.
+ndt_mcl/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/build
+.PHONY : ndt_mcl/fast
+
+# Convenience name for target.
 localizer/CMakeFiles/nodelet_generate_messages_cpp.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/nodelet_generate_messages_cpp.dir/rule
 .PHONY : localizer/CMakeFiles/nodelet_generate_messages_cpp.dir/rule
@@ -407,6 +435,7 @@ src/amcl.o: src/amcl.cpp.o
 # target to build an object file
 src/amcl.cpp.o:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.o
 .PHONY : src/amcl.cpp.o
 
 src/amcl.i: src/amcl.cpp.i
@@ -415,6 +444,7 @@ src/amcl.i: src/amcl.cpp.i
 # target to preprocess a source file
 src/amcl.cpp.i:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.i
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.i
 .PHONY : src/amcl.cpp.i
 
 src/amcl.s: src/amcl.cpp.s
@@ -423,6 +453,7 @@ src/amcl.s: src/amcl.cpp.s
 # target to generate assembly for a file
 src/amcl.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.s
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.s
 .PHONY : src/amcl.cpp.s
 
 src/amcl_node.o: src/amcl_node.cpp.o
@@ -449,6 +480,81 @@ src/amcl_node.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.s
 .PHONY : src/amcl_node.cpp.s
 
+src/ndt.o: src/ndt.cpp.o
+.PHONY : src/ndt.o
+
+# target to build an object file
+src/ndt.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/src/ndt.cpp.o
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/ndt.cpp.o
+.PHONY : src/ndt.cpp.o
+
+src/ndt.i: src/ndt.cpp.i
+.PHONY : src/ndt.i
+
+# target to preprocess a source file
+src/ndt.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/src/ndt.cpp.i
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/ndt.cpp.i
+.PHONY : src/ndt.cpp.i
+
+src/ndt.s: src/ndt.cpp.s
+.PHONY : src/ndt.s
+
+# target to generate assembly for a file
+src/ndt.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/src/ndt.cpp.s
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/ndt.cpp.s
+.PHONY : src/ndt.cpp.s
+
+src/ndt_mapping.o: src/ndt_mapping.cpp.o
+.PHONY : src/ndt_mapping.o
+
+# target to build an object file
+src/ndt_mapping.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/src/ndt_mapping.cpp.o
+.PHONY : src/ndt_mapping.cpp.o
+
+src/ndt_mapping.i: src/ndt_mapping.cpp.i
+.PHONY : src/ndt_mapping.i
+
+# target to preprocess a source file
+src/ndt_mapping.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/src/ndt_mapping.cpp.i
+.PHONY : src/ndt_mapping.cpp.i
+
+src/ndt_mapping.s: src/ndt_mapping.cpp.s
+.PHONY : src/ndt_mapping.s
+
+# target to generate assembly for a file
+src/ndt_mapping.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/src/ndt_mapping.cpp.s
+.PHONY : src/ndt_mapping.cpp.s
+
+src/ndt_mcl_node.o: src/ndt_mcl_node.cpp.o
+.PHONY : src/ndt_mcl_node.o
+
+# target to build an object file
+src/ndt_mcl_node.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/ndt_mcl_node.cpp.o
+.PHONY : src/ndt_mcl_node.cpp.o
+
+src/ndt_mcl_node.i: src/ndt_mcl_node.cpp.i
+.PHONY : src/ndt_mcl_node.i
+
+# target to preprocess a source file
+src/ndt_mcl_node.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/ndt_mcl_node.cpp.i
+.PHONY : src/ndt_mcl_node.cpp.i
+
+src/ndt_mcl_node.s: src/ndt_mcl_node.cpp.s
+.PHONY : src/ndt_mcl_node.s
+
+# target to generate assembly for a file
+src/ndt_mcl_node.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/ndt_mcl_node.cpp.s
+.PHONY : src/ndt_mcl_node.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -468,6 +574,8 @@ help:
 	@echo "... install/local"
 	@echo "... install/strip"
 	@echo "... list_install_components"
+	@echo "... ndt_mapping"
+	@echo "... ndt_mcl"
 	@echo "... nodelet_generate_messages_cpp"
 	@echo "... nodelet_generate_messages_lisp"
 	@echo "... nodelet_generate_messages_py"
@@ -486,6 +594,15 @@ help:
 	@echo "... src/amcl_node.o"
 	@echo "... src/amcl_node.i"
 	@echo "... src/amcl_node.s"
+	@echo "... src/ndt.o"
+	@echo "... src/ndt.i"
+	@echo "... src/ndt.s"
+	@echo "... src/ndt_mapping.o"
+	@echo "... src/ndt_mapping.i"
+	@echo "... src/ndt_mapping.s"
+	@echo "... src/ndt_mcl_node.o"
+	@echo "... src/ndt_mcl_node.i"
+	@echo "... src/ndt_mcl_node.s"
 .PHONY : help
 
 

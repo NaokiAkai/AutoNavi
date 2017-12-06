@@ -17,8 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
   tf_conversions
 )
 
-find_package(OpenCV REQUIRED)
-
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -197,4 +195,10 @@ include_directories(
 # catkin_add_nosetests(test)
 
 add_executable(amcl src/amcl_node.cpp src/amcl.cpp)
-target_link_libraries(amcl ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(amcl ${catkin_LIBRARIES})
+
+add_executable(ndt_mapping src/ndt_mapping.cpp src/ndt.cpp)
+target_link_libraries(ndt_mapping ${catkin_LIBRARIES})
+
+add_executable(ndt_mcl src/ndt_mcl_node.cpp src/amcl.cpp src/ndt.cpp)
+target_link_libraries(ndt_mcl ${catkin_LIBRARIES})

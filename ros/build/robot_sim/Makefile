@@ -290,6 +290,20 @@ geometry_msgs_generate_messages_py/fast:
 .PHONY : geometry_msgs_generate_messages_py/fast
 
 # Convenience name for target.
+robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule
+.PHONY : robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule
+
+# Convenience name for target.
+joy_to_twist_cmd: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule
+.PHONY : joy_to_twist_cmd
+
+# fast build rule for target.
+joy_to_twist_cmd/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build
+.PHONY : joy_to_twist_cmd/fast
+
+# Convenience name for target.
 robot_sim/CMakeFiles/key_to_twist_cmd.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/key_to_twist_cmd.dir/rule
 .PHONY : robot_sim/CMakeFiles/key_to_twist_cmd.dir/rule
@@ -621,6 +635,30 @@ src/add_noise_to_sensor_data.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/add_noise_to_sensor_data.dir/build.make robot_sim/CMakeFiles/add_noise_to_sensor_data.dir/src/add_noise_to_sensor_data.cpp.s
 .PHONY : src/add_noise_to_sensor_data.cpp.s
 
+src/joy_to_twist_cmd.o: src/joy_to_twist_cmd.cpp.o
+.PHONY : src/joy_to_twist_cmd.o
+
+# target to build an object file
+src/joy_to_twist_cmd.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/src/joy_to_twist_cmd.cpp.o
+.PHONY : src/joy_to_twist_cmd.cpp.o
+
+src/joy_to_twist_cmd.i: src/joy_to_twist_cmd.cpp.i
+.PHONY : src/joy_to_twist_cmd.i
+
+# target to preprocess a source file
+src/joy_to_twist_cmd.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/src/joy_to_twist_cmd.cpp.i
+.PHONY : src/joy_to_twist_cmd.cpp.i
+
+src/joy_to_twist_cmd.s: src/joy_to_twist_cmd.cpp.s
+.PHONY : src/joy_to_twist_cmd.s
+
+# target to generate assembly for a file
+src/joy_to_twist_cmd.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/src/joy_to_twist_cmd.cpp.s
+.PHONY : src/joy_to_twist_cmd.cpp.s
+
 src/key_to_twist_cmd.o: src/key_to_twist_cmd.cpp.o
 .PHONY : src/key_to_twist_cmd.o
 
@@ -737,6 +775,7 @@ help:
 	@echo "... install"
 	@echo "... install/local"
 	@echo "... install/strip"
+	@echo "... joy_to_twist_cmd"
 	@echo "... key_to_twist_cmd"
 	@echo "... laser_sim"
 	@echo "... list_install_components"
@@ -765,6 +804,9 @@ help:
 	@echo "... src/add_noise_to_sensor_data.o"
 	@echo "... src/add_noise_to_sensor_data.i"
 	@echo "... src/add_noise_to_sensor_data.s"
+	@echo "... src/joy_to_twist_cmd.o"
+	@echo "... src/joy_to_twist_cmd.i"
+	@echo "... src/joy_to_twist_cmd.s"
 	@echo "... src/key_to_twist_cmd.o"
 	@echo "... src/key_to_twist_cmd.i"
 	@echo "... src/key_to_twist_cmd.s"

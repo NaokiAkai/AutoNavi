@@ -201,5 +201,8 @@ target_link_libraries(robot_sim ${catkin_LIBRARIES})
 add_executable(key_to_twist_cmd src/key_to_twist_cmd.cpp)
 target_link_libraries(key_to_twist_cmd ${catkin_LIBRARIES})
 
+add_executable(joy_to_twist_cmd src/joy_to_twist_cmd.cpp)
+target_link_libraries(joy_to_twist_cmd ${catkin_LIBRARIES})
+
 add_executable(add_noise_to_sensor_data src/add_noise_to_sensor_data.cpp)
 target_link_libraries(add_noise_to_sensor_data ${catkin_LIBRARIES})

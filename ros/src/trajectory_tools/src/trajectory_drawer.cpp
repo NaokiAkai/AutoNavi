@@ -15,6 +15,7 @@ private:
 
 public:
 	TrajectoryDrawer();
+	TrajectoryDrawer(std::string fname);
 	void init(void);
 };
 
@@ -31,6 +32,29 @@ TrajectoryDrawer::TrajectoryDrawer():
 	// publisher
 	path_pub = nh.advertise<visualization_msgs::Marker>("/target_trajectory", 1);
 	// initialization
+	init();
+	// main loop
+	ros::Rate loop_rate(2.0);
+	while (ros::ok())
+	{
+		path_pub.publish(path);
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
+}
+
+TrajectoryDrawer::TrajectoryDrawer(std::string fname):
+	nh("~"),
+	map_frame("/world"),
+	draw_interval(0.5)
+{
+	// read parameters
+	nh.param("/trajectory_drawer/map_frame", map_frame, map_frame);
+	nh.param("/trajectory_drawer/draw_interval", draw_interval, draw_interval);
+	// publisher
+	path_pub = nh.advertise<visualization_msgs::Marker>("/target_trajectory", 1);
+	// initialization
+	path_file_name = fname;
 	init();
 	// main loop
 	ros::Rate loop_rate(2.0);
@@ -99,6 +123,9 @@ void TrajectoryDrawer::init(void)
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "trajectory_drawer");
-	TrajectoryDrawer node;
+	if (argv[1] == NULL)
+		TrajectoryDrawer node;
+	else
+		TrajectoryDrawer node((std::string)argv[1]);
 	return 0;
 }

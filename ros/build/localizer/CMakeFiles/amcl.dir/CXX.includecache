@@ -6,7 +6,35 @@
 
 #IncludeRegexTransform: 
 
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.cpp
+ros/ros.h
+-
+std_msgs/Header.h
+-
+geometry_msgs/PoseArray.h
+-
+geometry_msgs/PoseStamped.h
+-
+geometry_msgs/PoseWithCovarianceStamped.h
+-
+nav_msgs/Odometry.h
+-
+nav_msgs/OccupancyGrid.h
+-
+sensor_msgs/LaserScan.h
+-
+tf/transform_broadcaster.h
+-
+tf/transform_listener.h
+-
+cv_bridge/cv_bridge.h
+-
+amcl.h
 /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
+
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
+vector
+-
 
 /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp
 ros/ros.h

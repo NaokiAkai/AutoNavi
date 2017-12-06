@@ -212,6 +212,7 @@ clean: CMakeFiles/tests.dir/clean
 
 # Convenience name for "all" pass in the directory.
 robot_sim/all: robot_sim/CMakeFiles/add_noise_to_sensor_data.dir/all
+robot_sim/all: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all
 robot_sim/all: robot_sim/CMakeFiles/key_to_twist_cmd.dir/all
 robot_sim/all: robot_sim/CMakeFiles/laser_sim.dir/all
 robot_sim/all: robot_sim/CMakeFiles/odom_sim.dir/all
@@ -229,6 +230,7 @@ robot_sim/clean: robot_sim/CMakeFiles/add_noise_to_sensor_data.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
+robot_sim/clean: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/key_to_twist_cmd.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/laser_sim.dir/clean
 robot_sim/clean: robot_sim/CMakeFiles/odom_sim.dir/clean
@@ -572,13 +574,48 @@ clean: robot_sim/CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target robot_sim/CMakeFiles/joy_to_twist_cmd.dir
+
+# All Build rule for target.
+robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all:
+	$(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/depend
+	$(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
+	@echo "Built target joy_to_twist_cmd"
+.PHONY : robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all
+
+# Include target in all.
+all: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 1
+	$(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule
+
+# Convenience name for target.
+joy_to_twist_cmd: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/rule
+.PHONY : joy_to_twist_cmd
+
+# clean rule for target.
+robot_sim/CMakeFiles/joy_to_twist_cmd.dir/clean:
+	$(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/clean
+.PHONY : robot_sim/CMakeFiles/joy_to_twist_cmd.dir/clean
+
+# clean rule for target.
+clean: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/clean
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target robot_sim/CMakeFiles/key_to_twist_cmd.dir
 
 # All Build rule for target.
 robot_sim/CMakeFiles/key_to_twist_cmd.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
 	@echo "Built target key_to_twist_cmd"
 .PHONY : robot_sim/CMakeFiles/key_to_twist_cmd.dir/all
 
@@ -613,7 +650,7 @@ clean: robot_sim/CMakeFiles/key_to_twist_cmd.dir/clean
 robot_sim/CMakeFiles/laser_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
 	@echo "Built target laser_sim"
 .PHONY : robot_sim/CMakeFiles/laser_sim.dir/all
 
@@ -648,7 +685,7 @@ clean: robot_sim/CMakeFiles/laser_sim.dir/clean
 robot_sim/CMakeFiles/odom_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  12
 	@echo "Built target odom_sim"
 .PHONY : robot_sim/CMakeFiles/odom_sim.dir/all
 
@@ -683,7 +720,7 @@ clean: robot_sim/CMakeFiles/odom_sim.dir/clean
 robot_sim/CMakeFiles/robot_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  13
 	@echo "Built target robot_sim"
 .PHONY : robot_sim/CMakeFiles/robot_sim.dir/all
 
@@ -1274,6 +1311,8 @@ clean: robot_sim/CMakeFiles/tf_generate_messages_py.dir/clean
 
 # Convenience name for "all" pass in the directory.
 localizer/all: localizer/CMakeFiles/amcl.dir/all
+localizer/all: localizer/CMakeFiles/ndt_mapping.dir/all
+localizer/all: localizer/CMakeFiles/ndt_mcl.dir/all
 .PHONY : localizer/all
 
 # Convenience name for "clean" pass in the directory.
@@ -1285,6 +1324,8 @@ localizer/clean: localizer/CMakeFiles/dynamic_reconfigure_gencfg.dir/clean
 localizer/clean: localizer/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/clean
 localizer/clean: localizer/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/clean
 localizer/clean: localizer/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/clean
+localizer/clean: localizer/CMakeFiles/ndt_mapping.dir/clean
+localizer/clean: localizer/CMakeFiles/ndt_mcl.dir/clean
 localizer/clean: localizer/CMakeFiles/nodelet_generate_messages_cpp.dir/clean
 localizer/clean: localizer/CMakeFiles/nodelet_generate_messages_lisp.dir/clean
 localizer/clean: localizer/CMakeFiles/nodelet_generate_messages_py.dir/clean
@@ -1551,6 +1592,76 @@ localizer/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/clean:
 
 # clean rule for target.
 clean: localizer/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target localizer/CMakeFiles/ndt_mapping.dir
+
+# All Build rule for target.
+localizer/CMakeFiles/ndt_mapping.dir/all:
+	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/depend
+	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7 8
+	@echo "Built target ndt_mapping"
+.PHONY : localizer/CMakeFiles/ndt_mapping.dir/all
+
+# Include target in all.
+all: localizer/CMakeFiles/ndt_mapping.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+localizer/CMakeFiles/ndt_mapping.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/ndt_mapping.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : localizer/CMakeFiles/ndt_mapping.dir/rule
+
+# Convenience name for target.
+ndt_mapping: localizer/CMakeFiles/ndt_mapping.dir/rule
+.PHONY : ndt_mapping
+
+# clean rule for target.
+localizer/CMakeFiles/ndt_mapping.dir/clean:
+	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/clean
+.PHONY : localizer/CMakeFiles/ndt_mapping.dir/clean
+
+# clean rule for target.
+clean: localizer/CMakeFiles/ndt_mapping.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target localizer/CMakeFiles/ndt_mcl.dir
+
+# All Build rule for target.
+localizer/CMakeFiles/ndt_mcl.dir/all:
+	$(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/depend
+	$(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9 10 11
+	@echo "Built target ndt_mcl"
+.PHONY : localizer/CMakeFiles/ndt_mcl.dir/all
+
+# Include target in all.
+all: localizer/CMakeFiles/ndt_mcl.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+localizer/CMakeFiles/ndt_mcl.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/ndt_mcl.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : localizer/CMakeFiles/ndt_mcl.dir/rule
+
+# Convenience name for target.
+ndt_mcl: localizer/CMakeFiles/ndt_mcl.dir/rule
+.PHONY : ndt_mcl
+
+# clean rule for target.
+localizer/CMakeFiles/ndt_mcl.dir/clean:
+	$(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/clean
+.PHONY : localizer/CMakeFiles/ndt_mcl.dir/clean
+
+# clean rule for target.
+clean: localizer/CMakeFiles/ndt_mcl.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -1889,7 +2000,7 @@ trajectory_tools/preinstall:
 trajectory_tools/CMakeFiles/trajectory_drawer.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_drawer.dir/build.make trajectory_tools/CMakeFiles/trajectory_drawer.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  8
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  14
 	@echo "Built target trajectory_drawer"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_drawer.dir/all
 
@@ -1924,7 +2035,7 @@ clean: trajectory_tools/CMakeFiles/trajectory_drawer.dir/clean
 trajectory_tools/CMakeFiles/trajectory_follower.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_follower.dir/build.make trajectory_tools/CMakeFiles/trajectory_follower.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  15
 	@echo "Built target trajectory_follower"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_follower.dir/all
 
@@ -1959,7 +2070,7 @@ clean: trajectory_tools/CMakeFiles/trajectory_follower.dir/clean
 trajectory_tools/CMakeFiles/trajectory_recorder.dir/all:
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/depend
 	$(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  10
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  16
 	@echo "Built target trajectory_recorder"
 .PHONY : trajectory_tools/CMakeFiles/trajectory_recorder.dir/all
 

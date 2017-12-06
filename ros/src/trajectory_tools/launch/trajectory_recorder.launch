@@ -9,6 +9,6 @@
 		<param name="/base_link_frame" value="/base_link" type="string" />
 		<param name="/path_file_name" value="$(arg path_file)" type="string" />
 		<param name="/dist_interval" value="0.5" type="double" />
-		<param name="/angle_interval" value="2.0" type="double" />
+		<param name="/angle_interval" value="9999999.0" type="double" />
 	</node >
 </launch >

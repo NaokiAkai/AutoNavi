@@ -1,6 +1,8 @@
 #ifndef __AMCL_H__
 #define __AMCL_H__
 
+#include <vector>
+
 typedef struct
 {
 	double x, y, yaw;
@@ -23,6 +25,7 @@ public:
 	int particle_num, min_particle_num, max_particle_num;
 	double resample_threshold;
 	int scan_step;
+	double max_dist_to_obstacle;
 	double alpha_slow, alpha_fast;
 	double delta_dist, delta_yaw;
 	double update_dist, update_yaw, update_time;
@@ -36,7 +39,7 @@ public:
 	int max_particle_likelihood_num;
 	sensor_msgs::PointCloud dynamic_scan_points;
 	nav_msgs::OccupancyGrid map;
-	cv::Mat dist_map;
+	std::vector<std::vector<float> > dist_map;
 	double effective_sample_size, total_weight, random_particle_rate, w_avg, w_slow, w_fast;
 	bool is_map_data, is_scan_data, is_first_time, is_tf_initialized;
 	ros::Publisher pose_pub, particles_pub;
@@ -45,6 +48,8 @@ public:
 	sensor_msgs::LaserScan curr_scan;
 
 	AMCL();
+	double nrand(double n);
+	void xy2uv(double x, double y, int* u, int* v);
 	void reset_particles(void);
 	void amcl_init(void);
 	void initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
@@ -61,20 +66,6 @@ public:
 	void estimate_robot_pose(void);
 	void resample_particles(void);
 	void scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
-
-	inline double nrand(double n)
-	{
-		return (n * sqrt(-2.0 * log((double)rand() / RAND_MAX)) * cos(2.0 * M_PI * rand() / RAND_MAX));
-	}
-
-	// world frame point, xy, to grid map index, uv
-	inline void xy2uv(double x, double y, int* u, int* v)
-	{
-		double dx = x - map.info.origin.position.x;
-		double dy = y - map.info.origin.position.y;
-		*u = (int)(dx / map.info.resolution);
-		*v = (int)(dy / map.info.resolution);
-	}
 };
 
 #endif /* __AMCL_H__ */
