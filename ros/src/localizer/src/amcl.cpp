@@ -489,7 +489,6 @@ void AMCL::resample_particles(void)
 	std::vector<particle_t> tmp_particles = particles;
 	if (use_kld_sampling)
 	{
-		printf("kld sampling\n");
 		double pose_reso = 0.1, angle_reso = 0.2 * M_PI / 180.0;
 		double pose_range = 2.0, angle_range = 5.0 * M_PI / 180.0;
 		int pose_size = (int)(pose_range / pose_reso);
