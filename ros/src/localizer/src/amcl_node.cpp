@@ -8,8 +8,6 @@
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
 
 #include "amcl.h"
 
