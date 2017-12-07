@@ -153,7 +153,7 @@ void NDT::decrease_occupancy_rate_of_ndt_map(float x, float y, float dr)
 	{
 		int node = uv2node_layer1(u, v);
 		float dl = get_dist_from_point_to_mean(x, y, node);
-		if (dl < ndt_map_grid_size / 2.0f)
+		if (dl < ndt_map_grid_size / 4.0f)
 		{
 			if (ndt_map[node].occupancy_rate < 0.0)
 				ndt_map[node].occupancy_rate = 0.5;
@@ -166,7 +166,7 @@ void NDT::decrease_occupancy_rate_of_ndt_map(float x, float y, float dr)
 	{
 		int node = uv2node_layer2(u, v);
 		float dl = get_dist_from_point_to_mean(x, y, node);
-		if (dl < ndt_map_grid_size / 2.0f)
+		if (dl < ndt_map_grid_size / 4.0f)
 		{
 			if (ndt_map[node].occupancy_rate < 0.0)
 				ndt_map[node].occupancy_rate = 0.5;
@@ -354,7 +354,6 @@ visualization_msgs::MarkerArray NDT::get_ellipses_of_ndt_map(std::string frame_i
 			ellipse.color.r = 0.0;
 			ellipse.color.g = 0.0;
 			ellipse.color.b = 1.0;
-//			ellipse.color.a = 0.5;
 			ellipse.color.a = (0.8 / (1.0 - occupancy_rate_threshold)) * (ndt_map[i].occupancy_rate - occupancy_rate_threshold);
 			ellipse.pose.position.x = ndt_map[i].mean_x;
 			ellipse.pose.position.y = ndt_map[i].mean_y;

@@ -123,7 +123,7 @@ void NDTMapping::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 			float x = (float)xo;
 			float y = (float)yo;
 			float dr = ndt.ndt_map_grid_size;
-			for (float l = 0.0f; l < r - dr; l += dr)
+			for (float l = 0.0f; l < 0.9f * r; l += dr)
 			{
 				ndt.decrease_occupancy_rate_of_ndt_map(x, y, r - l);
 				x += dx;

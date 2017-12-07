@@ -2,7 +2,6 @@
 <launch >
 	<!-- arguments -->
 	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
-	<!-- <arg name="map_yaml_file" default="$(env HOME)/maps/tc2017/ogm.yaml" /> -->
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
@@ -23,7 +22,7 @@
 		<param name="/input_odom_topic_name" value="/odom" type="string" />
 		<param name="/input_scan_topic_name" value="/scan" type="string" />
 		<param name="/min_particle_num" value="200" type="int" />
-		<param name="/max_particle_num" value="1000" type="int" />
+		<param name="/max_particle_num" value="500" type="int" />
 		<param name="/resample_threshold" value="0.5" type="double" />
 		<param name="/scan_step" value="20" type="double" />
 		<param name="/alpha_slow" value="0.0001" type="double" />
@@ -42,5 +41,6 @@
 		<param name="/initial_cov_yy" value="0.2" type="double" />
 		<param name="/initial_cov_yawyaw" value="1.0" type="double" />
 		<param name="/pose_publish_hz" value="20.0" type="double" />
+		<param name="/use_kld_sampling" value="true" type="bool" />
 	</node >
 </launch >

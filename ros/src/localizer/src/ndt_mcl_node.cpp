@@ -179,7 +179,7 @@ int main(int argc, char** argv)
 	std::string map_file_name = "/tmp/ndt_map_aaa.txt";
 	int min_points_num = 20;
 	double occupancy_rate_threshold = 0.65f;
-	bool mapping_mode = true;
+	bool mapping_mode = false;
 	nh.param("/amcl/map_file_name", map_file_name, map_file_name);
 	nh.param("/amcl/min_points_num", min_points_num, min_points_num);
 	nh.param("/amcl/occupancy_rate_threshold", occupancy_rate_threshold, occupancy_rate_threshold);

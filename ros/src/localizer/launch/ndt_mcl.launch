@@ -2,7 +2,6 @@
 <launch >
 	<!-- arguments -->
 	<arg name="map_file_name" default="$(find localizer)/../../maps/nic_garage/ndt_map.txt" />
-	<!-- <arg name="map_file_name" default="$(env HOME)/maps/tc2017/ndt_map.txt" /> -->
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />

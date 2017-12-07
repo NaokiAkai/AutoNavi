@@ -43,6 +43,7 @@ AMCL::AMCL():
 	initial_cov_yy(0.5),
 	initial_cov_yawyaw(3.0),
 	pose_publish_hz(20.0),
+	use_kld_sampling(false),
 	is_map_data(false),
 	is_scan_data(false),
 	is_first_time(true),
@@ -76,6 +77,7 @@ AMCL::AMCL():
 	nh.param("/amcl/initial_cov_yy", initial_cov_yy, initial_cov_yy);
 	nh.param("/amcl/initial_cov_yawyaw", initial_cov_yawyaw, initial_cov_yawyaw);
 	nh.param("/amcl/pose_publish_hz", pose_publish_hz, pose_publish_hz);
+	nh.param("/amcl/use_kld_sampling", use_kld_sampling, use_kld_sampling);
 	// check values
 	if (resample_threshold < 0.0 || 1.0 < resample_threshold)
 	{
@@ -134,7 +136,7 @@ void AMCL::amcl_init(void)
 	// initilizatioin of pf
 	particles.resize(max_particle_num);
 	reset_particles();
-	// initilizatioin of tf
+	// initilizatioin of tf to know relative position of base link and laser
 	tf::TransformListener tf_listener;
 	tf::StampedTransform tf_base_link2laser;
 	ros::Rate loop_rate(10);
@@ -390,8 +392,8 @@ void AMCL::evaluate_particles(sensor_msgs::LaserScan scan)
 			{
 				int node = v * map.info.width + u;
 				double z = (double)dist_map[u][v];
-				double zz = exp(-(z * z) / z_hit_denom);
-				pz += z_hit * zz;
+				double p = exp(-(z * z) / z_hit_denom);
+				pz += z_hit * p;
 			}
 			else
 			{
@@ -484,16 +486,78 @@ void AMCL::resample_particles(void)
 	wb[0] = particles[0].w;
 	for (int i = 1; i < particle_num; i++)
 		wb[i] = particles[i].w + wb[i - 1];
-	for (int i = 0; i < particle_num; i++)
+	std::vector<particle_t> tmp_particles = particles;
+	if (use_kld_sampling)
 	{
-		darts = (double)rand() / ((double)RAND_MAX + 1.0);
-		for (int j = 0; j < particle_num; j++)
+		printf("kld sampling\n");
+		double pose_reso = 0.1, angle_reso = 0.2 * M_PI / 180.0;
+		double pose_range = 2.0, angle_range = 5.0 * M_PI / 180.0;
+		int pose_size = (int)(pose_range / pose_reso);
+		int angle_size = (int)(angle_range / angle_reso);
+		std::vector<bool> is_empty;
+		is_empty.resize(pose_size * pose_size * angle_size, true);
+		int k = 0, m = 0;
+		double m_chi = 0.0, epsilon = 0.05, z = 0.83891;
+		// determined value of z from this pdf -> http://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
+		do
 		{
-			if (darts < wb[j])
+			darts = (double)rand() / ((double)RAND_MAX + 1.0);
+			for (int i = 0; i < particle_num; i++)
 			{
-				particles[i] = particles[j];
-				particles[i].w = wo;
+				if (darts < wb[i])
+				{
+					particles[m] = tmp_particles[i];
+					particles[m].w = wo;
+					double dx = particles[m].pose.x - robot_pose.x;
+					double dy = particles[m].pose.y - robot_pose.y;
+					double dyaw = particles[m].pose.yaw - robot_pose.yaw;
+					if (dyaw < -M_PI)	dyaw += 2.0 * M_PI;
+					if (dyaw > M_PI)	dyaw -= 2.0 * M_PI;
+					int u = (int)(dx / pose_reso) + pose_size / 2;
+					int v = (int)(dy / pose_reso) + pose_size / 2;
+					int w = (int)(dyaw / angle_reso) + angle_size / 2;
+					int node = w * pose_size * pose_size + v * pose_size + u;
+					bool fall_empty = true;
+					if (0 <= u && u < pose_size && 0 <= v && v < pose_size && 0 <= w && w < angle_size)
+					{
+						if (!is_empty[node])
+							fall_empty = false;
+					}
+					if (fall_empty)
+					{
+						k++;
+						if (0 <= u && u < pose_size && 0 <= v && v < pose_size && 0 <= w && w < angle_size)
+							is_empty[node] = false;
+						if (k > 1)
+						{
+							double m1 = (double)(k - 1) / (2.0 * epsilon);
+							double m2 = 1.0 - 2.0 / (9.0 * (double)(k - 1)) + sqrt(2.0 / (9.0 * (double)(k - 1))) * z;
+							m_chi = m1 * pow(m2, 3.0);
+						}
+					}
+					m++;
+					i = particle_num;
+				}
+			}
+			if (m >= max_particle_num)
 				break;
+		}
+		while (m < (int)m_chi || m < min_particle_num);
+		particle_num = m;
+	}
+	else
+	{
+		for (int i = 0; i < particle_num; i++)
+		{
+			darts = (double)rand() / ((double)RAND_MAX + 1.0);
+			for (int j = 0; j < particle_num; j++)
+			{
+				if (darts < wb[j])
+				{
+					particles[i] = tmp_particles[j];
+					particles[i].w = wo;
+					break;
+				}
 			}
 		}
 	}
