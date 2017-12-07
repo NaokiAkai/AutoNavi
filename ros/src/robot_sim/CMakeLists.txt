@@ -195,9 +195,6 @@ target_link_libraries(odom_sim ${catkin_LIBRARIES})
 add_executable(laser_sim src/laser_sim.cpp)
 target_link_libraries(laser_sim ${catkin_LIBRARIES})
 
-add_executable(robot_sim src/robot_sim.cpp)
-target_link_libraries(robot_sim ${catkin_LIBRARIES})
-
 add_executable(key_to_twist_cmd src/key_to_twist_cmd.cpp)
 target_link_libraries(key_to_twist_cmd ${catkin_LIBRARIES})
 
