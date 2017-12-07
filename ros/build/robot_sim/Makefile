@@ -346,20 +346,6 @@ odom_sim/fast:
 .PHONY : odom_sim/fast
 
 # Convenience name for target.
-robot_sim/CMakeFiles/robot_sim.dir/rule:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/robot_sim.dir/rule
-.PHONY : robot_sim/CMakeFiles/robot_sim.dir/rule
-
-# Convenience name for target.
-robot_sim: robot_sim/CMakeFiles/robot_sim.dir/rule
-.PHONY : robot_sim
-
-# fast build rule for target.
-robot_sim/fast:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/build
-.PHONY : robot_sim/fast
-
-# Convenience name for target.
 robot_sim/CMakeFiles/roscpp_generate_messages_cpp.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 robot_sim/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
 .PHONY : robot_sim/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
@@ -731,30 +717,6 @@ src/odom_sim.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/src/odom_sim.cpp.s
 .PHONY : src/odom_sim.cpp.s
 
-src/robot_sim.o: src/robot_sim.cpp.o
-.PHONY : src/robot_sim.o
-
-# target to build an object file
-src/robot_sim.cpp.o:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/src/robot_sim.cpp.o
-.PHONY : src/robot_sim.cpp.o
-
-src/robot_sim.i: src/robot_sim.cpp.i
-.PHONY : src/robot_sim.i
-
-# target to preprocess a source file
-src/robot_sim.cpp.i:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/src/robot_sim.cpp.i
-.PHONY : src/robot_sim.cpp.i
-
-src/robot_sim.s: src/robot_sim.cpp.s
-.PHONY : src/robot_sim.s
-
-# target to generate assembly for a file
-src/robot_sim.cpp.s:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/src/robot_sim.cpp.s
-.PHONY : src/robot_sim.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -781,7 +743,6 @@ help:
 	@echo "... list_install_components"
 	@echo "... odom_sim"
 	@echo "... rebuild_cache"
-	@echo "... robot_sim"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_lisp"
 	@echo "... roscpp_generate_messages_py"
@@ -816,9 +777,6 @@ help:
 	@echo "... src/odom_sim.o"
 	@echo "... src/odom_sim.i"
 	@echo "... src/odom_sim.s"
-	@echo "... src/robot_sim.o"
-	@echo "... src/robot_sim.i"
-	@echo "... src/robot_sim.s"
 .PHONY : help
 
 

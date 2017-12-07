@@ -21,6 +21,7 @@ SET(CMAKE_TARGET_LINKED_INFO_FILES
 
 # The include file search paths:
 SET(CMAKE_C_TARGET_INCLUDE_PATH
+  "/usr/include/opencv"
   "/opt/ros/indigo/include"
   "/usr/local/include/eigen3"
   )

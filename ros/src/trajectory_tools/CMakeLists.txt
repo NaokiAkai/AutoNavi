@@ -10,7 +10,10 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   tf
+  cv_bridge
 )
+
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -117,6 +120,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
   /usr/local/include/eigen3
 )
 
@@ -198,3 +202,6 @@ target_link_libraries(trajectory_follower ${catkin_LIBRARIES})
 
 add_executable(trajectory_drawer src/trajectory_drawer.cpp)
 target_link_libraries(trajectory_drawer ${catkin_LIBRARIES})
+
+add_executable(simple_obstacle_avoidance src/simple_obstacle_avoidance.cpp)
+target_link_libraries(simple_obstacle_avoidance ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})

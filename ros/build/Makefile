@@ -397,19 +397,6 @@ odom_sim/fast:
 .PHONY : odom_sim/fast
 
 #=============================================================================
-# Target rules for targets named robot_sim
-
-# Build rule for target.
-robot_sim: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 robot_sim
-.PHONY : robot_sim
-
-# fast build rule for target.
-robot_sim/fast:
-	$(MAKE) -f robot_sim/CMakeFiles/robot_sim.dir/build.make robot_sim/CMakeFiles/robot_sim.dir/build
-.PHONY : robot_sim/fast
-
-#=============================================================================
 # Target rules for targets named roscpp_generate_messages_cpp
 
 # Build rule for target.
@@ -904,6 +891,19 @@ topic_tools_generate_messages_py/fast:
 .PHONY : topic_tools_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named simple_obstacle_avoidance
+
+# Build rule for target.
+simple_obstacle_avoidance: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 simple_obstacle_avoidance
+.PHONY : simple_obstacle_avoidance
+
+# fast build rule for target.
+simple_obstacle_avoidance/fast:
+	$(MAKE) -f trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build.make trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build
+.PHONY : simple_obstacle_avoidance/fast
+
+#=============================================================================
 # Target rules for targets named trajectory_drawer
 
 # Build rule for target.
@@ -974,7 +974,6 @@ help:
 	@echo "... key_to_twist_cmd"
 	@echo "... laser_sim"
 	@echo "... odom_sim"
-	@echo "... robot_sim"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_lisp"
 	@echo "... roscpp_generate_messages_py"
@@ -1013,6 +1012,7 @@ help:
 	@echo "... topic_tools_generate_messages_cpp"
 	@echo "... topic_tools_generate_messages_lisp"
 	@echo "... topic_tools_generate_messages_py"
+	@echo "... simple_obstacle_avoidance"
 	@echo "... trajectory_drawer"
 	@echo "... trajectory_follower"
 	@echo "... trajectory_recorder"

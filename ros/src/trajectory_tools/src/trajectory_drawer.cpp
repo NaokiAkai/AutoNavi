@@ -8,15 +8,16 @@ class TrajectoryDrawer
 private:
 	ros::NodeHandle nh;
 	std::string map_frame;
-	std::string path_file_name;
 	ros::Publisher path_pub;
 	double draw_interval;
 	visualization_msgs::Marker path;
+	std::string path_file_name;
 
 public:
+
 	TrajectoryDrawer();
-	TrajectoryDrawer(std::string fname);
-	void init(void);
+	void read_path(void);
+	void spin();
 };
 
 TrajectoryDrawer::TrajectoryDrawer():
@@ -31,42 +32,9 @@ TrajectoryDrawer::TrajectoryDrawer():
 	nh.param("/trajectory_drawer/draw_interval", draw_interval, draw_interval);
 	// publisher
 	path_pub = nh.advertise<visualization_msgs::Marker>("/target_trajectory", 1);
-	// initialization
-	init();
-	// main loop
-	ros::Rate loop_rate(2.0);
-	while (ros::ok())
-	{
-		path_pub.publish(path);
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
 }
 
-TrajectoryDrawer::TrajectoryDrawer(std::string fname):
-	nh("~"),
-	map_frame("/world"),
-	draw_interval(0.5)
-{
-	// read parameters
-	nh.param("/trajectory_drawer/map_frame", map_frame, map_frame);
-	nh.param("/trajectory_drawer/draw_interval", draw_interval, draw_interval);
-	// publisher
-	path_pub = nh.advertise<visualization_msgs::Marker>("/target_trajectory", 1);
-	// initialization
-	path_file_name = fname;
-	init();
-	// main loop
-	ros::Rate loop_rate(2.0);
-	while (ros::ok())
-	{
-		path_pub.publish(path);
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
-}
-
-void TrajectoryDrawer::init(void)
+void TrajectoryDrawer::read_path(void)
 {
 	// set path configuration
 	path.header.frame_id = map_frame;
@@ -120,12 +88,24 @@ void TrajectoryDrawer::init(void)
 	fclose(fp);
 }
 
+void TrajectoryDrawer::spin(void)
+{
+	ros::Rate loop_rate(2.0);
+	while (ros::ok())
+	{
+		path_pub.publish(path);
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
+}
+
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "trajectory_drawer");
-	if (argv[1] == NULL)
-		TrajectoryDrawer node;
-	else
-		TrajectoryDrawer node((std::string)argv[1]);
+	TrajectoryDrawer node;
+//	if (argv[1] != NULL)
+//		node.path_file_name = argv[1];
+	node.read_path();
+	node.spin();
 	return 0;
 }

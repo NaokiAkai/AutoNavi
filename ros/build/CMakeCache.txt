@@ -317,7 +317,7 @@ laser_sim_BINARY_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/build/laser_sim
 laser_sim_SOURCE_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/src/laser_sim
 
 //Path to a library.
-lib:FILEPATH=/opt/ros/indigo/lib/libtf2.so
+lib:FILEPATH=/opt/ros/indigo/lib/libcv_bridge.so
 
 //Value Computed by CMake
 localizer_BINARY_DIR:STATIC=/home/akai/Dropbox/work/AutoNavi/ros/build/localizer
