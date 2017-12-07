@@ -41,9 +41,10 @@ public:
 	nav_msgs::OccupancyGrid map;
 	std::vector<std::vector<float> > dist_map;
 	double effective_sample_size, total_weight, random_particle_rate, w_avg, w_slow, w_fast;
-	bool use_kld_sampling;
+	bool use_kld_sampling, use_test_range_measurement;
+	double dynamic_scan_point_threshold;
 	bool is_map_data, is_scan_data, is_first_time, is_tf_initialized;
-	ros::Publisher pose_pub, particles_pub;
+	ros::Publisher pose_pub, particles_pub, upoints_pub, dpoints_pub;
 	ros::Subscriber pose_sub, map_sub, odom_sub, scan_sub;
 	nav_msgs::Odometry curr_odom;
 	sensor_msgs::LaserScan curr_scan;

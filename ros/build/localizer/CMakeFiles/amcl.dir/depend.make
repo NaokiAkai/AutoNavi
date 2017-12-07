@@ -128,7 +128,6 @@ localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /home/akai/Dropbox/work/AutoN
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/XmlRpcDecl.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/XmlRpcValue.h
-localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/cv_bridge/cv_bridge.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/geometry_msgs/Point.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/geometry_msgs/Point32.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/geometry_msgs/PointStamped.h
@@ -206,11 +205,8 @@ localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/ros/w
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/ros/wall_timer_options.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/rosconsole/macros_generated.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/sensor_msgs/ChannelFloat32.h
-localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/sensor_msgs/CompressedImage.h
-localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/sensor_msgs/Image.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/sensor_msgs/LaserScan.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/sensor_msgs/PointCloud.h
-localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/sensor_msgs/image_encodings.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/std_msgs/Empty.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/std_msgs/Header.h
 localizer/CMakeFiles/amcl.dir/src/amcl_node.cpp.o: /opt/ros/indigo/include/tf/FrameGraph.h

@@ -24,7 +24,8 @@
 		<param name="/min_particle_num" value="200" type="int" />
 		<param name="/max_particle_num" value="500" type="int" />
 		<param name="/resample_threshold" value="0.5" type="double" />
-		<param name="/scan_step" value="20" type="double" />
+		<param name="/scan_step" value="10" type="double" />
+		<param name="/max_dist_to_obstacle" value="0.5" type="double" />
 		<param name="/alpha_slow" value="0.0001" type="double" />
 		<param name="/alpha_fast" value="0.1" type="double" />
 		<param name="/update_dist" value="0.2" type="double" />
@@ -42,5 +43,7 @@
 		<param name="/initial_cov_yawyaw" value="1.0" type="double" />
 		<param name="/pose_publish_hz" value="20.0" type="double" />
 		<param name="/use_kld_sampling" value="true" type="bool" />
+		<param name="/use_test_range_measurement" value="true" type="bool" />
+		<param name="/dynamic_scan_point_threshold" value="0.9" type="double" />
 	</node >
 </launch >
