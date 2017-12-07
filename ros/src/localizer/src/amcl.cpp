@@ -9,7 +9,6 @@
 #include <sensor_msgs/PointCloud.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-#include <cv_bridge/cv_bridge.h>
 
 #include "amcl.h"
 

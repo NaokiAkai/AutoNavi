@@ -6,7 +6,6 @@ localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.o
  /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
  /opt/ros/indigo/include/XmlRpcDecl.h
  /opt/ros/indigo/include/XmlRpcValue.h
- /opt/ros/indigo/include/cv_bridge/cv_bridge.h
  /opt/ros/indigo/include/geometry_msgs/Point.h
  /opt/ros/indigo/include/geometry_msgs/Point32.h
  /opt/ros/indigo/include/geometry_msgs/PointStamped.h
@@ -84,11 +83,8 @@ localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.o
  /opt/ros/indigo/include/ros/wall_timer_options.h
  /opt/ros/indigo/include/rosconsole/macros_generated.h
  /opt/ros/indigo/include/sensor_msgs/ChannelFloat32.h
- /opt/ros/indigo/include/sensor_msgs/CompressedImage.h
- /opt/ros/indigo/include/sensor_msgs/Image.h
  /opt/ros/indigo/include/sensor_msgs/LaserScan.h
  /opt/ros/indigo/include/sensor_msgs/PointCloud.h
- /opt/ros/indigo/include/sensor_msgs/image_encodings.h
  /opt/ros/indigo/include/std_msgs/Empty.h
  /opt/ros/indigo/include/std_msgs/Header.h
  /opt/ros/indigo/include/tf/FrameGraph.h
