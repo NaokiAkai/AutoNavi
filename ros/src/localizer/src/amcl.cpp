@@ -382,7 +382,7 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
 		}
 	}
 	upoints_pub.publish(upoints);
-	if (use_test_range_measurement)
+	if (use_test_range_measurement && is_map_data)
 	{
 		std::vector<double> p, q;
 		p.resize(scan.ranges.size(), 0.0);
