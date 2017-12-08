@@ -1,0 +1,8 @@
+prefix=/home/akai/Dropbox/work/AutoNavi/ros/devel
+
+Name: path_follower
+Description: Description of path_follower
+Version: 0.0.0
+Cflags: -I/home/akai/Dropbox/work/AutoNavi/ros/devel/include
+Libs: -L/home/akai/Dropbox/work/AutoNavi/ros/devel/lib 
+Requires: 
