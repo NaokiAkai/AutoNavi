@@ -1,0 +1,82 @@
+<!-- amcl launch -->
+<launch >
+	<!-- arguments -->
+	<arg name="data_dir" default="$(find nav_core)/../../data/sample/" />
+	<arg name="use_simple_obstacle_avoidance" default="true" />
+
+	<!-- tf -->
+	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
+	<node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 amcl_frame base_link 100" />
+
+	<!-- amcl localizer -->
+	<node name="amcl" pkg="localizer" type="amcl" output="screen" >
+		<param name="/map_frame" value="/world" type="string" />
+		<param name="/laser_frame" value="/laser" type="string" />
+		<param name="/base_link_frame" value="/base_link" type="string" />
+		<param name="/input_map_topic_name" value="/amcl_map" type="string" />
+		<param name="/input_odom_topic_name" value="/odom" type="string" />
+		<param name="/input_scan_topic_name" value="/scan" type="string" />
+		<param name="/min_particle_num" value="200" type="int" />
+		<param name="/max_particle_num" value="500" type="int" />
+		<param name="/resample_threshold" value="0.5" type="double" />
+		<param name="/scan_step" value="10" type="double" />
+		<param name="/max_dist_to_obstacle" value="0.5" type="double" />
+		<param name="/alpha_slow" value="0.0001" type="double" />
+		<param name="/alpha_fast" value="0.1" type="double" />
+		<param name="/update_dist" value="0.2" type="double" />
+		<param name="/update_yaw" value="2.0" type="double" />
+		<param name="/update_time" value="5.0" type="double" />
+		<param name="/odom_noise_dist_dist" value="1.5" type="double" />
+		<param name="/odom_noise_dist_head" value="0.9" type="double" />
+		<param name="/odom_noise_head_dist" value="0.9" type="double" />
+		<param name="/odom_noise_head_head" value="2.5" type="double" />
+		<param name="/start_x" value="0.0" type="double" />
+		<param name="/start_y" value="0.0" type="double" />
+		<param name="/start_yaw" value="0.0" type="double" />
+		<param name="/initial_cov_xx" value="0.2" type="double" />
+		<param name="/initial_cov_yy" value="0.2" type="double" />
+		<param name="/initial_cov_yawyaw" value="1.0" type="double" />
+		<param name="/pose_publish_hz" value="20.0" type="double" />
+		<param name="/use_kld_sampling" value="true" type="bool" />
+		<param name="/use_test_range_measurement" value="true" type="bool" />
+		<param name="/dynamic_scan_point_threshold" value="0.9" type="double" />
+		<param name="/use_nav_core_server" value="true" type="bool" />
+	</node >
+
+	<!-- path follower -->
+	<node name="path_follower" pkg="path_follower" type="path_follower" output="screen" >
+		<remap from="/twist_cmd" to="/twist_cmd_raw" if="$(arg use_simple_obstacle_avoidance)" />
+		<param name="/map_frame" value="/world" type="string" />
+		<param name="/base_link_frame" value="/base_link" type="string" />
+		<param name="/input_path_topic_name" value="/target_path" type="string" />
+		<param name="/input_max_vel_topic_name" value="/max_vel" type="string" />
+		<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
+		<param name="/look_ahead_dist" value="1.0" type="double" />
+		<param name="/max_vel" value="1.0" type="double" />
+		<param name="/kv" value="0.7" type="double" />
+		<param name="/publish_hz" value="30.0" type="double" />
+		<param name="/use_nav_core_server" value="true" type="bool" />
+	</node >
+
+	<!-- obstacle avoidance -->
+	<node name="simple_obstacle_avoidance" pkg="path_follower" type="simple_obstacle_avoidance" output="screen" if="$(arg use_simple_obstacle_avoidance)" >
+		<param name="/input_twist_topic_name" value="/twist_cmd_raw" type="string" />
+		<param name="/input_scan_topic_name" value="/scan" type="string" />
+		<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
+		<param name="/local_map_size_x" value="10.0" type="double" />
+		<param name="/local_map_size_y" value="10.0" type="double" />
+		<param name="/local_map_pixel_size" value="0.05" type="double" />
+		<param name="/robot_width" value="1.0" type="double" />
+		<param name="/predict_time" value="5.0" type="double" />
+		<param name="/step_time" value="0.1" type="double" />
+		<param name="/kv" value="0.8" type="double" />
+		<param name="/w_range" value="0.4" type="double" />
+		<param name="/use_emergency_stop" value="true" type="bool" />
+		<param name="/stop_x_size" value="0.6" type="double" />
+		<param name="/stop_y_size" value="0.4" type="double" />
+		<param name="/stop_time" value="3.0" type="double" />
+		<param name="/back_time" value="5.0" type="double" />
+		<param name="/back_speed" value="0.2" type="double" />
+		<param name="/cmd_publish_hz" value="20.0" type="double" />
+	</node >
+</launch >

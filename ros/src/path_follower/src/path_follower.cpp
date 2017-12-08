@@ -17,6 +17,7 @@ private:
 	tf::TransformListener tf_listener;
 	double look_ahead_dist, max_vel, kv;
 	double cmd_publish_hz;
+	bool use_nav_core_server;
 	int nearest_path_index, prev_nearest_path_index;
 
 public:
@@ -24,6 +25,7 @@ public:
 	void path_callback(const nav_msgs::Path::ConstPtr& msg);
 	void max_vel_callback(const std_msgs::Float32::ConstPtr& msg);
 	void spin(void);
+	void wait_for_new_path(void);
 };
 
 PathFollower::PathFollower():
@@ -38,6 +40,7 @@ PathFollower::PathFollower():
 	kv(0.6),
 	cmd_publish_hz(20.0),
 	prev_nearest_path_index(-1),
+	use_nav_core_server(false),
 	tf_listener()
 {
 	// read parameters
@@ -50,6 +53,7 @@ PathFollower::PathFollower():
 	nh.param("/path_follower/max_vel", max_vel, max_vel);
 	nh.param("/path_follower/kv", kv, kv);
 	nh.param("/path_follower/cmd_publish_hz", cmd_publish_hz, cmd_publish_hz);
+	nh.param("/path_follower/use_nav_core_server", use_nav_core_server, use_nav_core_server);
 	// subscriber
 	path_sub = nh.subscribe(input_path_topic_name, 1, &PathFollower::path_callback, this);
 	max_vel_sub = nh.subscribe(input_max_vel_topic_name, 1, &PathFollower::max_vel_callback, this);
@@ -151,6 +155,8 @@ void PathFollower::spin(void)
 			twist_cmd.twist.linear.x = 0.0;
 			twist_cmd.twist.angular.z = 0.0;
 			eo = 0.0;
+			if (path.poses.size() != 0 && use_nav_core_server)
+				wait_for_new_path();
 		}
 		else
 		{
@@ -178,6 +184,30 @@ void PathFollower::spin(void)
 		printf("target path index = %d, path point num = %d\n", target_path_index, (int)path.poses.size());
 		printf("twist command: vel = %.3lf [m/sec], ang_vel = %.3lf [rad/sec]\n", twist_cmd.twist.linear.x, twist_cmd.twist.angular.z);
 		printf("\n");
+		loop_rate.sleep();
+	}
+}
+
+void PathFollower::wait_for_new_path(void)
+{
+	nh.setParam("/nav_params/reach_at_goal", true);
+	bool is_new_path_data = false, is_new_map_data = false;
+	ros::Rate loop_rate(10.0);
+	while (ros::ok())
+	{
+		ros::spinOnce();
+		geometry_msgs::TwistStamped twist_cmd;
+		twist_cmd.header.stamp = ros::Time::now();
+		twist_cmd.twist.linear.x = 0.0;
+		twist_cmd.twist.angular.z = 0.0;
+		twist_pub.publish(twist_cmd);
+		if (prev_nearest_path_index < 0 && !is_new_path_data)
+			is_new_path_data = true;
+		nh.getParam("/nav_params/is_new_map_data", is_new_map_data);
+		if (is_new_map_data)
+			nh.setParam("/nav_params/is_new_map_data", false);
+		if (is_new_path_data && is_new_map_data)
+			break;
 		loop_rate.sleep();
 	}
 }

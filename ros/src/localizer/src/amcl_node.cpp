@@ -13,10 +13,33 @@
 
 AMCL* amcl;
 
+void wait_for_new_map(void)
+{
+	amcl->is_map_data = amcl->is_initial_pose = false;
+	amcl->nh.setParam("/nav_params/reach_at_goal", false);
+	amcl->nh.setParam("/nav_params/request_new_map", true);
+	ros::Rate loop_rate(10.0);
+	while (ros::ok())
+	{
+		ros::spinOnce();
+		amcl->broadcast_tf();
+		amcl->publish_pose();
+		amcl->publish_particles();
+		if (amcl->is_map_data && amcl->is_initial_pose)
+		{
+			amcl->nh.setParam("/nav_params/is_new_map_data", true);
+			break;
+		}
+		loop_rate.sleep();
+	}
+}
+
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "amcl");
 	amcl = new AMCL;
+	bool use_nav_core_server = false;
+	amcl->nh.param("/amcl/use_nav_core_server", use_nav_core_server, use_nav_core_server);
 	ros::Rate loop_rate(amcl->pose_publish_hz);
 	double prev_time = 0.0;
 	while (ros::ok())
@@ -52,6 +75,14 @@ int main(int argc, char** argv)
 		amcl->broadcast_tf();
 		amcl->publish_pose();
 		amcl->publish_particles();
+		// for cmmunication with nav_core_server
+		if (use_nav_core_server)
+		{
+			bool reach_at_goal;
+			amcl->nh.getParam("/nav_params/reach_at_goal", reach_at_goal);
+			if (reach_at_goal)
+				wait_for_new_map();
+		}
 		loop_rate.sleep();
 	}
 	return 0;

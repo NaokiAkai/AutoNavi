@@ -120,7 +120,6 @@ IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   INCLUDE("/home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/cmake_install.cmake")
   INCLUDE("/home/akai/Dropbox/work/AutoNavi/ros/build/robot_sim/cmake_install.cmake")
   INCLUDE("/home/akai/Dropbox/work/AutoNavi/ros/build/localizer/cmake_install.cmake")
-  INCLUDE("/home/akai/Dropbox/work/AutoNavi/ros/build/trajectory_tools/cmake_install.cmake")
 
 ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
 

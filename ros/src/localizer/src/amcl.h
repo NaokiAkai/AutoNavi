@@ -17,9 +17,9 @@ typedef struct
 class AMCL
 {
 private:
-	ros::NodeHandle nh;
 
 public:
+	ros::NodeHandle nh;
 	std::string map_frame, laser_frame, base_link_frame;
 	std::string input_map_topic_name, input_odom_topic_name, input_scan_topic_name;
 	int particle_num, min_particle_num, max_particle_num;
@@ -43,7 +43,7 @@ public:
 	double effective_sample_size, total_weight, random_particle_rate, w_avg, w_slow, w_fast;
 	bool use_kld_sampling, use_test_range_measurement;
 	double dynamic_scan_point_threshold;
-	bool is_map_data, is_scan_data, is_first_time, is_tf_initialized;
+	bool is_map_data, is_scan_data, is_first_time, is_tf_initialized, is_initial_pose;
 	ros::Publisher pose_pub, particles_pub, upoints_pub, dpoints_pub;
 	ros::Subscriber pose_sub, map_sub, odom_sub, scan_sub;
 	nav_msgs::Odometry curr_odom;

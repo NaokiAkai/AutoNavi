@@ -23,6 +23,7 @@
 		<param name="/max_vel" value="1.0" type="double" />
 		<param name="/kv" value="0.7" type="double" />
 		<param name="/publish_hz" value="30.0" type="double" />
+		<param name="/use_nav_core_server" value="false" type="bool" />
 	</node >
 
 	<!-- obstacle avoidance -->

@@ -45,5 +45,6 @@
 		<param name="/use_kld_sampling" value="true" type="bool" />
 		<param name="/use_test_range_measurement" value="true" type="bool" />
 		<param name="/dynamic_scan_point_threshold" value="0.9" type="double" />
+		<param name="/use_nav_core_server" value="false" type="bool" />
 	</node >
 </launch >

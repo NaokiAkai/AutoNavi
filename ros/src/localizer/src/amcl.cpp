@@ -49,7 +49,8 @@ AMCL::AMCL():
 	is_map_data(false),
 	is_scan_data(false),
 	is_first_time(true),
-	is_tf_initialized(false)
+	is_tf_initialized(false),
+	is_initial_pose(false)
 {
 	// read parameters
 	nh.param("/amcl/map_frame", map_frame, map_frame);
@@ -200,60 +201,58 @@ void AMCL::initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped:
 	robot_pose.yaw = yaw;
 	reset_particles();
 	is_first_time = true;
+	is_initial_pose = true;
 }
 
 void AMCL::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
-	if (!is_map_data)
+	map = *msg;
+	// build distance map from a target point to the nearest obstacle (occupied cell)
+	int dr = (int)(max_dist_to_obstacle / map.info.resolution);
+	dist_map.resize(map.info.width);
+	for (int u = 0; u < map.info.width; u++)
+		dist_map[u].resize(map.info.height);
+	for (int u = 0; u < map.info.width; u++)
 	{
-		map = *msg;
-		// build distance map from a target point to the nearest obstacle (occupied cell)
-		int dr = (int)(max_dist_to_obstacle / map.info.resolution);
-		dist_map.resize(map.info.width);
-		for (int u = 0; u < map.info.width; u++)
-			dist_map[u].resize(map.info.height);
-		for (int u = 0; u < map.info.width; u++)
+		for (int v = 0; v < map.info.height; v++)
 		{
-			for (int v = 0; v < map.info.height; v++)
+			float min_d;
+			bool is_first = true;
+			for (int uu = u - dr; uu <= u + dr; uu++)
 			{
-				float min_d;
-				bool is_first = true;
-				for (int uu = u - dr; uu <= u + dr; uu++)
+				for (int vv = v - dr; vv <= v + dr; vv++)
 				{
-					for (int vv = v - dr; vv <= v + dr; vv++)
+					if (0 <= uu && uu < map.info.width && 0 <= vv && vv < map.info.height)
 					{
-						if (0 <= uu && uu < map.info.width && 0 <= vv && vv < map.info.height)
+						int node = vv * map.info.width + uu;
+						if (map.data[node] == 100)
 						{
-							int node = vv * map.info.width + uu;
-							if (map.data[node] == 100)
+							if (is_first)
 							{
-								if (is_first)
-								{
-									float du = (float)(uu - u);
-									float dv = (float)(vv - v);
-									min_d = sqrt(du * du + dv * dv);
-									is_first = false;
-								}
-								else
-								{
-									float du = (float)(uu - u);
-									float dv = (float)(vv - v);
-									float d = sqrt(du * du + dv * dv);
-									if (d < min_d)
-										min_d = d;
-								}
+								float du = (float)(uu - u);
+								float dv = (float)(vv - v);
+								min_d = sqrt(du * du + dv * dv);
+								is_first = false;
+							}
+							else
+							{
+								float du = (float)(uu - u);
+								float dv = (float)(vv - v);
+								float d = sqrt(du * du + dv * dv);
+								if (d < min_d)
+									min_d = d;
 							}
 						}
 					}
 				}
-				if (!is_first && min_d < max_dist_to_obstacle)
-					dist_map[u][v] = min_d * map.info.resolution;
-				else
-					dist_map[u][v] = max_dist_to_obstacle;
 			}
+			if (!is_first && min_d < max_dist_to_obstacle)
+				dist_map[u][v] = min_d * map.info.resolution;
+			else
+				dist_map[u][v] = max_dist_to_obstacle;
 		}
-		is_map_data = true;
 	}
+	is_map_data = true;
 }
 
 void AMCL::broadcast_tf(void)
