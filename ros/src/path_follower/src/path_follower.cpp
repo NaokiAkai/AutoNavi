@@ -145,9 +145,9 @@ void PathFollower::spin(void)
 		// determine twist command
 		geometry_msgs::TwistStamped twist_cmd;
 		twist_cmd.header.stamp = ros::Time::now();
-		if (target_path_index < 0)
+		if (target_path_index < 0 || path.poses.size() == 0)
 		{
-			// reach at the goal point
+			// reach at the goal point or no path data
 			twist_cmd.twist.linear.x = 0.0;
 			twist_cmd.twist.angular.z = 0.0;
 			eo = 0.0;
