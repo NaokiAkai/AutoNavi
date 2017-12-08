@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+find_package(OpenCV REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -120,6 +122,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -196,7 +199,14 @@ add_executable(path_server src/path_server.cpp)
 target_link_libraries(path_server ${catkin_LIBRARIES})
 add_dependencies(path_server path_follower_gencpp)
 
+add_executable(path_recorder src/path_recorder.cpp)
+target_link_libraries(path_recorder ${catkin_LIBRARIES})
+
+add_executable(path_saver src/path_saver.cpp)
+target_link_libraries(path_saver ${catkin_LIBRARIES})
+
 add_executable(path_follower src/path_follower.cpp)
 target_link_libraries(path_follower ${catkin_LIBRARIES})
-#add_dependencies(path_server path_follower_gencpp)
 
+add_executable(simple_obstacle_avoidance src/simple_obstacle_avoidance.cpp)
+target_link_libraries(simple_obstacle_avoidance ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})

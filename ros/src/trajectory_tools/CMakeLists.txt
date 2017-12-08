@@ -203,5 +203,5 @@ target_link_libraries(trajectory_follower ${catkin_LIBRARIES})
 add_executable(trajectory_drawer src/trajectory_drawer.cpp)
 target_link_libraries(trajectory_drawer ${catkin_LIBRARIES})
 
-add_executable(simple_obstacle_avoidance src/simple_obstacle_avoidance.cpp)
-target_link_libraries(simple_obstacle_avoidance ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+#add_executable(simple_obstacle_avoidance src/simple_obstacle_avoidance.cpp)
+#target_link_libraries(simple_obstacle_avoidance ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})

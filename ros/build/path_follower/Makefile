@@ -318,6 +318,34 @@ path_follower_genpy/fast:
 .PHONY : path_follower_genpy/fast
 
 # Convenience name for target.
+path_follower/CMakeFiles/path_recorder.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_recorder.dir/rule
+.PHONY : path_follower/CMakeFiles/path_recorder.dir/rule
+
+# Convenience name for target.
+path_recorder: path_follower/CMakeFiles/path_recorder.dir/rule
+.PHONY : path_recorder
+
+# fast build rule for target.
+path_recorder/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_recorder.dir/build.make path_follower/CMakeFiles/path_recorder.dir/build
+.PHONY : path_recorder/fast
+
+# Convenience name for target.
+path_follower/CMakeFiles/path_saver.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_saver.dir/rule
+.PHONY : path_follower/CMakeFiles/path_saver.dir/rule
+
+# Convenience name for target.
+path_saver: path_follower/CMakeFiles/path_saver.dir/rule
+.PHONY : path_saver
+
+# fast build rule for target.
+path_saver/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_saver.dir/build.make path_follower/CMakeFiles/path_saver.dir/build
+.PHONY : path_saver/fast
+
+# Convenience name for target.
 path_follower/CMakeFiles/path_server.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_server.dir/rule
 .PHONY : path_follower/CMakeFiles/path_server.dir/rule
@@ -330,6 +358,20 @@ path_server: path_follower/CMakeFiles/path_server.dir/rule
 path_server/fast:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_server.dir/build.make path_follower/CMakeFiles/path_server.dir/build
 .PHONY : path_server/fast
+
+# Convenience name for target.
+path_follower/CMakeFiles/simple_obstacle_avoidance.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/simple_obstacle_avoidance.dir/rule
+.PHONY : path_follower/CMakeFiles/simple_obstacle_avoidance.dir/rule
+
+# Convenience name for target.
+simple_obstacle_avoidance: path_follower/CMakeFiles/simple_obstacle_avoidance.dir/rule
+.PHONY : simple_obstacle_avoidance
+
+# fast build rule for target.
+simple_obstacle_avoidance/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build.make path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build
+.PHONY : simple_obstacle_avoidance/fast
 
 src/path_follower.o: src/path_follower.cpp.o
 .PHONY : src/path_follower.o
@@ -355,6 +397,54 @@ src/path_follower.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_follower.dir/build.make path_follower/CMakeFiles/path_follower.dir/src/path_follower.cpp.s
 .PHONY : src/path_follower.cpp.s
 
+src/path_recorder.o: src/path_recorder.cpp.o
+.PHONY : src/path_recorder.o
+
+# target to build an object file
+src/path_recorder.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_recorder.dir/build.make path_follower/CMakeFiles/path_recorder.dir/src/path_recorder.cpp.o
+.PHONY : src/path_recorder.cpp.o
+
+src/path_recorder.i: src/path_recorder.cpp.i
+.PHONY : src/path_recorder.i
+
+# target to preprocess a source file
+src/path_recorder.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_recorder.dir/build.make path_follower/CMakeFiles/path_recorder.dir/src/path_recorder.cpp.i
+.PHONY : src/path_recorder.cpp.i
+
+src/path_recorder.s: src/path_recorder.cpp.s
+.PHONY : src/path_recorder.s
+
+# target to generate assembly for a file
+src/path_recorder.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_recorder.dir/build.make path_follower/CMakeFiles/path_recorder.dir/src/path_recorder.cpp.s
+.PHONY : src/path_recorder.cpp.s
+
+src/path_saver.o: src/path_saver.cpp.o
+.PHONY : src/path_saver.o
+
+# target to build an object file
+src/path_saver.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_saver.dir/build.make path_follower/CMakeFiles/path_saver.dir/src/path_saver.cpp.o
+.PHONY : src/path_saver.cpp.o
+
+src/path_saver.i: src/path_saver.cpp.i
+.PHONY : src/path_saver.i
+
+# target to preprocess a source file
+src/path_saver.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_saver.dir/build.make path_follower/CMakeFiles/path_saver.dir/src/path_saver.cpp.i
+.PHONY : src/path_saver.cpp.i
+
+src/path_saver.s: src/path_saver.cpp.s
+.PHONY : src/path_saver.s
+
+# target to generate assembly for a file
+src/path_saver.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_saver.dir/build.make path_follower/CMakeFiles/path_saver.dir/src/path_saver.cpp.s
+.PHONY : src/path_saver.cpp.s
+
 src/path_server.o: src/path_server.cpp.o
 .PHONY : src/path_server.o
 
@@ -379,6 +469,30 @@ src/path_server.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_server.dir/build.make path_follower/CMakeFiles/path_server.dir/src/path_server.cpp.s
 .PHONY : src/path_server.cpp.s
 
+src/simple_obstacle_avoidance.o: src/simple_obstacle_avoidance.cpp.o
+.PHONY : src/simple_obstacle_avoidance.o
+
+# target to build an object file
+src/simple_obstacle_avoidance.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build.make path_follower/CMakeFiles/simple_obstacle_avoidance.dir/src/simple_obstacle_avoidance.cpp.o
+.PHONY : src/simple_obstacle_avoidance.cpp.o
+
+src/simple_obstacle_avoidance.i: src/simple_obstacle_avoidance.cpp.i
+.PHONY : src/simple_obstacle_avoidance.i
+
+# target to preprocess a source file
+src/simple_obstacle_avoidance.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build.make path_follower/CMakeFiles/simple_obstacle_avoidance.dir/src/simple_obstacle_avoidance.cpp.i
+.PHONY : src/simple_obstacle_avoidance.cpp.i
+
+src/simple_obstacle_avoidance.s: src/simple_obstacle_avoidance.cpp.s
+.PHONY : src/simple_obstacle_avoidance.s
+
+# target to generate assembly for a file
+src/simple_obstacle_avoidance.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build.make path_follower/CMakeFiles/simple_obstacle_avoidance.dir/src/simple_obstacle_avoidance.cpp.s
+.PHONY : src/simple_obstacle_avoidance.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -402,15 +516,27 @@ help:
 	@echo "... path_follower_generate_messages_py"
 	@echo "... path_follower_genlisp"
 	@echo "... path_follower_genpy"
+	@echo "... path_recorder"
+	@echo "... path_saver"
 	@echo "... path_server"
 	@echo "... rebuild_cache"
+	@echo "... simple_obstacle_avoidance"
 	@echo "... test"
 	@echo "... src/path_follower.o"
 	@echo "... src/path_follower.i"
 	@echo "... src/path_follower.s"
+	@echo "... src/path_recorder.o"
+	@echo "... src/path_recorder.i"
+	@echo "... src/path_recorder.s"
+	@echo "... src/path_saver.o"
+	@echo "... src/path_saver.i"
+	@echo "... src/path_saver.s"
 	@echo "... src/path_server.o"
 	@echo "... src/path_server.i"
 	@echo "... src/path_server.s"
+	@echo "... src/simple_obstacle_avoidance.o"
+	@echo "... src/simple_obstacle_avoidance.i"
+	@echo "... src/simple_obstacle_avoidance.s"
 .PHONY : help
 
 

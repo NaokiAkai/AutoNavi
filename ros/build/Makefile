@@ -748,6 +748,32 @@ path_follower_genpy/fast:
 .PHONY : path_follower_genpy/fast
 
 #=============================================================================
+# Target rules for targets named path_recorder
+
+# Build rule for target.
+path_recorder: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 path_recorder
+.PHONY : path_recorder
+
+# fast build rule for target.
+path_recorder/fast:
+	$(MAKE) -f path_follower/CMakeFiles/path_recorder.dir/build.make path_follower/CMakeFiles/path_recorder.dir/build
+.PHONY : path_recorder/fast
+
+#=============================================================================
+# Target rules for targets named path_saver
+
+# Build rule for target.
+path_saver: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 path_saver
+.PHONY : path_saver
+
+# fast build rule for target.
+path_saver/fast:
+	$(MAKE) -f path_follower/CMakeFiles/path_saver.dir/build.make path_follower/CMakeFiles/path_saver.dir/build
+.PHONY : path_saver/fast
+
+#=============================================================================
 # Target rules for targets named path_server
 
 # Build rule for target.
@@ -759,6 +785,19 @@ path_server: cmake_check_build_system
 path_server/fast:
 	$(MAKE) -f path_follower/CMakeFiles/path_server.dir/build.make path_follower/CMakeFiles/path_server.dir/build
 .PHONY : path_server/fast
+
+#=============================================================================
+# Target rules for targets named simple_obstacle_avoidance
+
+# Build rule for target.
+simple_obstacle_avoidance: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 simple_obstacle_avoidance
+.PHONY : simple_obstacle_avoidance
+
+# fast build rule for target.
+simple_obstacle_avoidance/fast:
+	$(MAKE) -f path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build.make path_follower/CMakeFiles/simple_obstacle_avoidance.dir/build
+.PHONY : simple_obstacle_avoidance/fast
 
 #=============================================================================
 # Target rules for targets named add_noise_to_sensor_data
@@ -1086,19 +1125,6 @@ topic_tools_generate_messages_py/fast:
 .PHONY : topic_tools_generate_messages_py/fast
 
 #=============================================================================
-# Target rules for targets named simple_obstacle_avoidance
-
-# Build rule for target.
-simple_obstacle_avoidance: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 simple_obstacle_avoidance
-.PHONY : simple_obstacle_avoidance
-
-# fast build rule for target.
-simple_obstacle_avoidance/fast:
-	$(MAKE) -f trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build.make trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build
-.PHONY : simple_obstacle_avoidance/fast
-
-#=============================================================================
 # Target rules for targets named trajectory_drawer
 
 # Build rule for target.
@@ -1196,7 +1222,10 @@ help:
 	@echo "... path_follower_generate_messages_py"
 	@echo "... path_follower_genlisp"
 	@echo "... path_follower_genpy"
+	@echo "... path_recorder"
+	@echo "... path_saver"
 	@echo "... path_server"
+	@echo "... simple_obstacle_avoidance"
 	@echo "... add_noise_to_sensor_data"
 	@echo "... joy_to_twist_cmd"
 	@echo "... key_to_twist_cmd"
@@ -1222,7 +1251,6 @@ help:
 	@echo "... topic_tools_generate_messages_cpp"
 	@echo "... topic_tools_generate_messages_lisp"
 	@echo "... topic_tools_generate_messages_py"
-	@echo "... simple_obstacle_avoidance"
 	@echo "... trajectory_drawer"
 	@echo "... trajectory_follower"
 	@echo "... trajectory_recorder"

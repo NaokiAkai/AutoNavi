@@ -42,6 +42,8 @@
 /home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/path_follower_generate_messages_py.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/path_follower_genlisp.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/path_follower_genpy.dir
+/home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/path_recorder.dir
+/home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/path_saver.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/path_server.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/localizer/CMakeFiles/pcl_msgs_generate_messages_cpp.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/localizer/CMakeFiles/pcl_msgs_generate_messages_lisp.dir
@@ -57,7 +59,7 @@
 /home/akai/Dropbox/work/AutoNavi/ros/build/nav_core/CMakeFiles/sensor_msgs_generate_messages_cpp.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/nav_core/CMakeFiles/sensor_msgs_generate_messages_lisp.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/nav_core/CMakeFiles/sensor_msgs_generate_messages_py.dir
-/home/akai/Dropbox/work/AutoNavi/ros/build/trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir
+/home/akai/Dropbox/work/AutoNavi/ros/build/path_follower/CMakeFiles/simple_obstacle_avoidance.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/nav_core/CMakeFiles/std_msgs_generate_messages_cpp.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/nav_core/CMakeFiles/std_msgs_generate_messages_lisp.dir
 /home/akai/Dropbox/work/AutoNavi/ros/build/nav_core/CMakeFiles/std_msgs_generate_messages_py.dir

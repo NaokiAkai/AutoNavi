@@ -150,20 +150,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/rule:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/rule
-.PHONY : trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/rule
-
-# Convenience name for target.
-simple_obstacle_avoidance: trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/rule
-.PHONY : simple_obstacle_avoidance
-
-# fast build rule for target.
-simple_obstacle_avoidance/fast:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build.make trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build
-.PHONY : simple_obstacle_avoidance/fast
-
-# Convenience name for target.
 trajectory_tools/CMakeFiles/trajectory_drawer.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 trajectory_tools/CMakeFiles/trajectory_drawer.dir/rule
 .PHONY : trajectory_tools/CMakeFiles/trajectory_drawer.dir/rule
@@ -204,30 +190,6 @@ trajectory_recorder: trajectory_tools/CMakeFiles/trajectory_recorder.dir/rule
 trajectory_recorder/fast:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f trajectory_tools/CMakeFiles/trajectory_recorder.dir/build.make trajectory_tools/CMakeFiles/trajectory_recorder.dir/build
 .PHONY : trajectory_recorder/fast
-
-src/simple_obstacle_avoidance.o: src/simple_obstacle_avoidance.cpp.o
-.PHONY : src/simple_obstacle_avoidance.o
-
-# target to build an object file
-src/simple_obstacle_avoidance.cpp.o:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build.make trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/src/simple_obstacle_avoidance.cpp.o
-.PHONY : src/simple_obstacle_avoidance.cpp.o
-
-src/simple_obstacle_avoidance.i: src/simple_obstacle_avoidance.cpp.i
-.PHONY : src/simple_obstacle_avoidance.i
-
-# target to preprocess a source file
-src/simple_obstacle_avoidance.cpp.i:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build.make trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/src/simple_obstacle_avoidance.cpp.i
-.PHONY : src/simple_obstacle_avoidance.cpp.i
-
-src/simple_obstacle_avoidance.s: src/simple_obstacle_avoidance.cpp.s
-.PHONY : src/simple_obstacle_avoidance.s
-
-# target to generate assembly for a file
-src/simple_obstacle_avoidance.cpp.s:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/build.make trajectory_tools/CMakeFiles/simple_obstacle_avoidance.dir/src/simple_obstacle_avoidance.cpp.s
-.PHONY : src/simple_obstacle_avoidance.cpp.s
 
 src/trajectory_drawer.o: src/trajectory_drawer.cpp.o
 .PHONY : src/trajectory_drawer.o
@@ -313,14 +275,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... simple_obstacle_avoidance"
 	@echo "... test"
 	@echo "... trajectory_drawer"
 	@echo "... trajectory_follower"
 	@echo "... trajectory_recorder"
-	@echo "... src/simple_obstacle_avoidance.o"
-	@echo "... src/simple_obstacle_avoidance.i"
-	@echo "... src/simple_obstacle_avoidance.s"
 	@echo "... src/trajectory_drawer.o"
 	@echo "... src/trajectory_drawer.i"
 	@echo "... src/trajectory_drawer.s"
