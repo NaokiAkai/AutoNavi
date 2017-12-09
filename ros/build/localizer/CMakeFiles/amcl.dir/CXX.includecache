@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.cpp
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
+vector
+-
+
+/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl_node.cpp
 ros/ros.h
 -
 std_msgs/Header.h
@@ -23,18 +27,12 @@ nav_msgs/OccupancyGrid.h
 -
 sensor_msgs/LaserScan.h
 -
-sensor_msgs/PointCloud.h
--
 tf/transform_broadcaster.h
 -
 tf/transform_listener.h
 -
 amcl.h
 /home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
-
-/home/akai/Dropbox/work/AutoNavi/ros/src/localizer/src/amcl.h
-vector
--
 
 /opt/ros/indigo/include/XmlRpcDecl.h
 ros/macros.h

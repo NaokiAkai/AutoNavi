@@ -61,6 +61,7 @@ void NavCoreServer::spin(void)
 	map_pub.publish(map);
 	path_pub.publish(path);
 	ros::Rate loop_rate(10.0);
+	nh.setParam("/nav_params/request_new_map", false);
 	while (ros::ok())
 	{
 		ros::spinOnce();

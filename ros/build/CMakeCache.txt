@@ -292,6 +292,9 @@ dynamic_reconfigure_DIR:PATH=/opt/ros/indigo/share/dynamic_reconfigure/cmake
 //The directory containing a CMake configuration file for gencpp.
 gencpp_DIR:PATH=/opt/ros/indigo/share/gencpp/cmake
 
+//The directory containing a CMake configuration file for geneus.
+geneus_DIR:PATH=/opt/ros/indigo/share/geneus/cmake
+
 //The directory containing a CMake configuration file for genlisp.
 genlisp_DIR:PATH=/opt/ros/indigo/share/genlisp/cmake
 

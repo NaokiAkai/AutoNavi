@@ -40,6 +40,8 @@ int main(int argc, char** argv)
 	amcl = new AMCL;
 	bool use_nav_core_server = false;
 	amcl->nh.param("/amcl/use_nav_core_server", use_nav_core_server, use_nav_core_server);
+	if (use_nav_core_server)
+		amcl->nh.setParam("/nav_params/reach_at_goal", false);
 	ros::Rate loop_rate(amcl->pose_publish_hz);
 	double prev_time = 0.0;
 	while (ros::ok())
