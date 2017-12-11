@@ -246,8 +246,9 @@ void AMCL::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 					}
 				}
 			}
+			min_d *= map.info.resolution;
 			if (!is_first && min_d < max_dist_to_obstacle)
-				dist_map[u][v] = min_d * map.info.resolution;
+				dist_map[u][v] = min_d;
 			else
 				dist_map[u][v] = max_dist_to_obstacle;
 		}
@@ -329,7 +330,7 @@ void AMCL::update_particle_pose_by_odom(void)
 	}
 	double curr_time = odom.header.stamp.toSec();
 	double d_time = curr_time - prev_time;
-	if (d_time > 1.0)
+	if (d_time > (1.0 / pose_publish_hz) * 4.0)
 	{
 		prev_time = curr_time;
 		return;
@@ -362,7 +363,7 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
 {
 	sensor_msgs::PointCloud upoints;
 	upoints.header = scan.header;
-	for (int i = 0; i < scan.ranges.size(); i += scan_step)
+	for (int i = 0; i < scan.ranges.size(); i++)
 	{
 		double r = scan.ranges[i];
 		if (r < scan.range_min || scan.range_max < r)
@@ -371,13 +372,16 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
 		}
 		else
 		{
-			double angle = scan.angle_min + scan.angle_increment * (double)i;
-			geometry_msgs::Point32 point;
-			point.x = scan.ranges[i] * cos(angle);
-			point.y = scan.ranges[i] * sin(angle);
-			point.z = 0.0;
-			upoints.points.push_back(point);
 			is_valid_scan_points[i] = true;
+			if (i % scan_step == 0)
+			{
+				double angle = scan.angle_min + scan.angle_increment * (double)i;
+				geometry_msgs::Point32 point;
+				point.x = scan.ranges[i] * cos(angle);
+				point.y = scan.ranges[i] * sin(angle);
+				point.z = 0.0;
+				upoints.points.push_back(point);
+			}
 		}
 	}
 	upoints_pub.publish(upoints);

@@ -90,7 +90,7 @@ void OdomSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
 	// update robot pose based on twist command
 	double curr_time = msg->header.stamp.toSec();
 	double delta_time = curr_time - prev_time;
-	if (delta_time > 1.0)
+	if (delta_time > 0.5)
 	{
 		prev_time = curr_time;
 		return;

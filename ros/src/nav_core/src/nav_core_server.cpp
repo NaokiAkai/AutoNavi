@@ -19,11 +19,12 @@ private:
 	double last_pose_x, last_pose_y, last_pose_yaw;
 	geometry_msgs::PoseWithCovarianceStamped initial_pose;
 	tf::TransformListener tf_listener;
-	int count;
+	int count, sub_map_num;
 
 public:
 	NavCoreServer();
 	void spin();
+	void read_sub_map_num_file(void);
 	void read_map_yaml_file(void);
 	void read_map_pgm_file(void);
 	void read_path_file(void);
@@ -55,6 +56,7 @@ NavCoreServer::NavCoreServer():
 
 void NavCoreServer::spin(void)
 {
+	read_sub_map_num_file();
 	read_map_yaml_file();
 	read_map_pgm_file();
 	read_path_file();
@@ -62,10 +64,10 @@ void NavCoreServer::spin(void)
 	path_pub.publish(path);
 	ros::Rate loop_rate(10.0);
 	nh.setParam("/nav_params/request_new_map", false);
+	nh.setParam("/nav_params/finish_navigation", false);
 	while (ros::ok())
 	{
 		ros::spinOnce();
-		bool publish_next_data = false;
 		bool request_new_map;
 		nh.getParam("/nav_params/request_new_map", request_new_map);
 		if (request_new_map)
@@ -74,15 +76,30 @@ void NavCoreServer::spin(void)
 			read_last_pose_file();
 			set_next_initial_pose();
 			count++;
+			if (count == sub_map_num)
+			{
+				nh.setParam("/nav_params/finish_navigation", true);
+				printf("finish navigation\n");
+				break;
+			}
 			read_map_pgm_file();
 			read_path_file();
+			pose_pub.publish(initial_pose);
 			map_pub.publish(map);
 			path_pub.publish(path);
-			pose_pub.publish(initial_pose);
 			printf("published new data\n");
 		}
 		loop_rate.sleep();
 	}
+}
+
+void NavCoreServer::read_sub_map_num_file(void)
+{
+	char fname[1024];
+	sprintf(fname, "%ssub_map_num.txt", root_dir_name.c_str());
+	FILE* fp = fopen(fname, "r");
+	int val = fscanf(fp, "%d", &sub_map_num);
+	fclose(fp);
 }
 
 void NavCoreServer::read_map_yaml_file(void)

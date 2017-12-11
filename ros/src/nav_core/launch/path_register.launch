@@ -1,0 +1,24 @@
+<!-- nav_core path register launch -->
+<launch >
+	<!-- arguments -->
+	<arg name="data_dir" default="$(find nav_core)/../../data/sample/" />
+
+	<!-- path register -->
+	<node name="nav_core_path_register" pkg="nav_core" type="nav_core_path_register" output="screen" >
+		<param name="/map_frame" value="/map" type="string" />
+		<param name="/laser_frame" value="/laser" type="string" />
+		<param name="/base_link_frame" value="/base_link" type="string" />
+		<param name="/root_dir_name" value="$(arg data_dir)" type="string" />
+		<param name="/output_map_topic_name" value="/amcl_map" type="string" />
+		<param name="/output_path_topic_name" value="/recorded_path" type="string" />
+		<param name="/input_odom_topic_name" value="/odom" type="string" />
+		<param name="/input_scan_topic_name" value="/scan" type="string" />
+		<param name="/map_size_x" value="200.0" type="double" />
+		<param name="/map_size_y" value="200.0" type="double" />
+		<param name="/map_resolution" value="0.1" type="double" />
+		<param name="/map_origin_x" value="-100.0" type="double" />
+		<param name="/map_origin_y" value="-100.0" type="double" />
+		<param name="/update_interval_dist" value="0.5" type="double" />
+		<param name="/update_interval_angle" value="5.0" type="double" />
+	</node >
+</launch >

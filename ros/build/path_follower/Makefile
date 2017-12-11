@@ -262,20 +262,6 @@ path_follower_generate_messages_cpp/fast:
 .PHONY : path_follower_generate_messages_cpp/fast
 
 # Convenience name for target.
-path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule
-.PHONY : path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule
-
-# Convenience name for target.
-path_follower_generate_messages_eus: path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule
-.PHONY : path_follower_generate_messages_eus
-
-# fast build rule for target.
-path_follower_generate_messages_eus/fast:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build
-.PHONY : path_follower_generate_messages_eus/fast
-
-# Convenience name for target.
 path_follower/CMakeFiles/path_follower_generate_messages_lisp.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_follower_generate_messages_lisp.dir/rule
 .PHONY : path_follower/CMakeFiles/path_follower_generate_messages_lisp.dir/rule
@@ -302,20 +288,6 @@ path_follower_generate_messages_py: path_follower/CMakeFiles/path_follower_gener
 path_follower_generate_messages_py/fast:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_py.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_py.dir/build
 .PHONY : path_follower_generate_messages_py/fast
-
-# Convenience name for target.
-path_follower/CMakeFiles/path_follower_geneus.dir/rule:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_follower_geneus.dir/rule
-.PHONY : path_follower/CMakeFiles/path_follower_geneus.dir/rule
-
-# Convenience name for target.
-path_follower_geneus: path_follower/CMakeFiles/path_follower_geneus.dir/rule
-.PHONY : path_follower_geneus
-
-# fast build rule for target.
-path_follower_geneus/fast:
-	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f path_follower/CMakeFiles/path_follower_geneus.dir/build.make path_follower/CMakeFiles/path_follower_geneus.dir/build
-.PHONY : path_follower_geneus/fast
 
 # Convenience name for target.
 path_follower/CMakeFiles/path_follower_genlisp.dir/rule:
@@ -540,10 +512,8 @@ help:
 	@echo "... path_follower_gencpp"
 	@echo "... path_follower_generate_messages"
 	@echo "... path_follower_generate_messages_cpp"
-	@echo "... path_follower_generate_messages_eus"
 	@echo "... path_follower_generate_messages_lisp"
 	@echo "... path_follower_generate_messages_py"
-	@echo "... path_follower_geneus"
 	@echo "... path_follower_genlisp"
 	@echo "... path_follower_genpy"
 	@echo "... path_recorder"

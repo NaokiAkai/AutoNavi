@@ -43,6 +43,7 @@ public:
 	void save_last_robot_pose(void);
 	void save_map(void);
 	void save_path(void);
+	void save_count(void);
 	void reset_map(void);
 	void reset_path(void);
 	void reset_robot_pose(void);
@@ -58,11 +59,11 @@ PathRegister::PathRegister():
 	output_path_topic_name("/target_path"),
 	input_odom_topic_name("/odom"),
 	input_scan_topic_name("/scan"),
-	map_size_x(500.0),
-	map_size_y(500.0),
+	map_size_x(200.0),
+	map_size_y(200.0),
 	map_resolution(0.1),
-	map_origin_x(-250.0),
-	map_origin_y(-250.0),
+	map_origin_x(-100.0),
+	map_origin_y(-100.0),
 	update_interval_dist(0.5),
 	update_interval_angle(5.0),
 	tf_listener(),
@@ -83,7 +84,7 @@ PathRegister::PathRegister():
 	nh.param("/nav_core_path_register/map_size_y", map_size_y, map_size_y);
 	nh.param("/nav_core_path_register/map_resolution", map_resolution, map_resolution);
 	nh.param("/nav_core_path_register/map_origin_x", map_origin_x, map_origin_x);
-	nh.param("/nav_core_path_register/map_origin_x", map_origin_x, map_origin_x);
+	nh.param("/nav_core_path_register/map_origin_y", map_origin_x, map_origin_x);
 	nh.param("/nav_core_path_register/update_interval_dist", update_interval_dist, update_interval_dist);
 	nh.param("/nav_core_path_register/update_interval_angle", update_interval_angle, update_interval_angle);
 	update_interval_angle *= M_PI / 180.0;
@@ -214,6 +215,7 @@ void PathRegister::spin(void)
 		}
 		loop_rate.sleep();
 	}
+	save_count();
 }
 
 bool PathRegister::do_update(void)
@@ -366,6 +368,15 @@ void PathRegister::save_last_robot_pose(void)
 	sprintf(fname, "%slast_pose_%d.txt", root_dir_name.c_str(), count);
 	FILE* fp = fopen(fname, "w");
 	fprintf(fp, "%lf %lf %lf\n", robot_pose.x, robot_pose.y, robot_pose.yaw);
+	fclose(fp);
+}
+
+void PathRegister::save_count(void)
+{
+	char fname[1024];
+	sprintf(fname, "%ssub_map_num.txt", root_dir_name.c_str());
+	FILE* fp = fopen(fname, "w");
+	fprintf(fp, "%d\n", count);
 	fclose(fp);
 }
 

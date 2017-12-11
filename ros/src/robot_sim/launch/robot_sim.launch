@@ -6,8 +6,8 @@
 	<arg name="use_ground_truth_tf" default="false" />
 	<arg name="use_joystick_controller" default="false" />
 	<arg name="use_ackermann_simulator" default="false" />
-	<arg name="use_trajectory_follower" default="false" />
-	<arg name="moving_objects_num" default="500" />
+	<arg name="use_path_follower" default="false" />
+	<arg name="moving_objects_num" default="0" />
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
@@ -21,7 +21,7 @@
 	</node >
 
 	<!-- controller for simulation robot -->
-	<group unless="$(arg use_trajectory_follower)" >
+	<group unless="$(arg use_path_follower)" >
 		<!-- keyboard node for key_to_twist_cmd -->
 		<node name="keyboard" pkg="keyboard" type="keyboard" unless="$(arg use_joystick_controller)" />
 
@@ -86,10 +86,16 @@
 		<param name="/output_odom_topic_name" value="/odom" type="string" />
 		<param name="/output_scan_topic_name" value="/scan" type="string" />
 		<param name="/output_scan_points_topic_name" value="/scan_points" type="string" />
+<!--
 		<param name="/odom_linear_noise" value="0.3" type="double" />
 		<param name="/odom_angular_noise" value="0.15" type="double" />
 		<param name="/odom_linear_noise_stationary" value="0.95" type="double" />
 		<param name="/odom_angular_noise_stationary" value="0.95" type="double" />
+ -->
+		<param name="/odom_linear_noise" value="0.2" type="double" />
+		<param name="/odom_angular_noise" value="0.08" type="double" />
+		<param name="/odom_linear_noise_stationary" value="0.975" type="double" />
+		<param name="/odom_angular_noise_stationary" value="0.975" type="double" />
 		<param name="/scan_measurement_noise" value="0.05" type="double" />
 	</node >
 </launch >

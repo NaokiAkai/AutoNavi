@@ -145,7 +145,7 @@ foreach(library ${libraries})
   endif()
 endforeach()
 
-set(path_follower_EXPORTED_TARGETS "path_follower_generate_messages_cpp;path_follower_generate_messages_eus;path_follower_generate_messages_lisp;path_follower_generate_messages_py")
+set(path_follower_EXPORTED_TARGETS "path_follower_generate_messages_cpp;path_follower_generate_messages_lisp;path_follower_generate_messages_py")
 # create dummy targets for exported code generation targets to make life of users easier
 foreach(t ${path_follower_EXPORTED_TARGETS})
   if(NOT TARGET ${t})

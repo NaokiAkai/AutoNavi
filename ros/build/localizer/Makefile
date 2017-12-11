@@ -164,6 +164,20 @@ amcl/fast:
 .PHONY : amcl/fast
 
 # Convenience name for target.
+localizer/CMakeFiles/amcl_dspd.dir/rule:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/amcl_dspd.dir/rule
+.PHONY : localizer/CMakeFiles/amcl_dspd.dir/rule
+
+# Convenience name for target.
+amcl_dspd: localizer/CMakeFiles/amcl_dspd.dir/rule
+.PHONY : amcl_dspd
+
+# fast build rule for target.
+amcl_dspd/fast:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/build
+.PHONY : amcl_dspd/fast
+
+# Convenience name for target.
 localizer/CMakeFiles/bond_generate_messages_cpp.dir/rule:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/bond_generate_messages_cpp.dir/rule
 .PHONY : localizer/CMakeFiles/bond_generate_messages_cpp.dir/rule
@@ -435,6 +449,7 @@ src/amcl.o: src/amcl.cpp.o
 # target to build an object file
 src/amcl.cpp.o:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.o
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/src/amcl.cpp.o
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.o
 .PHONY : src/amcl.cpp.o
 
@@ -444,6 +459,7 @@ src/amcl.i: src/amcl.cpp.i
 # target to preprocess a source file
 src/amcl.cpp.i:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.i
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/src/amcl.cpp.i
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.i
 .PHONY : src/amcl.cpp.i
 
@@ -453,8 +469,33 @@ src/amcl.s: src/amcl.cpp.s
 # target to generate assembly for a file
 src/amcl.cpp.s:
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/src/amcl.cpp.s
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/src/amcl.cpp.s
 	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/src/amcl.cpp.s
 .PHONY : src/amcl.cpp.s
+
+src/amcl_dspd_node.o: src/amcl_dspd_node.cpp.o
+.PHONY : src/amcl_dspd_node.o
+
+# target to build an object file
+src/amcl_dspd_node.cpp.o:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/src/amcl_dspd_node.cpp.o
+.PHONY : src/amcl_dspd_node.cpp.o
+
+src/amcl_dspd_node.i: src/amcl_dspd_node.cpp.i
+.PHONY : src/amcl_dspd_node.i
+
+# target to preprocess a source file
+src/amcl_dspd_node.cpp.i:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/src/amcl_dspd_node.cpp.i
+.PHONY : src/amcl_dspd_node.cpp.i
+
+src/amcl_dspd_node.s: src/amcl_dspd_node.cpp.s
+.PHONY : src/amcl_dspd_node.s
+
+# target to generate assembly for a file
+src/amcl_dspd_node.cpp.s:
+	cd /home/akai/Dropbox/work/AutoNavi/ros/build && $(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/src/amcl_dspd_node.cpp.s
+.PHONY : src/amcl_dspd_node.cpp.s
 
 src/amcl_node.o: src/amcl_node.cpp.o
 .PHONY : src/amcl_node.o
@@ -562,6 +603,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... amcl"
+	@echo "... amcl_dspd"
 	@echo "... bond_generate_messages_cpp"
 	@echo "... bond_generate_messages_lisp"
 	@echo "... bond_generate_messages_py"
@@ -591,6 +633,9 @@ help:
 	@echo "... src/amcl.o"
 	@echo "... src/amcl.i"
 	@echo "... src/amcl.s"
+	@echo "... src/amcl_dspd_node.o"
+	@echo "... src/amcl_dspd_node.i"
+	@echo "... src/amcl_dspd_node.s"
 	@echo "... src/amcl_node.o"
 	@echo "... src/amcl_node.i"
 	@echo "... src/amcl_node.s"
