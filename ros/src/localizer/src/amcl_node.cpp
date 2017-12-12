@@ -15,6 +15,7 @@ AMCL* amcl;
 
 void wait_for_new_map(void)
 {
+	bool finish_navigation = false;
 	amcl->is_map_data = amcl->is_initial_pose = false;
 	amcl->nh.setParam("/nav_params/reach_at_goal", false);
 	amcl->nh.setParam("/nav_params/request_new_map", true);
@@ -29,6 +30,12 @@ void wait_for_new_map(void)
 		{
 			amcl->nh.setParam("/nav_params/is_new_map_data", true);
 			break;
+		}
+		amcl->nh.getParam("/nav_params/finish_navigation", finish_navigation);
+		if (finish_navigation)
+		{
+			printf("finish navigation from amcl_node\n");
+			exit(0);
 		}
 		loop_rate.sleep();
 	}

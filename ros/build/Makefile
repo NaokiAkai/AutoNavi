@@ -982,6 +982,19 @@ dynamic_reconfigure_generate_messages_py/fast:
 .PHONY : dynamic_reconfigure_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named ndt_amcl
+
+# Build rule for target.
+ndt_amcl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ndt_amcl
+.PHONY : ndt_amcl
+
+# fast build rule for target.
+ndt_amcl/fast:
+	$(MAKE) -f localizer/CMakeFiles/ndt_amcl.dir/build.make localizer/CMakeFiles/ndt_amcl.dir/build
+.PHONY : ndt_amcl/fast
+
+#=============================================================================
 # Target rules for targets named ndt_mapping
 
 # Build rule for target.
@@ -993,19 +1006,6 @@ ndt_mapping: cmake_check_build_system
 ndt_mapping/fast:
 	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/build
 .PHONY : ndt_mapping/fast
-
-#=============================================================================
-# Target rules for targets named ndt_mcl
-
-# Build rule for target.
-ndt_mcl: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ndt_mcl
-.PHONY : ndt_mcl
-
-# fast build rule for target.
-ndt_mcl/fast:
-	$(MAKE) -f localizer/CMakeFiles/ndt_mcl.dir/build.make localizer/CMakeFiles/ndt_mcl.dir/build
-.PHONY : ndt_mcl/fast
 
 #=============================================================================
 # Target rules for targets named nodelet_generate_messages_cpp
@@ -1214,8 +1214,8 @@ help:
 	@echo "... dynamic_reconfigure_generate_messages_cpp"
 	@echo "... dynamic_reconfigure_generate_messages_lisp"
 	@echo "... dynamic_reconfigure_generate_messages_py"
+	@echo "... ndt_amcl"
 	@echo "... ndt_mapping"
-	@echo "... ndt_mcl"
 	@echo "... nodelet_generate_messages_cpp"
 	@echo "... nodelet_generate_messages_lisp"
 	@echo "... nodelet_generate_messages_py"

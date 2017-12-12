@@ -1,7 +1,7 @@
 <!-- nav_core path register launch -->
 <launch >
 	<!-- arguments -->
-	<arg name="data_dir" default="$(find nav_core)/../../data/sample/" />
+	<arg name="data_dir" default="$(find nav_core)/../../data/nic6f/" />
 
 	<!-- path register -->
 	<node name="nav_core_path_register" pkg="nav_core" type="nav_core_path_register" output="screen" >

@@ -23,6 +23,7 @@
 		<param name="/max_vel" value="1.0" type="double" />
 		<param name="/kv" value="0.7" type="double" />
 		<param name="/publish_hz" value="30.0" type="double" />
+		<param name="/stop" value="true" type="bool" />
 		<param name="/use_nav_core_server" value="false" type="bool" />
 	</node >
 
@@ -40,8 +41,8 @@
 		<param name="/kv" value="0.8" type="double" />
 		<param name="/w_range" value="0.4" type="double" />
 		<param name="/use_emergency_stop" value="true" type="bool" />
-		<param name="/stop_x_size" value="0.6" type="double" />
-		<param name="/stop_y_size" value="0.4" type="double" />
+		<param name="/stop_x_size" value="0.5" type="double" />
+		<param name="/stop_y_size" value="0.3" type="double" />
 		<param name="/stop_time" value="3.0" type="double" />
 		<param name="/back_time" value="5.0" type="double" />
 		<param name="/back_speed" value="0.2" type="double" />

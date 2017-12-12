@@ -39,6 +39,7 @@ public:
 	void spin(void);
 	bool do_update(void);
 	void update_map(void);
+	void update_cell(int u, int v, double dr);
 	void update_path(void);
 	void save_last_robot_pose(void);
 	void save_map(void);
@@ -185,6 +186,7 @@ void PathRegister::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
 void PathRegister::spin(void)
 {
+	printf("start path registration\n");
 	ros::Rate loop_rate(20.0);
 	nh.setParam("/nav_core_path_register/change_map", false);
 	while (ros::ok())
@@ -196,6 +198,7 @@ void PathRegister::spin(void)
 			update_path();
 			map_pub.publish(map);
 			path_pub.publish(path);
+			printf("update\n");
 		}
 		bool change_map;
 		nh.getParam("/nav_core_path_register/change_map", change_map);
@@ -245,12 +248,6 @@ void PathRegister::update_map(void)
 	// end-point model-based map update using binary Bayes filtering algorithm
 	pose_t pose = robot_pose;
 	sensor_msgs::LaserScan scan = curr_scan;
-	double z_hit = 0.90;
-	double z_max = 0.05;
-	double max_dist_prob = 0.043937;
-	double z_hit_denom = 0.08;
-	double z_rand = 0.05;
-	double z_rand_mult = 0.033333;
 	double c = cos(pose.yaw);
 	double s = sin(pose.yaw);
 	double xo = base_link2laser.x * c - base_link2laser.y * s + pose.x;
@@ -265,7 +262,7 @@ void PathRegister::update_map(void)
 		double dy = map.info.resolution * sin(yaw);
 		double x = xo;
 		double y = yo;
-		for (double r = 0.0; r <= range; r += map.info.resolution)
+		for (double r = 0.0; r < range - map.info.resolution; r += map.info.resolution)
 		{
 			double dx_ = x - map.info.origin.position.x;
 			double dy_ = y - map.info.origin.position.y;
@@ -273,31 +270,62 @@ void PathRegister::update_map(void)
 			int v = (int)(dy_ / map.info.resolution);
 			if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
 			{
-				int node = v * map.info.width + u;
-				int val = map.data[node];
-				double po;
-				if (val == -1)
-					po = 0.5;
-				else
-					po = (double)val / 100.0;
-				double z = range - r;
-				double pz = z_hit * exp(-(z * z) / z_hit_denom) + z_hit * max_dist_prob + z_rand * z_rand_mult;
-				if (pz > 1.0)
-					pz = 1.0;
-				double l = log(po / (1.0 - po)) + log(pz / (1.0 - pz));
-				double p = 1.0 / (1.0 + exp(-l));
-				val = (int)(p * 100.0);
-				if (val < 5)
-					val = 0;
-				if (val > 95)
-					val = 100;
-				map.data[node] = val;
+				update_cell(u, v, range - r);
 				x += dx;
 				y += dy;
 			}
 		}
+/*
+		x = range * cos(yaw) + xo;
+		y = range * sin(yaw) + yo;
+		double dx_ = x - map.info.origin.position.x;
+		double dy_ = y - map.info.origin.position.y;
+		int u = (int)(dx_ / map.info.resolution);
+		int v = (int)(dy_ / map.info.resolution);
+		if (1 <= u && u < map.info.width - 1 && 1 <= v && v < map.info.height - 1)
+		{
+			update_cell(u, v, 0.0);
+			update_cell(u - 1, v, 0.0);
+			update_cell(u + 1, v, 0.0);
+			update_cell(u, v - 1, 0.0);
+			update_cell(u, v + 1, 0.0);
+		}
+ */
 	}
 	map.header.stamp = ros::Time::now();
+}
+
+void PathRegister::update_cell(int u, int v, double dr)
+{
+	double z_hit = 0.90;
+	double z_max = 0.05;
+	double max_dist_prob = 0.043937;
+	double z_hit_denom = 0.08;
+	double z_rand = 0.05;
+	double z_rand_mult = 0.033333;
+	int node = v * map.info.width + u;
+	int val = map.data[node];
+	double po;
+	if (val == -1)
+		po = 0.5;
+	else
+		po = (double)val / 100.0;
+	double z = dr;
+	double pz = z_hit * exp(-(z * z) / z_hit_denom) + z_hit * max_dist_prob + z_rand * z_rand_mult;
+	if (pz > 1.0)
+		pz = 1.0;
+	double l = log(po / (1.0 - po)) + log(pz / (1.0 - pz));
+	double p = 1.0 / (1.0 + exp(-l));
+	if (p < 0.05)
+		p = 0.05;
+	if (val > 0.95)
+		val = 0.95;
+	val = (int)(p * 100.0);
+//	if (val < 5)
+//		val = 0;
+//	if (val > 95)
+//		val = 100;
+	map.data[node] = val;
 }
 
 void PathRegister::update_path(void)

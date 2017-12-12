@@ -63,6 +63,7 @@ void NavCoreServer::spin(void)
 	map_pub.publish(map);
 	path_pub.publish(path);
 	ros::Rate loop_rate(10.0);
+	nh.setParam("/nav_params/reach_at_goal", false);
 	nh.setParam("/nav_params/request_new_map", false);
 	nh.setParam("/nav_params/finish_navigation", false);
 	while (ros::ok())
@@ -79,7 +80,7 @@ void NavCoreServer::spin(void)
 			if (count == sub_map_num)
 			{
 				nh.setParam("/nav_params/finish_navigation", true);
-				printf("finish navigation\n");
+				printf("finish navigation from nav_core_server\n");
 				break;
 			}
 			read_map_pgm_file();

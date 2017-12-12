@@ -9,7 +9,7 @@ class SOAN
 private:
 	ros::NodeHandle nh;
 	ros::Subscriber twist_sub, scan_sub;
-	ros::Publisher twist_pub, local_map_pub;
+	ros::Publisher cmd_pub, twist_pub, local_map_pub;
 	std::string input_twist_topic_name, input_scan_topic_name;
 	std::string output_twist_topic_name;
 	cv::Mat local_map;
@@ -81,6 +81,7 @@ SOAN::SOAN():
 	twist_sub = nh.subscribe(input_twist_topic_name, 100, &SOAN::twist_callback, this);
 	scan_sub = nh.subscribe(input_scan_topic_name, 10, &SOAN::scan_callback, this);
 	// publisher
+	cmd_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
 	twist_pub = nh.advertise<geometry_msgs::TwistStamped>(output_twist_topic_name, 100);
 	local_map_pub = nh.advertise<sensor_msgs::Image>("/local_map_for_simple_obstacle_avoidance", 100);
 	// initialization
@@ -208,10 +209,12 @@ void SOAN::avoid(void)
 		}
 	}
 	// publish
+	geometry_msgs::Twist cmd_vel;
 	geometry_msgs::TwistStamped avoid_cmd;
 	avoid_cmd.header.stamp = ros::Time::now();
-	avoid_cmd.twist.linear.x = target_v;
-	avoid_cmd.twist.angular.z = target_w;
+	cmd_vel.linear.x = avoid_cmd.twist.linear.x = target_v;
+	cmd_vel.angular.z = avoid_cmd.twist.angular.z = target_w;
+	cmd_pub.publish(cmd_vel);
 	twist_pub.publish(avoid_cmd);
 	cv_bridge::CvImage local_map_msg(scan.header, "bgr8", local_map);
 	local_map_pub.publish(local_map_msg.toImageMsg());

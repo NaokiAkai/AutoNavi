@@ -8,10 +8,11 @@
 
 # modified environment variables
 export CMAKE_PREFIX_PATH="/home/akai/Dropbox/work/AutoNavi/ros/devel:$CMAKE_PREFIX_PATH"
-export CPATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/include:/home/akai/Dropbox/Research/cmob_auto/ros/devel/include:/opt/ros/indigo/include:/usr/local/cuda-7.5/include"
-export LD_LIBRARY_PATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/lib:/home/akai/Dropbox/Research/cmob_auto/ros/devel/lib:/opt/ros/indigo/lib:/usr/local/cuda-7.5/lib64:/usr/local/cuda-7.5/lib:/usr/local/cuda/lib64"
+export CPATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/include:/home/akai/Dropbox/Research/cmob_auto/ros/devel/include:/opt/ros/indigo/include:/usr/loca/cuda/include"
+export LD_LIBRARY_PATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/lib:/home/akai/Dropbox/Research/cmob_auto/ros/devel/lib:/opt/ros/indigo/lib:/usr/local/cuda/lib64:/usr/local/cuda/lib64:/usr/local/cuda/lib"
 export PKG_CONFIG_PATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD="/home/akai/Dropbox/work/AutoNavi/ros/build"
-export PYTHONPATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/python2.7/dist-packages:$PYTHONPATH"
+export PYTHONPATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/python2.7/dist-packages:/home/akai/Dropbox/Research/cmob_auto/ros/devel/lib/python2.7/dist-packages:/opt/ros/indigo/lib/python2.7/dist-packages:/usr/local/lib/python2.7/dist-packages"
 export ROSLISP_PACKAGE_DIRECTORIES="/home/akai/Dropbox/work/AutoNavi/ros/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
 export ROS_PACKAGE_PATH="/home/akai/Dropbox/work/AutoNavi/ros/src:$ROS_PACKAGE_PATH"
+export RTT_COMPONENT_PATH="/home/akai/Dropbox/work/AutoNavi/ros/devel/lib/orocos:$RTT_COMPONENT_PATH"

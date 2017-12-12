@@ -203,5 +203,5 @@ target_link_libraries(amcl ${catkin_LIBRARIES})
 add_executable(ndt_mapping src/ndt_mapping.cpp src/ndt.cpp)
 target_link_libraries(ndt_mapping ${catkin_LIBRARIES})
 
-add_executable(ndt_mcl src/ndt_mcl_node.cpp src/amcl.cpp src/ndt.cpp)
-target_link_libraries(ndt_mcl ${catkin_LIBRARIES})
+add_executable(ndt_amcl src/ndt_amcl_node.cpp src/amcl.cpp src/ndt.cpp)
+target_link_libraries(ndt_amcl ${catkin_LIBRARIES})
