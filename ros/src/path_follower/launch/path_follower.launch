@@ -3,49 +3,76 @@
 	<!-- arguments -->
 	<arg name="path_file" default="$(find path_follower)/../../maps/nic_garage/path.txt" />
 	<arg name="use_simple_obstacle_avoidance" default="true" />
+	<arg name="map_frame" default="/map" />
+	<arg name="path_topic_name" default="/target_path" />
+	<arg name="service_path_topic_name" default="/static_target_path" />
+	<arg name="base_link_frame" default="/base_link" />
+	<arg name="input_max_vel_topic_name" default="/max_vel" />
+	<arg name="output_twist_topic_name" default="/twist_cmd" />
+	<arg name="look_ahead_dist" default="1.0" />
+	<arg name="max_vel" default="1.0" />
+	<arg name="kv" default="0.7" />
+	<arg name="cmd_publish_hz" default="30.0" />
+	<arg name="stop" default="true" />
+	<arg name="use_nav_core_server" default="false" />
+	<arg name="input_scan_topic_name" default="/scan" />
+	<arg name="local_map_size_x" default="10.0" />
+	<arg name="local_map_size_y" default="10.0" />
+	<arg name="local_map_pixel_size" default="0.05" />
+	<arg name="robot_width" default="1.0" />
+	<arg name="predict_time" default="5.0" />
+	<arg name="step_time" default="0.1" />
+	<arg name="kv_avoid" default="0.8" />
+	<arg name="w_range" default="0.4" />
+	<arg name="use_emergency_stop" default="true" />
+	<arg name="stop_x_size" default="0.5" />
+	<arg name="stop_y_size" default="0.3" />
+	<arg name="stop_time" default="3.0" />
+	<arg name="back_time" default="5.0" />
+	<arg name="back_speed" default="0.2" />
 
 	<!-- path server -->
 	<node name="path_server" pkg="path_follower" type="path_server" args="$(arg path_file)" >
-		<param name="/map_frame" value="/map" type="string" />
-		<param name="/output_path_topic_name" value="/target_path" type="string" />
-		<param name="/service_path_topic_name" value="/static_target_path" type="string" />
+		<param name="/map_frame" value="$(arg map_frame)" type="string" />
+		<param name="/path_topic_name" value="$(arg path_topic_name)" type="string" />
+		<param name="/service_path_topic_name" value="$(arg service_path_topic_name)" type="string" />
 	</node >
 
 	<!-- path follower -->
 	<node name="path_follower" pkg="path_follower" type="path_follower" output="screen" >
-		<remap from="/twist_cmd" to="/twist_cmd_raw" if="$(arg use_simple_obstacle_avoidance)" />
-		<param name="/map_frame" value="/world" type="string" />
-		<param name="/base_link_frame" value="/base_link" type="string" />
-		<param name="/input_path_topic_name" value="/target_path" type="string" />
-		<param name="/input_max_vel_topic_name" value="/max_vel" type="string" />
-		<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-		<param name="/look_ahead_dist" value="1.0" type="double" />
-		<param name="/max_vel" value="1.0" type="double" />
-		<param name="/kv" value="0.7" type="double" />
-		<param name="/publish_hz" value="30.0" type="double" />
-		<param name="/stop" value="true" type="bool" />
-		<param name="/use_nav_core_server" value="false" type="bool" />
+		<remap from="$(arg output_twist_topic_name)" to="/twist_cmd_raw" if="$(arg use_simple_obstacle_avoidance)" />
+		<param name="/map_frame" value="$(arg map_frame)" type="string" />
+		<param name="/base_link_frame" value="$(arg base_link_frame)" type="string" />
+		<param name="/path_topic_name" value="$(arg path_topic_name)" type="string" />
+		<param name="/input_max_vel_topic_name" value="$(arg input_max_vel_topic_name)" type="string" />
+		<param name="/output_twist_topic_name" value="$(arg output_twist_topic_name)" type="string" />
+		<param name="/look_ahead_dist" value="$(arg look_ahead_dist)" type="double" />
+		<param name="/max_vel" value="$(arg max_vel)" type="double" />
+		<param name="/kv" value="$(arg kv)" type="double" />
+		<param name="/cmd_publish_hz" value="$(arg cmd_publish_hz)" type="double" />
+		<param name="/stop" value="$(arg stop)" type="bool" />
+		<param name="/use_nav_core_server" value="$(arg use_nav_core_server)" type="bool" />
 	</node >
 
 	<!-- obstacle avoidance -->
 	<node name="simple_obstacle_avoidance" pkg="path_follower" type="simple_obstacle_avoidance" output="screen" if="$(arg use_simple_obstacle_avoidance)" >
 		<param name="/input_twist_topic_name" value="/twist_cmd_raw" type="string" />
-		<param name="/input_scan_topic_name" value="/scan" type="string" />
-		<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-		<param name="/local_map_size_x" value="10.0" type="double" />
-		<param name="/local_map_size_y" value="10.0" type="double" />
-		<param name="/local_map_pixel_size" value="0.05" type="double" />
-		<param name="/robot_width" value="1.0" type="double" />
-		<param name="/predict_time" value="5.0" type="double" />
-		<param name="/step_time" value="0.1" type="double" />
-		<param name="/kv" value="0.8" type="double" />
-		<param name="/w_range" value="0.4" type="double" />
-		<param name="/use_emergency_stop" value="true" type="bool" />
-		<param name="/stop_x_size" value="0.5" type="double" />
-		<param name="/stop_y_size" value="0.3" type="double" />
-		<param name="/stop_time" value="3.0" type="double" />
-		<param name="/back_time" value="5.0" type="double" />
-		<param name="/back_speed" value="0.2" type="double" />
-		<param name="/cmd_publish_hz" value="20.0" type="double" />
+		<param name="/input_scan_topic_name" value="$(arg input_scan_topic_name)" type="string" />
+		<param name="/output_twist_topic_name" value="$(arg output_twist_topic_name)" type="string" />
+		<param name="/local_map_size_x" value="$(arg local_map_size_x)" type="double" />
+		<param name="/local_map_size_y" value="$(arg local_map_size_y)" type="double" />
+		<param name="/local_map_pixel_size" value="$(arg local_map_pixel_size)" type="double" />
+		<param name="/robot_width" value="$(arg robot_width)" type="double" />
+		<param name="/predict_time" value="$(arg predict_time)" type="double" />
+		<param name="/step_time" value="$(arg step_time)" type="double" />
+		<param name="/kv" value="$(arg kv_avoid)" type="double" />
+		<param name="/w_range" value="$(arg w_range)" type="double" />
+		<param name="/use_emergency_stop" value="$(arg use_emergency_stop)" type="bool" />
+		<param name="/stop_x_size" value="$(arg stop_x_size)" type="double" />
+		<param name="/stop_y_size" value="$(arg stop_y_size)" type="double" />
+		<param name="/stop_time" value="$(arg stop_time)" type="double" />
+		<param name="/back_time" value="$(arg back_time)" type="double" />
+		<param name="/back_speed" value="$(arg back_speed)" type="double" />
+		<param name="/cmd_publish_hz" value="$(arg cmd_publish_hz)" type="double" />
 	</node >
 </launch >

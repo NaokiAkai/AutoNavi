@@ -537,7 +537,7 @@ clean: nav_core/CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
 nav_core/CMakeFiles/nav_core_path_register.dir/all:
 	$(MAKE) -f nav_core/CMakeFiles/nav_core_path_register.dir/build.make nav_core/CMakeFiles/nav_core_path_register.dir/depend
 	$(MAKE) -f nav_core/CMakeFiles/nav_core_path_register.dir/build.make nav_core/CMakeFiles/nav_core_path_register.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
 	@echo "Built target nav_core_path_register"
 .PHONY : nav_core/CMakeFiles/nav_core_path_register.dir/all
 
@@ -572,7 +572,7 @@ clean: nav_core/CMakeFiles/nav_core_path_register.dir/clean
 nav_core/CMakeFiles/nav_core_server.dir/all:
 	$(MAKE) -f nav_core/CMakeFiles/nav_core_server.dir/build.make nav_core/CMakeFiles/nav_core_server.dir/depend
 	$(MAKE) -f nav_core/CMakeFiles/nav_core_server.dir/build.make nav_core/CMakeFiles/nav_core_server.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  10
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  8
 	@echo "Built target nav_core_server"
 .PHONY : nav_core/CMakeFiles/nav_core_server.dir/all
 
@@ -1179,8 +1179,10 @@ path_follower/clean: path_follower/CMakeFiles/path_follower.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_gencpp.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_generate_messages.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/clean
+path_follower/clean: path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_generate_messages_lisp.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_generate_messages_py.dir/clean
+path_follower/clean: path_follower/CMakeFiles/path_follower_geneus.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_genlisp.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_follower_genpy.dir/clean
 path_follower/clean: path_follower/CMakeFiles/path_recorder.dir/clean
@@ -1324,7 +1326,7 @@ clean: path_follower/CMakeFiles/nav_msgs_generate_messages_py.dir/clean
 path_follower/CMakeFiles/path_follower.dir/all:
 	$(MAKE) -f path_follower/CMakeFiles/path_follower.dir/build.make path_follower/CMakeFiles/path_follower.dir/depend
 	$(MAKE) -f path_follower/CMakeFiles/path_follower.dir/build.make path_follower/CMakeFiles/path_follower.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  17
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  15
 	@echo "Built target path_follower"
 .PHONY : path_follower/CMakeFiles/path_follower.dir/all
 
@@ -1387,9 +1389,10 @@ clean: path_follower/CMakeFiles/path_follower_gencpp.dir/clean
 # Target rules for target path_follower/CMakeFiles/path_follower_generate_messages.dir
 
 # All Build rule for target.
+path_follower/CMakeFiles/path_follower_generate_messages.dir/all: path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/all
 path_follower/CMakeFiles/path_follower_generate_messages.dir/all: path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/all
-path_follower/CMakeFiles/path_follower_generate_messages.dir/all: path_follower/CMakeFiles/path_follower_generate_messages_py.dir/all
 path_follower/CMakeFiles/path_follower_generate_messages.dir/all: path_follower/CMakeFiles/path_follower_generate_messages_lisp.dir/all
+path_follower/CMakeFiles/path_follower_generate_messages.dir/all: path_follower/CMakeFiles/path_follower_generate_messages_py.dir/all
 	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages.dir/depend
 	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 
@@ -1402,7 +1405,7 @@ all: path_follower/CMakeFiles/path_follower_generate_messages.dir/all
 
 # Build rule for subdir invocation for target.
 path_follower/CMakeFiles/path_follower_generate_messages.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_follower_generate_messages.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
 .PHONY : path_follower/CMakeFiles/path_follower_generate_messages.dir/rule
@@ -1424,11 +1427,11 @@ clean: path_follower/CMakeFiles/path_follower_generate_messages.dir/clean
 # Target rules for target path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir
 
 # All Build rule for target.
-path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/all: path_follower/CMakeFiles/nav_msgs_generate_messages_cpp.dir/all
 path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/all: path_follower/CMakeFiles/_path_follower_generate_messages_check_deps_GetPath.dir/all
+path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/all: path_follower/CMakeFiles/nav_msgs_generate_messages_cpp.dir/all
 	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/depend
 	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  18
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  16
 	@echo "Built target path_follower_generate_messages_cpp"
 .PHONY : path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/all
 
@@ -1450,6 +1453,37 @@ path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/clean:
 
 # clean rule for target.
 clean: path_follower/CMakeFiles/path_follower_generate_messages_cpp.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target path_follower/CMakeFiles/path_follower_generate_messages_eus.dir
+
+# All Build rule for target.
+path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/all: path_follower/CMakeFiles/_path_follower_generate_messages_check_deps_GetPath.dir/all
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/depend
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  17 18
+	@echo "Built target path_follower_generate_messages_eus"
+.PHONY : path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/all
+
+# Build rule for subdir invocation for target.
+path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+path_follower_generate_messages_eus: path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/rule
+.PHONY : path_follower_generate_messages_eus
+
+# clean rule for target.
+path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/clean:
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/clean
+.PHONY : path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/clean
+
+# clean rule for target.
+clean: path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -1514,6 +1548,37 @@ path_follower/CMakeFiles/path_follower_generate_messages_py.dir/clean:
 
 # clean rule for target.
 clean: path_follower/CMakeFiles/path_follower_generate_messages_py.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target path_follower/CMakeFiles/path_follower_geneus.dir
+
+# All Build rule for target.
+path_follower/CMakeFiles/path_follower_geneus.dir/all: path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/all
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_geneus.dir/build.make path_follower/CMakeFiles/path_follower_geneus.dir/depend
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_geneus.dir/build.make path_follower/CMakeFiles/path_follower_geneus.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 
+	@echo "Built target path_follower_geneus"
+.PHONY : path_follower/CMakeFiles/path_follower_geneus.dir/all
+
+# Build rule for subdir invocation for target.
+path_follower/CMakeFiles/path_follower_geneus.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 path_follower/CMakeFiles/path_follower_geneus.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
+.PHONY : path_follower/CMakeFiles/path_follower_geneus.dir/rule
+
+# Convenience name for target.
+path_follower_geneus: path_follower/CMakeFiles/path_follower_geneus.dir/rule
+.PHONY : path_follower_geneus
+
+# clean rule for target.
+path_follower/CMakeFiles/path_follower_geneus.dir/clean:
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_geneus.dir/build.make path_follower/CMakeFiles/path_follower_geneus.dir/clean
+.PHONY : path_follower/CMakeFiles/path_follower_geneus.dir/clean
+
+# clean rule for target.
+clean: path_follower/CMakeFiles/path_follower_geneus.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -1783,7 +1848,7 @@ clean: robot_sim/CMakeFiles/add_noise_to_sensor_data.dir/clean
 robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/joy_to_twist_cmd.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4
 	@echo "Built target joy_to_twist_cmd"
 .PHONY : robot_sim/CMakeFiles/joy_to_twist_cmd.dir/all
 
@@ -1818,7 +1883,7 @@ clean: robot_sim/CMakeFiles/joy_to_twist_cmd.dir/clean
 robot_sim/CMakeFiles/key_to_twist_cmd.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/key_to_twist_cmd.dir/build.make robot_sim/CMakeFiles/key_to_twist_cmd.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  7
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  5
 	@echo "Built target key_to_twist_cmd"
 .PHONY : robot_sim/CMakeFiles/key_to_twist_cmd.dir/all
 
@@ -1853,7 +1918,7 @@ clean: robot_sim/CMakeFiles/key_to_twist_cmd.dir/clean
 robot_sim/CMakeFiles/laser_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/laser_sim.dir/build.make robot_sim/CMakeFiles/laser_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  8
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  6
 	@echo "Built target laser_sim"
 .PHONY : robot_sim/CMakeFiles/laser_sim.dir/all
 
@@ -1888,7 +1953,7 @@ clean: robot_sim/CMakeFiles/laser_sim.dir/clean
 robot_sim/CMakeFiles/odom_sim.dir/all:
 	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/depend
 	$(MAKE) -f robot_sim/CMakeFiles/odom_sim.dir/build.make robot_sim/CMakeFiles/odom_sim.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  16
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  14
 	@echo "Built target odom_sim"
 .PHONY : robot_sim/CMakeFiles/odom_sim.dir/all
 
@@ -1921,14 +1986,12 @@ clean: robot_sim/CMakeFiles/odom_sim.dir/clean
 
 # Convenience name for "all" pass in the directory.
 localizer/all: localizer/CMakeFiles/amcl.dir/all
-localizer/all: localizer/CMakeFiles/amcl_dspd.dir/all
 localizer/all: localizer/CMakeFiles/ndt_amcl.dir/all
 localizer/all: localizer/CMakeFiles/ndt_mapping.dir/all
 .PHONY : localizer/all
 
 # Convenience name for "clean" pass in the directory.
 localizer/clean: localizer/CMakeFiles/amcl.dir/clean
-localizer/clean: localizer/CMakeFiles/amcl_dspd.dir/clean
 localizer/clean: localizer/CMakeFiles/bond_generate_messages_cpp.dir/clean
 localizer/clean: localizer/CMakeFiles/bond_generate_messages_lisp.dir/clean
 localizer/clean: localizer/CMakeFiles/bond_generate_messages_py.dir/clean
@@ -1987,41 +2050,6 @@ localizer/CMakeFiles/amcl.dir/clean:
 
 # clean rule for target.
 clean: localizer/CMakeFiles/amcl.dir/clean
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target localizer/CMakeFiles/amcl_dspd.dir
-
-# All Build rule for target.
-localizer/CMakeFiles/amcl_dspd.dir/all:
-	$(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/depend
-	$(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  4 5
-	@echo "Built target amcl_dspd"
-.PHONY : localizer/CMakeFiles/amcl_dspd.dir/all
-
-# Include target in all.
-all: localizer/CMakeFiles/amcl_dspd.dir/all
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-localizer/CMakeFiles/amcl_dspd.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 localizer/CMakeFiles/amcl_dspd.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles 0
-.PHONY : localizer/CMakeFiles/amcl_dspd.dir/rule
-
-# Convenience name for target.
-amcl_dspd: localizer/CMakeFiles/amcl_dspd.dir/rule
-.PHONY : amcl_dspd
-
-# clean rule for target.
-localizer/CMakeFiles/amcl_dspd.dir/clean:
-	$(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/clean
-.PHONY : localizer/CMakeFiles/amcl_dspd.dir/clean
-
-# clean rule for target.
-clean: localizer/CMakeFiles/amcl_dspd.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -2248,7 +2276,7 @@ clean: localizer/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/clean
 localizer/CMakeFiles/ndt_amcl.dir/all:
 	$(MAKE) -f localizer/CMakeFiles/ndt_amcl.dir/build.make localizer/CMakeFiles/ndt_amcl.dir/depend
 	$(MAKE) -f localizer/CMakeFiles/ndt_amcl.dir/build.make localizer/CMakeFiles/ndt_amcl.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  11 12 13
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  9 10 11
 	@echo "Built target ndt_amcl"
 .PHONY : localizer/CMakeFiles/ndt_amcl.dir/all
 
@@ -2283,7 +2311,7 @@ clean: localizer/CMakeFiles/ndt_amcl.dir/clean
 localizer/CMakeFiles/ndt_mapping.dir/all:
 	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/depend
 	$(MAKE) -f localizer/CMakeFiles/ndt_mapping.dir/build.make localizer/CMakeFiles/ndt_mapping.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  14 15
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/akai/Dropbox/work/AutoNavi/ros/build/CMakeFiles  12 13
 	@echo "Built target ndt_mapping"
 .PHONY : localizer/CMakeFiles/ndt_mapping.dir/all
 

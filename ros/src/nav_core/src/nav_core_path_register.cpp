@@ -85,10 +85,11 @@ PathRegister::PathRegister():
 	nh.param("/nav_core_path_register/map_size_y", map_size_y, map_size_y);
 	nh.param("/nav_core_path_register/map_resolution", map_resolution, map_resolution);
 	nh.param("/nav_core_path_register/map_origin_x", map_origin_x, map_origin_x);
-	nh.param("/nav_core_path_register/map_origin_y", map_origin_x, map_origin_x);
+	nh.param("/nav_core_path_register/map_origin_y", map_origin_y, map_origin_y);
 	nh.param("/nav_core_path_register/update_interval_dist", update_interval_dist, update_interval_dist);
 	nh.param("/nav_core_path_register/update_interval_angle", update_interval_angle, update_interval_angle);
 	update_interval_angle *= M_PI / 180.0;
+	robot_pose.x = robot_pose.y = robot_pose.yaw = 0.0;
 	// subscriber
 	odom_sub = nh.subscribe(input_odom_topic_name, 10, &PathRegister::odom_callback, this);
 	scan_sub = nh.subscribe(input_scan_topic_name, 10, &PathRegister::scan_callback, this);
@@ -275,7 +276,6 @@ void PathRegister::update_map(void)
 				y += dy;
 			}
 		}
-/*
 		x = range * cos(yaw) + xo;
 		y = range * sin(yaw) + yo;
 		double dx_ = x - map.info.origin.position.x;
@@ -285,12 +285,13 @@ void PathRegister::update_map(void)
 		if (1 <= u && u < map.info.width - 1 && 1 <= v && v < map.info.height - 1)
 		{
 			update_cell(u, v, 0.0);
+/*
 			update_cell(u - 1, v, 0.0);
 			update_cell(u + 1, v, 0.0);
 			update_cell(u, v - 1, 0.0);
 			update_cell(u, v + 1, 0.0);
-		}
  */
+		}
 	}
 	map.header.stamp = ros::Time::now();
 }
@@ -316,10 +317,10 @@ void PathRegister::update_cell(int u, int v, double dr)
 		pz = 1.0;
 	double l = log(po / (1.0 - po)) + log(pz / (1.0 - pz));
 	double p = 1.0 / (1.0 + exp(-l));
-	if (p < 0.05)
-		p = 0.05;
-	if (val > 0.95)
-		val = 0.95;
+	if (p < 0.01)
+		p = 0.01;
+	if (val > 0.99)
+		val = 0.99;
 	val = (int)(p * 100.0);
 //	if (val < 5)
 //		val = 0;

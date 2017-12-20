@@ -135,6 +135,14 @@ void AMCL::xy2uv(double x, double y, int* u, int* v)
 	*v = (int)(dy / map.info.resolution);
 }
 
+void AMCL::uv2xy(int u, int v, double* x, double* y)
+{
+	double dx = (double)u * map.info.resolution;
+	double dy = (double)v * map.info.resolution;
+	*x = dx + map.info.origin.position.x;
+	*y = dy + map.info.origin.position.y;
+}
+
 void AMCL::reset_particles(void)
 {
 	double wo = 1.0 / (double)particle_num;
@@ -254,6 +262,29 @@ void AMCL::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 		}
 	}
 	is_map_data = true;
+}
+
+void AMCL::save_map_as_txt_file(std::string fname)
+{
+	FILE* fp = fopen(fname.c_str(), "w");
+	if (fp == NULL)
+	{
+		ROS_ERROR("cannot open file -> %s", fname.c_str());
+	}
+	for (int u = 0; u < map.info.width; u++)
+	{
+		for (int v = 0; v < map.info.height; v++)
+		{
+			int node = v * map.info.width + u;
+			if (map.data[node] == 100)
+			{
+				double x, y;
+				uv2xy(u, v, &x, &y);
+				fprintf(fp, "%lf %lf\n", x, y);
+			}
+		}
+	}
+	fclose(fp);
 }
 
 void AMCL::broadcast_tf(void)

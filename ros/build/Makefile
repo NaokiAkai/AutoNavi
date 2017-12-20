@@ -696,6 +696,19 @@ path_follower_generate_messages_cpp/fast:
 .PHONY : path_follower_generate_messages_cpp/fast
 
 #=============================================================================
+# Target rules for targets named path_follower_generate_messages_eus
+
+# Build rule for target.
+path_follower_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 path_follower_generate_messages_eus
+.PHONY : path_follower_generate_messages_eus
+
+# fast build rule for target.
+path_follower_generate_messages_eus/fast:
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_eus.dir/build
+.PHONY : path_follower_generate_messages_eus/fast
+
+#=============================================================================
 # Target rules for targets named path_follower_generate_messages_lisp
 
 # Build rule for target.
@@ -720,6 +733,19 @@ path_follower_generate_messages_py: cmake_check_build_system
 path_follower_generate_messages_py/fast:
 	$(MAKE) -f path_follower/CMakeFiles/path_follower_generate_messages_py.dir/build.make path_follower/CMakeFiles/path_follower_generate_messages_py.dir/build
 .PHONY : path_follower_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named path_follower_geneus
+
+# Build rule for target.
+path_follower_geneus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 path_follower_geneus
+.PHONY : path_follower_geneus
+
+# fast build rule for target.
+path_follower_geneus/fast:
+	$(MAKE) -f path_follower/CMakeFiles/path_follower_geneus.dir/build.make path_follower/CMakeFiles/path_follower_geneus.dir/build
+.PHONY : path_follower_geneus/fast
 
 #=============================================================================
 # Target rules for targets named path_follower_genlisp
@@ -876,19 +902,6 @@ amcl: cmake_check_build_system
 amcl/fast:
 	$(MAKE) -f localizer/CMakeFiles/amcl.dir/build.make localizer/CMakeFiles/amcl.dir/build
 .PHONY : amcl/fast
-
-#=============================================================================
-# Target rules for targets named amcl_dspd
-
-# Build rule for target.
-amcl_dspd: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 amcl_dspd
-.PHONY : amcl_dspd
-
-# fast build rule for target.
-amcl_dspd/fast:
-	$(MAKE) -f localizer/CMakeFiles/amcl_dspd.dir/build.make localizer/CMakeFiles/amcl_dspd.dir/build
-.PHONY : amcl_dspd/fast
 
 #=============================================================================
 # Target rules for targets named bond_generate_messages_cpp
@@ -1192,8 +1205,10 @@ help:
 	@echo "... path_follower_gencpp"
 	@echo "... path_follower_generate_messages"
 	@echo "... path_follower_generate_messages_cpp"
+	@echo "... path_follower_generate_messages_eus"
 	@echo "... path_follower_generate_messages_lisp"
 	@echo "... path_follower_generate_messages_py"
+	@echo "... path_follower_geneus"
 	@echo "... path_follower_genlisp"
 	@echo "... path_follower_genpy"
 	@echo "... path_recorder"
@@ -1206,7 +1221,6 @@ help:
 	@echo "... laser_sim"
 	@echo "... odom_sim"
 	@echo "... amcl"
-	@echo "... amcl_dspd"
 	@echo "... bond_generate_messages_cpp"
 	@echo "... bond_generate_messages_lisp"
 	@echo "... bond_generate_messages_py"

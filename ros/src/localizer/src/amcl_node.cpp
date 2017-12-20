@@ -94,5 +94,7 @@ int main(int argc, char** argv)
 		}
 		loop_rate.sleep();
 	}
+//	std::string fname("/tmp/amcl_map.txt");
+//	amcl->save_map_as_txt_file(fname);
 	return 0;
 }

@@ -2,7 +2,6 @@
 <launch >
 	<!-- arguments -->
 	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm_with_cars.yaml" />
-	<!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" /> -->
 	<arg name="use_ground_truth_tf" default="false" />
 	<arg name="use_joystick_controller" default="false" />
 	<arg name="use_ackermann_simulator" default="false" />
@@ -41,7 +40,7 @@
 		<!-- twist command generator -->
 		<node name="joy_to_twist_cmd" pkg="robot_sim" type="joy_to_twist_cmd" if="$(arg use_joystick_controller)" >
 			<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-			<param name="/max_linear_vel" value="2.0" type="double" />
+			<param name="/max_linear_vel" value="5.0" type="double" />
 			<param name="/max_angular_vel" value="0.8" type="double" />
 			<param name="/output_hz" value="40.0" type="double" />
 			<param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
@@ -86,12 +85,6 @@
 		<param name="/output_odom_topic_name" value="/odom" type="string" />
 		<param name="/output_scan_topic_name" value="/scan" type="string" />
 		<param name="/output_scan_points_topic_name" value="/scan_points" type="string" />
-<!--
-		<param name="/odom_linear_noise" value="0.3" type="double" />
-		<param name="/odom_angular_noise" value="0.15" type="double" />
-		<param name="/odom_linear_noise_stationary" value="0.95" type="double" />
-		<param name="/odom_angular_noise_stationary" value="0.95" type="double" />
- -->
 		<param name="/odom_linear_noise" value="0.2" type="double" />
 		<param name="/odom_angular_noise" value="0.08" type="double" />
 		<param name="/odom_linear_noise_stationary" value="0.975" type="double" />

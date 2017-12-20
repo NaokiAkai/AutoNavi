@@ -52,10 +52,12 @@ public:
 	AMCL();
 	double nrand(double n);
 	void xy2uv(double x, double y, int* u, int* v);
+	void uv2xy(int u, int v, double* x, double* y);
 	void reset_particles(void);
 	void amcl_init(void);
 	void initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
 	void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg);
+	void save_map_as_txt_file(std::string fname);
 	void broadcast_tf(void);
 	void publish_pose(void);
 	void publish_particles(void);
