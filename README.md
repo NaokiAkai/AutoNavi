@@ -1,8 +1,8 @@
 We submitted papers regarding this repository to IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) and Journal of Robotics and Mechatoronics (JRM). It should be noted that the topics of the papers are different.
 
-The paper title submitted to IROS is "Mobile Robot Localization Considering Class of Sensor Observations." If you want to know this detail, please go to *ros/src/localizer*.
+The paper title submitted to IROS is "Mobile Robot Localization Considering Class of Sensor Observations." If you want to know this detail, please go to **ros/src/localizer**.
 
-The paper title submitted to JRM is "Teaching-Playback Navigation without Consistent Map." If you want to know this detail, please go to *ros/src/nav_core*.
+The paper title submitted to JRM is "Teaching-Playback Navigation without Consistent Map." If you want to know this detail, please go to **ros/src/nav_core**.
 
 If you a have question, please feel free contact me.
 
