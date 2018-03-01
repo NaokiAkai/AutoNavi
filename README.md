@@ -6,16 +6,10 @@ The paper title submitted to JRM is "Teaching-Playback Navigation without Consis
 
 If you a have question, please feel free contact me.
 
-akai[at]coi.nagoya-u.ac.jp
-n.akai.goo[at]gmail.com
-[at] -> @
-
-
-
-
-
-
-日本語
+akai[at]coi.nagoya-u.ac.jp  
+n.akai.goo[at]gmail.com  
+[at] -> @  
+      
 このレポジトリはIROSとJRMに投稿した論文の内容で構成されています．2つの論文の情報が含まれていますが，どちらも別のトピックを扱っています．
 
 IROSに投稿した論文のタイトルは，Mobile Robot Localization Considering Class of Sensor Observationsです.こちらに興味がある方は，./ros/src/localizerのディレクトリに移動してください.
@@ -24,6 +18,6 @@ JRMに投稿した論文のタイトルは，Teaching-Playback Navigation withou
 
 日本人の学生でも簡単に扱えることを意識して，可能な限り日本語の説明を入れて行こうと思っています．質問があれば気軽にメールください．
 
-akai[at]coi.nagoya-u.ac.jp
-n.akai.goo[at]gmail.com
-[at] -> @
+akai[at]coi.nagoya-u.ac.jp  
+n.akai.goo[at]gmail.com  
+[at] -> @  
