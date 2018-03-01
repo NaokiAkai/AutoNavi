@@ -26,6 +26,7 @@ private:
 
 public:
 	SOAN();
+	~SOAN() {};
 	void init(void);
 	void twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg);
 	void scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg);

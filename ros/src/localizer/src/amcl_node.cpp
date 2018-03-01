@@ -8,8 +8,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-
-#include "amcl.h"
+#include <localizer/amcl.h>
 
 AMCL* amcl;
 
@@ -62,15 +61,21 @@ int main(int argc, char** argv)
 			continue;
 		}
 		sensor_msgs::LaserScan scan = amcl->curr_scan;
-		double curr_time = scan.header.stamp.toSec();;
+		double curr_time = scan.header.stamp.toSec();
 		amcl->check_scan_points_validity(scan);
-		amcl->evaluate_particles(scan);
+		if (amcl->use_dspd)
+			amcl->evaluate_particles_with_dspd(scan);
+		else if (amcl->use_beam_model)
+			amcl->evaluate_particles_using_beam_model(scan);
+		else
+			amcl->evaluate_particles_using_likelihood_field_model(scan);
 		amcl->compute_total_weight_and_effective_sample_size();
 		amcl->estimate_robot_pose();
 		amcl->compute_random_particle_rate();
 		double d_time = curr_time - prev_time;
 		if (fabs(amcl->delta_dist) >= amcl->update_dist || fabs(amcl->delta_yaw) >= amcl->update_yaw || d_time >= amcl->update_time)
 		{
+//			amcl->compute_scan_fractions(amcl->robot_pose, scan, NULL, NULL);
 			amcl->resample_particles();
 			prev_time = curr_time;
 			amcl->delta_dist = amcl->delta_yaw = 0.0;

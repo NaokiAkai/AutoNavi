@@ -123,6 +123,7 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  /usr/local/include/eigen3
 )
 
 ## Declare a C++ library
@@ -204,6 +205,9 @@ target_link_libraries(path_recorder ${catkin_LIBRARIES})
 
 add_executable(path_saver src/path_saver.cpp)
 target_link_libraries(path_saver ${catkin_LIBRARIES})
+
+add_executable(g2o_path_saver src/g2o_path_saver.cpp)
+target_link_libraries(g2o_path_saver ${catkin_LIBRARIES})
 
 add_executable(path_follower src/path_follower.cpp)
 target_link_libraries(path_follower ${catkin_LIBRARIES})

@@ -22,6 +22,7 @@ private:
 
 public:
 	PathFollower();
+	~PathFollower() {};
 	void path_callback(const nav_msgs::Path::ConstPtr& msg);
 	void max_vel_callback(const std_msgs::Float32::ConstPtr& msg);
 	void spin(void);

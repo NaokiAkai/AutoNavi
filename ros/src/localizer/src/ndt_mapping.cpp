@@ -4,8 +4,7 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-
-#include "ndt.h"
+#include <localizer/ndt.h>
 
 class NDTMapping
 {
@@ -24,6 +23,7 @@ private:
 
 public:
 	NDTMapping();
+	~NDTMapping() {};
 	void scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
 };
 
@@ -34,12 +34,12 @@ NDTMapping::NDTMapping():
 	laser_frame("/laser"),
 	map_size_x(700.0f),
 	map_size_y(600.0f),
-	map_grid_size(1.0f),
+	map_grid_size(0.5f),
 	map_origin_x(-200.0f),
 	map_origin_y(-200.0f),
 	map_file_name("/tmp/ndt_map.txt"),
-	mapping_interval_dist(0.2),
-	mapping_interval_angle(1.0),
+	mapping_interval_dist(0.5),
+	mapping_interval_angle(10.0),
 	tf_listener(),
 	xo(0.0),
 	yo(0.0),

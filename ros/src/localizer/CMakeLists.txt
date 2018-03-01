@@ -15,7 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   tf_conversions
+  grid_map_ros
 )
+
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -122,6 +125,8 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+  "${PROJECT_SOURCE_DIR}/include"
 )
 
 ## Declare a C++ library
@@ -194,14 +199,22 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(amcl src/amcl_node.cpp src/amcl.cpp)
-target_link_libraries(amcl ${catkin_LIBRARIES})
+if(UNIX)
+#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
+endif()
 
-#add_executable(amcl_dspd src/amcl_dspd_node.cpp src/amcl.cpp)
-#target_link_libraries(amcl_dspd ${catkin_LIBRARIES})
+add_executable(amcl src/amcl_node.cpp src/amcl.cpp)
+target_link_libraries(amcl ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
+add_executable(amcl_dspd src/amcl_dspd_node.cpp src/amcl.cpp)
+target_link_libraries(amcl_dspd ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable(ndt_mapping src/ndt_mapping.cpp src/ndt.cpp)
 target_link_libraries(ndt_mapping ${catkin_LIBRARIES})
 
 add_executable(ndt_amcl src/ndt_amcl_node.cpp src/amcl.cpp src/ndt.cpp)
 target_link_libraries(ndt_amcl ${catkin_LIBRARIES})
+
+add_executable(gyro_odom src/gyro_odom.cpp)
+target_link_libraries(gyro_odom ${catkin_LIBRARIES})

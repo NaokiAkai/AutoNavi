@@ -1,4 +1,4 @@
-<!-- amcl launch -->
+<!-- auto navigation launch -->
 <launch >
 	<!-- arguments -->
 	<arg name="data_dir" default="$(find nav_core)/../../data/sample/" />

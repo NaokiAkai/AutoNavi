@@ -2,6 +2,9 @@
 <launch >
 	<!-- arguments -->
 	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+<!--
+	<arg name="map_yaml_file" default="$(env HOME)/maps/tc2017/ogm.yaml" />
+ -->
 	<arg name="map_frame" default="/map" />
 	<arg name="laser_frame" default="/laser" />
 	<arg name="base_link_frame" default="/base_link" />
@@ -17,22 +20,32 @@
 	<arg name="alpha_fast" default="0.1" />
 	<arg name="update_dist" default="0.2" />
 	<arg name="update_yaw" default="2.0" />
-	<arg name="update_time" default="5.0" />
+	<arg name="update_time" default="10000000.0" />
 	<arg name="odom_noise_dist_dist" default="1.5" />
-	<arg name="odom_noise_head_dist" default="0.9" />
-	<arg name="odom_noise_dist_head" default="0.9" />
-	<arg name="odom_noise_head_head" default="2.5" />
+	<arg name="odom_noise_head_dist" default="0.5" />
+	<arg name="odom_noise_dist_head" default="0.7" />
+	<arg name="odom_noise_head_head" default="2.2" />
 	<arg name="start_x" default="0.0" />
 	<arg name="start_y" default="0.0" />
 	<arg name="start_yaw" default="0.0" />
-	<arg name="initial_cov_xx" default="0.2" />
-	<arg name="initial_cov_yy" default="0.2" />
-	<arg name="initial_cov_yawyaw" default="1.0" />
+	<arg name="initial_cov_xx" default="0.1" />
+	<arg name="initial_cov_yy" default="0.1" />
+	<arg name="initial_cov_yawyaw" default="0.5" />
 	<arg name="pose_publish_hz" default="20.0" />
 	<arg name="use_kld_sampling" default="true" />
-	<arg name="use_test_range_measurement" default="true" />
-	<arg name="dynamic_scan_point_threshold" default="0.9" />
+	<arg name="dynamic_scan_point_threshold" default="0.90" />
 	<arg name="use_nav_core_server" default="false" />
+	<arg name="z_hit" default="0.9" />
+	<arg name="z_short" default="0.1" />
+	<arg name="z_max" default="0.05" />
+	<arg name="z_rand" default="0.05" />
+	<arg name="z_hit_denom" default="0.1" />
+	<arg name="lambda_short" default="0.1" />
+	<arg name="max_dist_prob" default="0.043937" />
+	<arg name="z_rand_mult" default="0.033333" />
+	<arg name="use_beam_model" default="false" />
+	<arg name="use_test_range_measurement" default="true" />
+	<arg name="use_dspd" default="true" />
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
@@ -40,8 +53,18 @@
 
 	<!-- map server -->
 	<node name="amcl_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >
-		<remap from="/map" to="$(arg map_topic_name)" />
-		<remap from="/map_metadata" to="/amcl_map_server_map_metadata" />
+		<remap from="/map" to="/amcl_map" />
+		<remap from="/map_metadata" to="/amcl_map_metadata" />
+	</node >
+
+	<!-- gyro odometry -->
+	<node name="gyro_odom" pkg="localizer" type="gyro_odom" >
+		<param name="/input_imu_topic_name" value="/imu/data" type="string" />
+		<param name="/input_odom_topic_name" value="/odom" type="string" />
+		<param name="/output_odom_topic_name" value="/gyro_odom" type="string" />
+		<param name="/parent_frame" value="/map" type="string" />
+		<param name="/child_frame" value="/gyro_odom" type="string" />
+		<param name="/moving_average_filter_num" value="10" type="string" />
 	</node >
 
 	<!-- amcl localizer -->
@@ -55,7 +78,7 @@
 		<param name="/min_particle_num" value="$(arg min_particle_num)" type="int" />
 		<param name="/max_particle_num" value="$(arg max_particle_num)" type="int" />
 		<param name="/resample_threshold" value="$(arg resample_threshold)" type="double" />
-		<param name="/scan_step" value="$(arg scan_step)" type="double" />
+		<param name="/scan_step" value="$(arg scan_step)" type="int" />
 		<param name="/max_dist_to_obstacle" value="$(arg max_dist_to_obstacle)" type="double" />
 		<param name="/alpha_slow" value="$(arg alpha_slow)" type="double" />
 		<param name="/alpha_fast" value="$(arg alpha_fast)" type="double" />
@@ -77,5 +100,15 @@
 		<param name="/use_test_range_measurement" value="$(arg use_test_range_measurement)" type="bool" />
 		<param name="/dynamic_scan_point_threshold" value="$(arg dynamic_scan_point_threshold)" type="double" />
 		<param name="/use_nav_core_server" value="$(arg use_nav_core_server)" type="bool" />
+		<param name="/z_hit" value="$(arg z_hit)" type="double" />
+		<param name="/z_short" value="$(arg z_short)" type="double" />
+		<param name="/z_max" value="$(arg z_max)" type="double" />
+		<param name="/z_rand" value="$(arg z_rand)" type="double" />
+		<param name="/z_hit_denom" value="$(arg z_hit_denom)" type="double" />
+		<param name="/lambda_short" value="$(arg lambda_short)" type="double" />
+		<param name="/max_dist_prob" value="$(arg max_dist_prob)" type="double" />
+		<param name="/z_rand_mult" value="$(arg z_rand_mult)" type="double" />
+		<param name="/use_beam_model" value="$(arg use_beam_model)" type="bool" />
+		<param name="/use_dspd" value="$(arg use_dspd)" type="bool" />
 	</node >
 </launch >

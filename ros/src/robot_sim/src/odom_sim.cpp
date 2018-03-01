@@ -3,8 +3,7 @@
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-
-#include "common.h"
+#include <robot_sim/common.h>
 
 class OdomSim
 {
@@ -21,12 +20,15 @@ private:
 	double odom_publish_hz;
 	bool use_ackermann_simulator;
 	double base_line, steering_angle;
+	bool record_ground_truth_trajectory;
 
 public:
 	OdomSim();
+	~OdomSim() {};
 	void twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg);
 	void robot_sim_init(void);
 	void publish_messages(void);
+	void record_ground_truth(void);
 
 	inline void mod_yaw(double *yaw)
 	{
@@ -43,6 +45,7 @@ OdomSim::OdomSim():
 	odom_publish_hz(50.0),
 	use_ackermann_simulator(false),
 	base_line(1.0),
+	record_ground_truth_trajectory(false),
 	steering_angle(0.0)
 {
 	// read parameters
@@ -52,6 +55,7 @@ OdomSim::OdomSim():
 	nh.param("/odom_sim/odom_publish_hz", odom_publish_hz, odom_publish_hz);
 	nh.param("/odom_sim/use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
 	nh.param("/odom_sim/base_line", base_line, base_line);
+	nh.param("/odom_sim/record_ground_truth_trajectory", record_ground_truth_trajectory, record_ground_truth_trajectory);
 	// set initial state
 	odom.header.frame_id = pose.header.frame_id = map_frame;
 	odom.child_frame_id = "/ground_truth";
@@ -73,6 +77,8 @@ OdomSim::OdomSim():
 		publish_messages();
 		ros::spinOnce();
 		printf("x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", robot_pose.x, robot_pose.y, robot_pose.yaw * 180.0 / M_PI);
+		if (record_ground_truth_trajectory)
+			record_ground_truth();
 		loop_rate.sleep();
 	}
 }
@@ -93,6 +99,7 @@ void OdomSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
 	if (delta_time > 0.5)
 	{
 		prev_time = curr_time;
+		is_first = true;
 		return;
 	}
 	double delta_dist = msg->twist.linear.x * delta_time;
@@ -160,6 +167,32 @@ void OdomSim::publish_messages(void)
 		q.setRPY(0.0, 0.0, robot_pose.yaw + steering_angle);
 		transform.setRotation(q);
 		br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), map_frame, "/ground_truth_front_link"));
+	}
+}
+
+void OdomSim::record_ground_truth(void)
+{
+	static bool is_first = true;
+	static pose_t prev_robot_pose;
+	static FILE* fp;
+	if (fp == NULL)
+		fp = fopen("/tmp/odom_sim_ground_truth.txt", "w");
+	if (is_first)
+	{
+		fprintf(fp, "%lf %lf %lf\n", robot_pose.x, robot_pose.y, robot_pose.yaw);
+		prev_robot_pose = robot_pose;
+		is_first = false;
+	}
+	else
+	{
+		double dx = robot_pose.x - prev_robot_pose.x;
+		double dy = robot_pose.y - prev_robot_pose.y;
+		double dl = sqrt(dx * dx + dy * dy);
+		if (dl > 0.3)
+		{
+			fprintf(fp, "%lf %lf %lf\n", robot_pose.x, robot_pose.y, robot_pose.yaw);
+			prev_robot_pose = robot_pose;
+		}
 	}
 }
 

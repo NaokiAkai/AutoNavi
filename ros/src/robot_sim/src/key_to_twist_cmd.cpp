@@ -16,6 +16,7 @@ private:
 
 public:
 	Key2TwistCmd();
+	~Key2TwistCmd() {};
 	void key_callback(const keyboard::Key::ConstPtr& msg);
 };
 

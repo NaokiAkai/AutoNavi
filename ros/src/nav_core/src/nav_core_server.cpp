@@ -23,6 +23,7 @@ private:
 
 public:
 	NavCoreServer();
+	~NavCoreServer() {};
 	void spin();
 	void read_sub_map_num_file(void);
 	void read_map_yaml_file(void);

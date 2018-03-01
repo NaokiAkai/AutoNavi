@@ -16,6 +16,7 @@ private:
 
 public:
 	PathRecorder();
+	~PathRecorder() {};
 	void spin(void);
 };
 

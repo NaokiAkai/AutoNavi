@@ -6,8 +6,7 @@
 #include <geometry_msgs/Point32.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
-
-#include "common.h"
+#include <robot_sim/common.h>
 
 class AddNoise
 {
@@ -80,7 +79,7 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 {
 	static double prev_time;
 	nav_msgs::Odometry odom = *msg;
-	odom.header.frame_id = "/odom";
+//	odom.header.frame_id = "/odom";
 	odom.child_frame_id = "/odom_frame";
 	if (!is_odom_initialized)
 	{
@@ -124,7 +123,7 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 	q.setRPY(0.0, 0.0, robot_pose.yaw);
 	transform.setRotation(q);
 	static tf::TransformBroadcaster br;
-	br.sendTransform(tf::StampedTransform(transform, msg->header.stamp, "/odom", "/odom_frame"));
+	br.sendTransform(tf::StampedTransform(transform, msg->header.stamp, odom.header.frame_id, odom.child_frame_id));
 	prev_time = curr_time;
 	odom_pub.publish(odom);
 }

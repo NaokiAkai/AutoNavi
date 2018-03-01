@@ -33,6 +33,7 @@ private:
 
 public:
 	PathRegister();
+	~PathRegister() {};
 	void init(void);
 	void odom_callback(const nav_msgs::Odometry::ConstPtr& msg);
 	void scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
@@ -270,11 +271,9 @@ void PathRegister::update_map(void)
 			int u = (int)(dx_ / map.info.resolution);
 			int v = (int)(dy_ / map.info.resolution);
 			if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
-			{
 				update_cell(u, v, range - r);
-				x += dx;
-				y += dy;
-			}
+			x += dx;
+			y += dy;
 		}
 		x = range * cos(yaw) + xo;
 		y = range * sin(yaw) + yo;

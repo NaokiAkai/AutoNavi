@@ -4,8 +4,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <Eigen/Dense>
-
-#include "ndt.h"
+#include <localizer/ndt.h>
 
 NDT::NDT():
 	ndt_map_min_points_num(20),
@@ -352,7 +351,7 @@ visualization_msgs::MarkerArray NDT::get_ellipses_of_ndt_map(std::string frame_i
 			ellipse.scale.y = rb;
 			ellipse.scale.z = 0.1;
 			ellipse.color.r = 0.0;
-			ellipse.color.g = 0.0;
+			ellipse.color.g = 0.74902;
 			ellipse.color.b = 1.0;
 			ellipse.color.a = (0.8 / (1.0 - occupancy_rate_threshold)) * (ndt_map[i].occupancy_rate - occupancy_rate_threshold);
 			ellipse.pose.position.x = ndt_map[i].mean_x;

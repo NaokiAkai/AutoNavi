@@ -1,6 +1,7 @@
-<!-- amcl launch -->
+<!-- ndt amcl launch -->
 <launch >
 	<!-- arguments -->
+	<arg name="map_yaml_file" default="$(find localizer)/../../maps/nic_garage/ogm.yaml" />
 	<arg name="map_file_name" default="$(find localizer)/../../maps/nic_garage/ndt_map.txt" />
 	<arg name="map_frame" default="/map" />
 	<arg name="laser_frame" default="/laser" />
@@ -18,27 +19,43 @@
 	<arg name="update_dist" default="0.2" />
 	<arg name="update_yaw" default="2.0" />
 	<arg name="update_time" default="5.0" />
-	<arg name="odom_noise_dist_dist" default="1.5" />
-	<arg name="odom_noise_head_dist" default="0.9" />
-	<arg name="odom_noise_dist_head" default="0.9" />
-	<arg name="odom_noise_head_head" default="2.5" />
+	<arg name="odom_noise_dist_dist" default="2.5" />
+	<arg name="odom_noise_head_dist" default="0.4" />
+	<arg name="odom_noise_dist_head" default="0.4" />
+	<arg name="odom_noise_head_head" default="1.5" />
 	<arg name="start_x" default="0.0" />
 	<arg name="start_y" default="0.0" />
 	<arg name="start_yaw" default="0.0" />
 	<arg name="initial_cov_xx" default="0.2" />
 	<arg name="initial_cov_yy" default="0.2" />
 	<arg name="initial_cov_yawyaw" default="1.0" />
-	<arg name="pose_publish_hz" default="20.0" />
 	<arg name="use_kld_sampling" default="true" />
 	<arg name="use_test_range_measurement" default="true" />
 	<arg name="dynamic_scan_point_threshold" default="0.9" />
-	<arg name="/pose_publish_hz" default="20.0" />
-	<arg name="/min_points_num" default="20" />
+	<arg name="pose_publish_hz" default="20.0" />
+	<arg name="min_points_num" default="20" />
 	<arg name="use_nav_core_server" default="false" />
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
 	<node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 amcl_frame base_link 100" />
+
+	<!-- map server -->
+	<node name="amcl_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >
+		<remap from="/map" to="$(arg map_topic_name)" />
+		<remap from="/map_metadata" to="/amcl_map_server_map_metadata" />
+	</node >
+
+	<!-- gyro odometry -->
+	<node name="gyro_odom" pkg="localizer" type="gyro_odom" />
+	<node name="gyro_odom" pkg="localizer" type="gyro_odom" >
+		<param name="/input_imu_topic_name" value="/imu/data" type="string" />
+		<param name="/input_odom_topic_name" value="/odom" type="string" />
+		<param name="/output_odom_topic_name" value="/gyro_odom" type="string" />
+		<param name="/parent_frame" value="/map" type="string" />
+		<param name="/child_frame" value="/gyro_odom" type="string" />
+		<param name="/moving_average_filter_num" value="10" type="string" />
+	</node >
 
 	<!-- amcl localizer -->
 	<node name="amcl" pkg="localizer" type="ndt_amcl" output="screen" >
@@ -52,7 +69,7 @@
 		<param name="/min_particle_num" value="$(arg min_particle_num)" type="int" />
 		<param name="/max_particle_num" value="$(arg max_particle_num)" type="int" />
 		<param name="/resample_threshold" value="$(arg resample_threshold)" type="double" />
-		<param name="/scan_step" value="$(arg scan_step)" type="double" />
+		<param name="/scan_step" value="$(arg scan_step)" type="int" />
 		<param name="/max_dist_to_obstacle" value="$(arg max_dist_to_obstacle)" type="double" />
 		<param name="/alpha_slow" value="$(arg alpha_slow)" type="double" />
 		<param name="/alpha_fast" value="$(arg alpha_fast)" type="double" />

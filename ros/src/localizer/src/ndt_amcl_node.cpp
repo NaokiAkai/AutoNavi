@@ -10,14 +10,12 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <visualization_msgs/MarkerArray.h>
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
-
-#include "amcl.h"
-#include "ndt.h"
+#include <localizer/amcl.h>
+#include <localizer/ndt.h>
 
 AMCL* amcl;
 NDT* ndt;
+std::vector<std::vector<double> > dsp_probs;
 tf::TransformListener* tf_listener;
 ros::Publisher mean_points_pub, grid_lines_pub, ellipses_pub;
 
@@ -57,8 +55,6 @@ void evaluate_particles_using_ndt_map(sensor_msgs::LaserScan scan)
 			if (!amcl->is_valid_scan_points[j])
 			{
 				double pz = z_hit * max_dist_prob + z_rand * z_rand_mult;
-				if (pz < 0.0)	pz = 0.0;
-				if (pz > 1.0)	pz = 1.0;
 				w += log(pz);
 				continue;
 			}
@@ -71,9 +67,9 @@ void evaluate_particles_using_ndt_map(sensor_msgs::LaserScan scan)
 			double z = ndt->compute_probability(x, y);
 			if (z > 0.0)
 				pz += z_hit * z;
-			pz += z_rand * z_rand_mult;
-			if (pz < 0.0)	pz = 0.0;
-			if (pz > 1.0)	pz = 1.0;
+			pz += z_hit * max_dist_prob + z_rand * z_rand_mult;
+			if (pz > 1.0)
+				pz = 1.0;
 			w += log(pz);
 		}
 		double weight = exp(w);
@@ -94,96 +90,17 @@ void evaluate_particles_using_ndt_map(sensor_msgs::LaserScan scan)
 	}
 }
 
-void mapping(sensor_msgs::LaserScan scan)
-{
-	static bool is_first = true;
-	static double prev_xo, prev_yo, prev_yawo;
-	static tf::StampedTransform map2laser;
-	try
-	{
-		tf_listener->waitForTransform(amcl->map_frame, scan.header.frame_id, scan.header.stamp, ros::Duration(1.0));
-		tf_listener->lookupTransform(amcl->map_frame, scan.header.frame_id, scan.header.stamp, map2laser);
-	}
-	catch (tf::TransformException ex)
-	{
-		ROS_ERROR("%s", ex.what());
-		return;
-	}
-	double xo = map2laser.getOrigin().x();
-	double yo = map2laser.getOrigin().y();
-	tf::Quaternion q(map2laser.getRotation().x(), map2laser.getRotation().y(), map2laser.getRotation().z(), map2laser.getRotation().w());
-	double rollo, pitcho, yawo;
-	tf::Matrix3x3 m(q);
-	m.getRPY(rollo, pitcho, yawo);
-	bool do_mapping = false;
-	if (is_first)
-	{
-		do_mapping = true;
-		is_first = false;
-	}	
-	else
-	{
-		double dx = xo - prev_xo;
-		double dy = yo - prev_yo;
-		double dl = sqrt(dx * dx + dy * dy);
-		double dyaw = yawo - prev_yawo;
-		if (dyaw < -M_PI)	dyaw += 2.0 * M_PI;
-		if (dyaw > M_PI)	dyaw -= 2.0 * M_PI;
-//		if (dl >= mapping_interval_dist || fabs(dyaw) > mapping_interval_angle)
-		if (dl >= 0.2f || fabs(dyaw) > 1.0f * M_PI / 180.0f)
-			do_mapping = true;
-	}
-	if (do_mapping)
-	{
-		// decrease occupancy rate
-		for (int i = 0; i < scan.ranges.size(); i++)
-		{
-			float r = scan.ranges[i];
-			if (r < scan.range_min || scan.range_max < r)
-				continue;
-			float yaw = (float)yawo + scan.angle_min + scan.angle_increment * (float)i;
-			float dx = ndt->ndt_map_grid_size * cos(yaw);
-			float dy = ndt->ndt_map_grid_size * sin(yaw);
-			float x = (float)xo;
-			float y = (float)yo;
-			float dr = ndt->ndt_map_grid_size;
-			for (float l = 0.0f; l < r - dr; l += dr)
-			{
-				ndt->decrease_occupancy_rate_of_ndt_map(x, y, r - l);
-				x += dx;
-				y += dy;
-			}
-		}
-		// add points to the ndt map
-		for (int i = 0; i < scan.ranges.size(); i++)
-		{
-			float r = scan.ranges[i];
-			if (r < scan.range_min || scan.range_max < r)
-				continue;
-			float yaw = (float)yawo + scan.angle_min + scan.angle_increment * (float)i;
-			float x = r * cos(yaw) + (float)xo;
-			float y = r * sin(yaw) + (float)yo;
-			ndt->add_point_to_ndt_map(x, y);
-		}
-		prev_xo = xo;
-		prev_yo = yo;
-		prev_yawo = yawo;
-	}
-}
-
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "amcl");
 	ros::NodeHandle nh("~");
 	// read parameters
-	std::string map_file_name = "/tmp/ndt_map_aaa.txt";
+	std::string map_file_name = "/tmp/ndt_map.txt";
 	int min_points_num = 20;
 	double occupancy_rate_threshold = 0.65f;
-	bool mapping_mode = false;
 	nh.param("/amcl/map_file_name", map_file_name, map_file_name);
 	nh.param("/amcl/min_points_num", min_points_num, min_points_num);
 	nh.param("/amcl/occupancy_rate_threshold", occupancy_rate_threshold, occupancy_rate_threshold);
-	nh.param("/amcl/mapping_mode", mapping_mode, mapping_mode);
 	// publisher
 	mean_points_pub = nh.advertise<sensor_msgs::PointCloud>("/ndt_map_mean_points", 10);
 	grid_lines_pub = nh.advertise<visualization_msgs::Marker>("/ndt_map_grid_lines", 10);
@@ -192,11 +109,11 @@ int main(int argc, char** argv)
 	amcl = new AMCL;
 	ndt = new NDT;
 	tf_listener = new tf::TransformListener;
-	bool is_map_data = true;
 	if (!ndt->read_ndt_map(map_file_name))
-		is_map_data = false;
-	if (!is_map_data)
-		ndt->init_ndt_map(700.0f, 600.0f, 1.0f, -200.0f, -200.0f);
+	{
+		ROS_ERROR("a map file is not given");
+		exit(1);
+	}
 	ndt->set_min_points_num(min_points_num);
 	ndt->set_occupancy_rate_threshold(occupancy_rate_threshold);
 	// map data publisher will be parallely executed
@@ -218,7 +135,6 @@ int main(int argc, char** argv)
 		sensor_msgs::LaserScan scan = amcl->curr_scan;
 		double curr_time = scan.header.stamp.toSec();;
 		amcl->check_scan_points_validity(scan);
-//		amcl->evaluate_particles(scan);
 		evaluate_particles_using_ndt_map(scan);
 		amcl->compute_total_weight_and_effective_sample_size();
 		amcl->estimate_robot_pose();
@@ -242,8 +158,7 @@ int main(int argc, char** argv)
 		amcl->broadcast_tf();
 		amcl->publish_pose();
 		amcl->publish_particles();
-		if (mapping_mode && do_mapping)
-			mapping(scan);
+		// sleep
 		loop_rate.sleep();
 	}
 	return 0;

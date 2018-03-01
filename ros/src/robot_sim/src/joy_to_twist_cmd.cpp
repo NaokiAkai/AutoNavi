@@ -20,6 +20,7 @@ private:
 
 public:
 	Joy2TwistCmd();
+	~Joy2TwistCmd() {};
 	void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 };
 

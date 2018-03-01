@@ -14,6 +14,7 @@ private:
 
 public:
 	PathServer(std::string fname);
+	~PathServer() {};
 	bool path_callback(path_follower::GetPath::Request& req, path_follower::GetPath::Response& res);
 };
 

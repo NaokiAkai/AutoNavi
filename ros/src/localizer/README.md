@@ -1,7 +1,18 @@
-This is a localization program that using adaptive Monte Carlo localization algorithm.
+How to test the localization program using the simulation regarding the paper submitted to IROS, titled "Mobile Robot Localization Considering Class of Sensor Observations."
 
+You need to run two launch scripts. Please first open a terminal and run following commands.
+source [AutoNavi]/ros/devel/setup.bash
+roslaunch robot_sim robot_sim.launch
 
+Please then open a new terminal and run following commands.
+source [AutoNavi]/ros/devel/setup.bash
+roslaunch robot_sim robot_sim.launch
+roslaunch localizer amcl.launch use_dspd:=true
 
+Finally, to visualize the localization process, please run a following command in a new terminal.
+rviz -d [AutoNavi]/ros/rviz.rviz 
+
+You can control the simulated robot using the allow keys and stop it using the space key. Note that a small black window should be active when controlling the simulated robot.
 
 
 

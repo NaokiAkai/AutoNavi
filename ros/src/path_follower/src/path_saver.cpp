@@ -10,6 +10,7 @@ private:
 
 public:
 	PathSaver(std::string fname);
+	~PathSaver() {};
 	void path_callback(const nav_msgs::Path::ConstPtr& msg);
 };
 

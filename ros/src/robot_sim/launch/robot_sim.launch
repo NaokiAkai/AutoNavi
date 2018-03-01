@@ -1,16 +1,20 @@
 <!-- robot sim -->
 <launch >
 	<!-- arguments -->
-	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm_with_cars.yaml" />
+	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
 	<arg name="use_ground_truth_tf" default="false" />
 	<arg name="use_joystick_controller" default="false" />
 	<arg name="use_ackermann_simulator" default="false" />
 	<arg name="use_path_follower" default="false" />
-	<arg name="moving_objects_num" default="0" />
+	<arg name="landmark_removing_rate" default="0.0" />
+	<arg name="sensor_type" default="top_urg" />
+	<arg name="moving_objects_num" default="500" />
 
 	<!-- tf -->
 	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
 	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="1.0 0 0.4 0 0 0 base_link laser 100" />
+	<node name="laser_to_velodyne" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser velodyne 100" />
+	<node name="laser_to_urg1" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser urg1 100" />
 	<node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 ground_truth base_link 100" if="$(arg use_ground_truth_tf)"/>
 
 	<!-- map server -->
@@ -40,8 +44,8 @@
 		<!-- twist command generator -->
 		<node name="joy_to_twist_cmd" pkg="robot_sim" type="joy_to_twist_cmd" if="$(arg use_joystick_controller)" >
 			<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-			<param name="/max_linear_vel" value="5.0" type="double" />
-			<param name="/max_angular_vel" value="0.8" type="double" />
+			<param name="/max_linear_vel" value="1.0" type="double" />
+			<param name="/max_angular_vel" value="0.6" type="double" />
 			<param name="/output_hz" value="40.0" type="double" />
 			<param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
 			<param name="/max_steering_angle" value="0.698" type="double" />
@@ -56,6 +60,7 @@
 		<param name="/odom_publish_hz" value="50.0" type="double" />
 		<param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
 		<param name="/base_line" value="3.0" type="double" />
+		<param name="/record_ground_truth_trajectory" value="true" type="bool" />
 	</node >
 
 	<!-- horizontal laser scan simulator -->
@@ -71,11 +76,15 @@
 		<param name="/moving_object_mean_y" value="0.0" type="double" />
 		<param name="/moving_object_mean_v" value="1.0" type="double" />
 		<param name="/moving_object_mean_size" value="0.5" type="double" />
-		<param name="/moving_object_std_x" value="20.0" type="double" />
-		<param name="/moving_object_std_y" value="20.0" type="double" />
+		<param name="/moving_object_std_x" value="80.0" type="double" />
+		<param name="/moving_object_std_y" value="80.0" type="double" />
 		<param name="/moving_object_std_v" value="1.0" type="double" />
 		<param name="/moving_object_std_size" value="0.5" type="double" />
-		<param name="/sensor_type" value="top_urg" type="string" />
+		<param name="/moving_object_var_v" value="10.0" type="double" />
+		<param name="/moving_object_var_w" value="10.0" type="double" />
+		<param name="/landmark_removing_rate" value="$(arg landmark_removing_rate)" type="double" />
+		<param name="/sensor_type" value="$(arg sensor_type)" type="string" />
+		<param name="/write_map_data_as_txt" value="true" type="bool" />
 	</node >
 
 	<!-- add noise to sensor data simulated by the robot_sim node -->
