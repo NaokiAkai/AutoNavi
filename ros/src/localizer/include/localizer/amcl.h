@@ -1,8 +1,14 @@
+// Copyright © 2018 Naoki Akai. All rights reserved.
+
 #ifndef __AMCL_H__
 #define __AMCL_H__
 
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <sensor_msgs/LaserScan.h>
+#include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/Odometry.h>
 
 typedef struct
 {
@@ -76,7 +82,7 @@ public:
 	void evaluate_particles_using_likelihood_field_model(sensor_msgs::LaserScan scan);
 	double compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan scan);
 	void evaluate_particles_using_beam_model(sensor_msgs::LaserScan scan);
-	double compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, int p_index);
+	double compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, int p_index, bool use_all_scan);
 	void evaluate_particles_with_dspd(sensor_msgs::LaserScan scan);
 	void compute_total_weight_and_effective_sample_size(void);
 	void compute_random_particle_rate(void);

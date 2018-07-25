@@ -1,3 +1,5 @@
+// Copyright © 2018 Naoki Akai. All rights reserved.
+
 #ifndef __NDT_H__
 #define __NDT_H__
 
@@ -19,7 +21,7 @@ private:
 	float get_dist_from_point_to_mean(float x, float y, int node);
 	void update_occupancy_rate_of_ndt_map(int node, float dr);
 	void update_ndt_grid(float x, float y, int node);
-	double get_mahalanobis_distance(double dx, double dy, int node);
+	double compute_probability2(double dx, double dy, int node);
 
 public:
 	int ndt_map_width, ndt_map_height;

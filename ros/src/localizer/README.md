@@ -10,7 +10,7 @@ Please then open a new terminal and run following commands.
 `$ source [AutoNavi]/ros/devel/setup.bash`  
 `$ roslaunch localizer amcl.launch use_dspd:=true`  
 
-Finally, to visualize the localization process, please run a following command in a new terminal.  
+To visualize the localization process, please run a following command in a new terminal.  
 `$ rviz -d [AutoNavi]/ros/rviz.rviz`  
 
 You can control the simulated robot using the allow keys and stop it using the space key. Note that a small black window should be active when controlling the simulated robot.

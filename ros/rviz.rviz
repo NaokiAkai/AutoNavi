@@ -6,7 +6,7 @@ Panels:
       Expanded:
         - /TF1/Frames1
       Splitter Ratio: 0.5
-    Tree Height: 574
+    Tree Height: 419
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Laser scan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -53,21 +53,15 @@ Visualization Manager:
       Frames:
         All Enabled: false
         amcl_frame:
-          Value: false
+          Value: true
         base_link:
-          Value: true
-        ground_truth:
-          Value: true
-        gyro_odom:
           Value: false
+        camera:
+          Value: true
         laser:
           Value: false
         map:
           Value: false
-        odom_frame:
-          Value: true
-        urg1:
-          Value: true
         velodyne:
           Value: false
         world:
@@ -78,21 +72,8 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        world:
-          ground_truth:
-            {}
-          map:
-            amcl_frame:
-              base_link:
-                laser:
-                  urg1:
-                    {}
-                  velodyne:
-                    {}
-            gyro_odom:
-              {}
-          odom_frame:
-            {}
+        map:
+          {}
       Update Interval: 0
       Value: true
     - Alpha: 0.7
@@ -125,7 +106,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 0; 0; 0
       Max Intensity: 119
@@ -142,7 +123,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: false
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -275,11 +256,11 @@ Visualization Manager:
       Autocompute Intensity Bounds: true
       Class: grid_map_rviz_plugin/GridMap
       Color: 200; 200; 200
-      Color Layer: likelihood
-      Color Transformer: IntensityLayer
+      Color Layer: elevation
+      Color Transformer: GridMapLayer
       Enabled: true
-      Height Layer: likelihood
-      Height Transformer: Flat
+      Height Layer: elevation
+      Height Transformer: GridMapLayer
       History Length: 1
       Invert Rainbow: false
       Max Color: 255; 255; 255
@@ -288,16 +269,118 @@ Visualization Manager:
       Min Intensity: 0
       Name: Likelihood distribution
       Show Grid Lines: true
-      Topic: /likelihood_dist_map
+      Topic: ""
       Unreliable: false
-      Use Rainbow: false
+      Use Rainbow: true
       Value: true
     - Class: rviz/Marker
-      Enabled: true
+      Enabled: false
       Marker Topic: /landmark_rate_marker
       Name: Landmark rate
       Namespaces:
-        landmark_rate_marker: true
+        {}
+      Queue Size: 100
+      Value: false
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 85; 255
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Recorded path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /recorded_path
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 85; 255
+      Enabled: false
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Target path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /target_path
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /camera/image_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Camera image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /ndt_map_ellipses
+      Name: NDT map
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud
+      Color: 255; 255; 0
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: NDT map mean points
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.01
+      Style: Points
+      Topic: /ndt_map_mean_points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /ndt_map_grid_lines
+      Name: NDT map grid lines
+      Namespaces:
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -323,7 +406,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
+      Angle: 0.005
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
@@ -332,19 +415,21 @@ Visualization Manager:
         Value: false
       Name: Current View
       Near Clip Distance: 0.01
-      Scale: 20
+      Scale: 5.42427
       Target Frame: base_link
       Value: TopDownOrtho (rviz)
       X: 0
       Y: 0
     Saved: ~
 Window Geometry:
+  Camera image:
+    collapsed: false
   Displays:
     collapsed: false
-  Height: 856
+  Height: 1056
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000016a000002cdfc020000000cfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730100000028000002cd000000dd00fffffffb0000001800430061006d00650072006100200069006d00610067006501000001ae000001470000000000000000fc000002620000004a0000000000fffffffa000000000100000002fb00000030004f00620073007400610063006c0065002000610076006f006900640061006e0063006500200069006d0061006700650000000000ffffffff0000000000000000fb0000001800430061006d00650072006100200069006d0061006700650000000000000001db0000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000001800430061006d00650072006100200069006d0061006700650100000299000001240000000000000000fb0000000a0049006d00610067006501000002f4000000c90000000000000000000000010000014f000002cdfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fc00000028000002cd000000b000fffffffa000000000100000002fb0000000a005600690065007700730100000000ffffffff0000010f00fffffffb0000000a0049006d00610067006500000006300000010f0000000000000000fb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000000000020000073f00000106fc0100000002fb0000000c00430061006d00650072006100000000000000073f0000000000000000fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000050e0000003ffc0100000002fb0000000800540069006d006501000000000000050e000002f600fffffffb0000000800540069006d0065010000000000000450000000000000000000000249000002cd00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001db00000365fc020000000cfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000004100000232000000dd00fffffffb0000001800430061006d00650072006100200069006d00610067006501000002790000012d0000001600fffffffc000002620000004a0000000000fffffffa000000000100000002fb00000030004f00620073007400610063006c0065002000610076006f006900640061006e0063006500200069006d0061006700650000000000ffffffff0000000000000000fb0000001800430061006d00650072006100200069006d0061006700650000000000000001db0000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000001800430061006d00650072006100200069006d0061006700650100000299000001240000000000000000fb0000000a0049006d006100670065010000031a000000a30000000000000000000000010000014f00000365fc0200000004fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0049006d0061006700650100000041000002c60000000000000000fc0000004100000365000000b000fffffffa000000000100000002fb0000000a005600690065007700730100000000ffffffff0000010f00fffffffb0000000a0049006d00610067006500000006300000010f0000000000000000fb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000000000020000073f00000106fc0100000002fb0000000c00430061006d00650072006100000000000000073f0000000000000000fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073f00000056fc0100000002fb0000000800540069006d006501000000000000073f000002f600fffffffb0000000800540069006d00650100000000000004500000000000000000000004090000036500000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -353,6 +438,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1294
-  X: 483
-  Y: 72
+  Width: 1855
+  X: 1985
+  Y: 24

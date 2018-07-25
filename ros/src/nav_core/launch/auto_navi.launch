@@ -1,36 +1,39 @@
-<!-- auto navigation launch -->
+<!-- auto navigation launch
+    Copyright © 2018 Naoki Akai. All rights reserved.
+ -->
+
 <launch >
-	<!-- arguments -->
-	<arg name="data_dir" default="$(find nav_core)/../../data/sample/" />
-	<arg name="use_simple_obstacle_avoidance" default="true" />
-	<arg name="map_frame" default="/map" />
-	<arg name="base_link_frame" default="/base_link" />
-	<arg name="map_topic_name" default="/amcl_map" />
-	<arg name="path_topic_name" default="/target_path" />
+    <!-- arguments -->
+    <arg name="data_dir" default="$(find nav_core)/../../data/tc2017_gt/" />
+    <arg name="use_simple_obstacle_avoidance" default="false" />
+    <arg name="map_frame" default="/map" />
+    <arg name="base_link_frame" default="/base_link" />
+    <arg name="map_topic_name" default="/amcl_map" />
+    <arg name="path_topic_name" default="/target_path" />
 
-	<!-- amcl localizer -->
-	<include file="$(find localizer)/launch/amcl.launch" >
-		<arg name="map_frame" value="$(arg map_frame)" />
-		<arg name="base_link_frame" value="$(arg base_link_frame)" />
-		<arg name="map_topic_name" value="$(arg map_topic_name)" />
-		<arg name="use_nav_core_server" value="true" />
-	</include >
+    <!-- amcl localizer -->
+    <include file="$(find localizer)/launch/amcl.launch" >
+        <arg name="map_frame" value="$(arg map_frame)" />
+        <arg name="base_link_frame" value="$(arg base_link_frame)" />
+        <arg name="map_topic_name" value="$(arg map_topic_name)" />
+        <arg name="use_nav_core_server" value="true" />
+    </include >
 
-	<!-- path follower -->
-	<include file="$(find path_follower)/launch/path_follower.launch" >
-		<arg name="map_frame" value="$(arg map_frame)" />
-		<arg name="base_link_frame" value="$(arg base_link_frame)" />
-		<arg name="path_topic_name" value="$(arg path_topic_name)" />
-		<arg name="use_simple_obstacle_avoidance" value="$(arg use_simple_obstacle_avoidance)" />
-		<arg name="use_nav_core_server" value="true" />
-	</include >
+    <!-- path follower -->
+    <include file="$(find path_follower)/launch/path_follower.launch" >
+        <arg name="map_frame" value="$(arg map_frame)" />
+        <arg name="base_link_frame" value="$(arg base_link_frame)" />
+        <arg name="path_topic_name" value="$(arg path_topic_name)" />
+        <arg name="use_simple_obstacle_avoidance" value="$(arg use_simple_obstacle_avoidance)" />
+        <arg name="use_nav_core_server" value="true" />
+    </include >
 
-	<!-- nav core server -->
-	<node name="nav_core_server" pkg="nav_core" type="nav_core_server" output="screen" >
-		<param name="/root_dir_name" value="$(arg data_dir)" type="string" />
-		<param name="/map_frame" value="$(arg map_frame)" type="string" />
-		<param name="/base_link_frame" value="$(arg base_link_frame)" type="string" />
-		<param name="/output_map_topic_name" value="$(arg map_topic_name)" type="string" />
-		<param name="/output_path_topic_name" value="$(arg path_topic_name)" type="string" />
-	</node >
+    <!-- nav core server -->
+    <node name="nav_core_server" pkg="nav_core" type="nav_core_server" output="screen" >
+        <param name="/root_dir_name" value="$(arg data_dir)" type="string" />
+        <param name="/map_frame" value="$(arg map_frame)" type="string" />
+        <param name="/base_link_frame" value="$(arg base_link_frame)" type="string" />
+        <param name="/output_map_topic_name" value="$(arg map_topic_name)" type="string" />
+        <param name="/output_path_topic_name" value="$(arg path_topic_name)" type="string" />
+    </node >
 </launch >

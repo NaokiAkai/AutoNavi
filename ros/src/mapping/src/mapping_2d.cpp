@@ -1,3 +1,5 @@
+// Copyright © 2018 Naoki Akai. All rights reserved.
+
 #include <ros/ros.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <sensor_msgs/LaserScan.h>

@@ -14,9 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   pcl_ros
   pcl_conversions
+  cv_bridge
 )
 
 find_package(Eigen3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -125,6 +127,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
   ${PCL_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -223,3 +226,7 @@ target_link_libraries(ndt_sequential_scan_matcher ${catkin_LIBRARIES})
 
 add_executable(g2o_file_generator src/g2o_file_generator.cpp)
 target_link_libraries(g2o_file_generator ${catkin_LIBRARIES})
+
+add_executable(line_detector_from_scan src/line_detector_from_scan.cpp)
+target_link_libraries(line_detector_from_scan ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+

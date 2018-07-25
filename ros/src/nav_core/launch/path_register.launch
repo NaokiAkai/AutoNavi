@@ -1,39 +1,42 @@
-<!-- nav_core path register launch -->
-<launch >
-	<!-- arguments -->
-	<arg name="data_dir" default="$(find nav_core)/../../data/sample/" />
-	<arg name="map_frame" default="/map" />
-	<arg name="laser_frame" default="/laser" />
-	<arg name="base_link_frame" default="/base_link" />
-	<arg name="root_dir_name" default="$(arg data_dir)" />
-	<arg name="output_map_topic_name" default="/amcl_map" />
-	<arg name="output_path_topic_name" default="/recorded_path" />
-	<arg name="input_odom_topic_name" default="/odom" />
-	<arg name="input_scan_topic_name" default="/scan" />
-	<arg name="map_size_x" default="200.0" />
-	<arg name="map_size_y" default="200.0" />
-	<arg name="map_resolution" default="0.1" />
-	<arg name="map_origin_x" default="-100.0" />
-	<arg name="map_origin_y" default="-100.0" />
-	<arg name="update_interval_dist" default="0.5" />
-	<arg name="update_interval_angle" default="5.0" />
+<!-- nav_core path register launch
+    Copyright © 2018 Naoki Akai. All rights reserved.
+ -->
 
-	<!-- path register -->
-	<node name="nav_core_path_register" pkg="nav_core" type="nav_core_path_register" output="screen" >
-		<param name="/root_dir_name" value="$(arg data_dir)" type="string" />
-		<param name="/map_frame" value="$(arg map_frame)" type="string" />
-		<param name="/laser_frame" value="$(arg laser_frame)" type="string" />
-		<param name="/base_link_frame" value="$(arg base_link_frame)" type="string" />
-		<param name="/output_map_topic_name" value="$(arg output_map_topic_name)" type="string" />
-		<param name="/output_path_topic_name" value="$(arg output_path_topic_name)" type="string" />
-		<param name="/input_odom_topic_name" value="$(arg input_odom_topic_name)" type="string" />
-		<param name="/input_scan_topic_name" value="$(arg input_scan_topic_name)" type="string" />
-		<param name="/map_size_x" value="$(arg map_size_x)" type="double" />
-		<param name="/map_size_y" value="$(arg map_size_y)" type="double" />
-		<param name="/map_resolution" value="$(arg map_resolution)" type="double" />
-		<param name="/map_origin_x" value="$(arg map_origin_x)" type="double" />
-		<param name="/map_origin_y" value="$(arg map_origin_y)" type="double" />
-		<param name="/update_interval_dist" value="$(arg update_interval_dist)" type="double" />
-		<param name="/update_interval_angle" value="$(arg update_interval_angle)" type="double" />
-	</node >
+<launch >
+    <!-- arguments -->
+    <arg name="data_dir" default="$(find nav_core)/../../data/tc2017_gt/" />
+    <arg name="map_frame" default="/map" />
+    <arg name="laser_frame" default="/laser" />
+    <arg name="base_link_frame" default="/base_link" />
+    <arg name="root_dir_name" default="$(arg data_dir)" />
+    <arg name="output_map_topic_name" default="/amcl_map" />
+    <arg name="output_path_topic_name" default="/recorded_path" />
+    <arg name="input_odom_topic_name" default="/odom" />
+    <arg name="input_scan_topic_name" default="/scan" />
+    <arg name="map_size_x" default="300.0" />
+    <arg name="map_size_y" default="300.0" />
+    <arg name="map_resolution" default="0.1" />
+    <arg name="map_origin_x" default="-150.0" />
+    <arg name="map_origin_y" default="-150.0" />
+    <arg name="update_interval_dist" default="0.5" />
+    <arg name="update_interval_angle" default="5.0" />
+
+    <!-- path register -->
+    <node name="nav_core_path_register" pkg="nav_core" type="nav_core_path_register" output="screen" >
+        <param name="/root_dir_name" value="$(arg data_dir)" type="string" />
+        <param name="/map_frame" value="$(arg map_frame)" type="string" />
+        <param name="/laser_frame" value="$(arg laser_frame)" type="string" />
+        <param name="/base_link_frame" value="$(arg base_link_frame)" type="string" />
+        <param name="/output_map_topic_name" value="$(arg output_map_topic_name)" type="string" />
+        <param name="/output_path_topic_name" value="$(arg output_path_topic_name)" type="string" />
+        <param name="/input_odom_topic_name" value="$(arg input_odom_topic_name)" type="string" />
+        <param name="/input_scan_topic_name" value="$(arg input_scan_topic_name)" type="string" />
+        <param name="/map_size_x" value="$(arg map_size_x)" type="double" />
+        <param name="/map_size_y" value="$(arg map_size_y)" type="double" />
+        <param name="/map_resolution" value="$(arg map_resolution)" type="double" />
+        <param name="/map_origin_x" value="$(arg map_origin_x)" type="double" />
+        <param name="/map_origin_y" value="$(arg map_origin_y)" type="double" />
+        <param name="/update_interval_dist" value="$(arg update_interval_dist)" type="double" />
+        <param name="/update_interval_angle" value="$(arg update_interval_angle)" type="double" />
+    </node >
 </launch >

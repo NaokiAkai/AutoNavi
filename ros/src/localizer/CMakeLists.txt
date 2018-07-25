@@ -207,7 +207,7 @@ endif()
 add_executable(amcl src/amcl_node.cpp src/amcl.cpp)
 target_link_libraries(amcl ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-add_executable(amcl_dspd src/amcl_dspd_node.cpp src/amcl.cpp)
+add_executable(amcl_dspd src/amcl_dspd_node.cpp src/amcl.cpp src/ndt.cpp)
 target_link_libraries(amcl_dspd ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable(ndt_mapping src/ndt_mapping.cpp src/ndt.cpp)

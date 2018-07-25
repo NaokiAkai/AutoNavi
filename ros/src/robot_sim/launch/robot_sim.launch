@@ -1,103 +1,111 @@
 <!-- robot sim -->
 <launch >
-	<!-- arguments -->
-	<arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
-	<arg name="use_ground_truth_tf" default="false" />
-	<arg name="use_joystick_controller" default="false" />
-	<arg name="use_ackermann_simulator" default="false" />
-	<arg name="use_path_follower" default="false" />
-	<arg name="landmark_removing_rate" default="0.0" />
-	<arg name="sensor_type" default="top_urg" />
-	<arg name="moving_objects_num" default="500" />
+    <!-- arguments -->
+    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+    <arg name="use_ground_truth_tf" default="false" />
+    <arg name="use_joystick_controller" default="false" />
+    <arg name="use_ackermann_simulator" default="false" />
+    <arg name="use_path_follower" default="false" />
+    <arg name="landmark_removing_rate" default="0.0" />
+    <arg name="sensor_type" default="top_urg" />
+    <arg name="moving_objects_num" default="0" />
 
-	<!-- tf -->
-	<node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
-	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="1.0 0 0.4 0 0 0 base_link laser 100" />
-	<node name="laser_to_velodyne" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser velodyne 100" />
-	<node name="laser_to_urg1" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser urg1 100" />
-	<node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 ground_truth base_link 100" if="$(arg use_ground_truth_tf)"/>
+    <!-- tf -->
+    <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
+    <node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0.4395 -0.004 0.4 0 0 0 base_link laser 100" />
+    <node name="laser_to_velodyne" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser velodyne 100" />
+<!--
+    <node name="laser_to_urg1" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser urg1 100" />
+ -->
+    <node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 ground_truth base_link 100" if="$(arg use_ground_truth_tf)"/>
 
-	<!-- map server -->
-	<node name="laser_sim_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >
-		<remap from="/map" to="/laser_sim_map_source" />
-		<remap from="/map_metadata" to="/laser_sim_map_source_metadata" />
-	</node >
+    <!-- map server -->
+    <node name="laser_sim_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" >
+        <remap from="/map" to="/laser_sim_map_source" />
+        <remap from="/map_metadata" to="/laser_sim_map_source_metadata" />
+    </node >
 
-	<!-- controller for simulation robot -->
-	<group unless="$(arg use_path_follower)" >
-		<!-- keyboard node for key_to_twist_cmd -->
-		<node name="keyboard" pkg="keyboard" type="keyboard" unless="$(arg use_joystick_controller)" />
+    <!-- controller for simulation robot -->
+    <group unless="$(arg use_path_follower)" >
+        <!-- keyboard node for key_to_twist_cmd -->
+        <node name="keyboard" pkg="keyboard" type="keyboard" unless="$(arg use_joystick_controller)" />
 
-		<!-- twist command generator -->
-		<node name="key_to_twist_cmd" pkg="robot_sim" type="key_to_twist_cmd" unless="$(arg use_joystick_controller)" >
-			<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-			<param name="/trans_vel_step" value="0.2" type="double" />
-			<param name="/angle_vel_step" value="0.03" type="double" />
-			<param name="/output_hz" value="40.0" type="double" />
-			<param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
-			<param name="/max_steering_angle" value="0.698" type="double" />
-		</node >
+        <!-- twist command generator -->
+        <node name="key_to_twist_cmd" pkg="robot_sim" type="key_to_twist_cmd" unless="$(arg use_joystick_controller)" >
+            <param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
+            <param name="/trans_vel_step" value="0.2" type="double" />
+            <param name="/angle_vel_step" value="0.03" type="double" />
+            <param name="/output_hz" value="40.0" type="double" />
+            <param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
+            <param name="/max_steering_angle" value="0.698" type="double" />
+        </node >
 
-		<!-- joystick node for joy_to_twist_cmd -->
-		<node name="joy_node" pkg="joy" type="joy_node" if="$(arg use_joystick_controller)" />
+        <!-- joystick node for joy_to_twist_cmd -->
+        <node name="joy_node" pkg="joy" type="joy_node" if="$(arg use_joystick_controller)" />
 
-		<!-- twist command generator -->
-		<node name="joy_to_twist_cmd" pkg="robot_sim" type="joy_to_twist_cmd" if="$(arg use_joystick_controller)" >
-			<param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-			<param name="/max_linear_vel" value="1.0" type="double" />
-			<param name="/max_angular_vel" value="0.6" type="double" />
-			<param name="/output_hz" value="40.0" type="double" />
-			<param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
-			<param name="/max_steering_angle" value="0.698" type="double" />
-		</node >
-	</group >
+        <!-- twist command generator -->
+        <node name="joy_to_twist_cmd" pkg="robot_sim" type="joy_to_twist_cmd" if="$(arg use_joystick_controller)" >
+            <param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
+            <param name="/max_linear_vel" value="2.0" type="double" />
+            <param name="/max_angular_vel" value="0.8" type="double" />
+            <param name="/output_hz" value="40.0" type="double" />
+            <param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
+            <param name="/max_steering_angle" value="0.698" type="double" />
+        </node >
+    </group >
 
-	<!-- odometry simulator -->
-	<node name="odom_sim" pkg="robot_sim" type="odom_sim" >
-		<param name="/input_twist_topic_name" value="/twist_cmd" type="string" />
-		<param name="/output_odom_topic_name" value="/odom_robot_sim" type="string" />
-		<param name="/map_frame" value="/world" type="string" />
-		<param name="/odom_publish_hz" value="50.0" type="double" />
-		<param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
-		<param name="/base_line" value="3.0" type="double" />
-		<param name="/record_ground_truth_trajectory" value="true" type="bool" />
-	</node >
+    <!-- odometry simulator -->
+    <node name="odom_sim" pkg="robot_sim" type="odom_sim" >
+        <param name="/input_twist_topic_name" value="/twist_cmd" type="string" />
+        <param name="/output_odom_topic_name" value="/odom_robot_sim" type="string" />
+        <param name="/map_frame" value="/world" type="string" />
+        <param name="/odom_publish_hz" value="50.0" type="double" />
+        <param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
+        <param name="/base_line" value="3.0" type="double" />
+        <param name="/record_ground_truth_trajectory" value="true" type="bool" />
+    </node >
 
-	<!-- horizontal laser scan simulator -->
-	<node name="laser_sim" pkg="robot_sim" type="laser_sim" >
-		<param name="/input_map_topic_name" value="/laser_sim_map_source" type="string" />
-		<param name="/output_scan_topic_name" value="/scan_robot_sim" type="string" />
-		<param name="/output_scan_points_topic_name" value="/scan_points_robot_sim" type="string" />
-		<param name="/map_frame" value="/world" type="string" />
-		<param name="/laser_frame" value="/laser" type="string" />
-		<param name="/base_link_frame" value="/base_link" type="string" />
-		<param name="/moving_object_num" value="$(arg moving_objects_num)" type="int" />
-		<param name="/moving_object_mean_x" value="0.0" type="double" />
-		<param name="/moving_object_mean_y" value="0.0" type="double" />
-		<param name="/moving_object_mean_v" value="1.0" type="double" />
-		<param name="/moving_object_mean_size" value="0.5" type="double" />
-		<param name="/moving_object_std_x" value="80.0" type="double" />
-		<param name="/moving_object_std_y" value="80.0" type="double" />
-		<param name="/moving_object_std_v" value="1.0" type="double" />
-		<param name="/moving_object_std_size" value="0.5" type="double" />
-		<param name="/moving_object_var_v" value="10.0" type="double" />
-		<param name="/moving_object_var_w" value="10.0" type="double" />
-		<param name="/landmark_removing_rate" value="$(arg landmark_removing_rate)" type="double" />
-		<param name="/sensor_type" value="$(arg sensor_type)" type="string" />
-		<param name="/write_map_data_as_txt" value="true" type="bool" />
-	</node >
+    <!-- horizontal laser scan simulator -->
+    <node name="laser_sim" pkg="robot_sim" type="laser_sim" >
+        <param name="/input_map_topic_name" value="/laser_sim_map_source" type="string" />
+        <param name="/output_scan_topic_name" value="/scan_robot_sim" type="string" />
+        <param name="/output_scan_points_topic_name" value="/scan_points_robot_sim" type="string" />
+        <param name="/map_frame" value="/world" type="string" />
+        <param name="/laser_frame" value="/laser" type="string" />
+        <param name="/base_link_frame" value="/base_link" type="string" />
+        <param name="/moving_object_num" value="$(arg moving_objects_num)" type="int" />
+        <param name="/moving_object_mean_x" value="0.0" type="double" />
+        <param name="/moving_object_mean_y" value="0.0" type="double" />
+        <param name="/moving_object_mean_v" value="1.0" type="double" />
+        <param name="/moving_object_mean_size" value="0.5" type="double" />
+        <param name="/moving_object_std_x" value="80.0" type="double" />
+        <param name="/moving_object_std_y" value="80.0" type="double" />
+        <param name="/moving_object_std_v" value="0.5" type="double" />
+        <param name="/moving_object_std_size" value="0.5" type="double" />
+        <param name="/moving_object_var_v" value="10.0" type="double" />
+        <param name="/moving_object_var_w" value="10.0" type="double" />
+        <param name="/landmark_removing_rate" value="$(arg landmark_removing_rate)" type="double" />
+        <param name="/sensor_type" value="$(arg sensor_type)" type="string" />
+        <param name="/write_map_data_as_txt" value="true" type="bool" />
+    </node >
 
-	<!-- add noise to sensor data simulated by the robot_sim node -->
-	<node name="add_noise_to_sensor_data" pkg="robot_sim" type="add_noise_to_sensor_data" >
-		<param name="/input_odom_topic_name" value="/odom_robot_sim" type="string" />
-		<param name="/input_scan_topic_name" value="/scan_robot_sim" type="string" />
-		<param name="/output_odom_topic_name" value="/odom" type="string" />
-		<param name="/output_scan_topic_name" value="/scan" type="string" />
-		<param name="/output_scan_points_topic_name" value="/scan_points" type="string" />
-		<param name="/odom_linear_noise" value="0.2" type="double" />
-		<param name="/odom_angular_noise" value="0.08" type="double" />
-		<param name="/odom_linear_noise_stationary" value="0.975" type="double" />
-		<param name="/odom_angular_noise_stationary" value="0.975" type="double" />
-		<param name="/scan_measurement_noise" value="0.05" type="double" />
-	</node >
+    <!-- add noise to sensor data simulated by the robot_sim node -->
+    <node name="add_noise_to_sensor_data" pkg="robot_sim" type="add_noise_to_sensor_data" >
+        <param name="/input_odom_topic_name" value="/odom_robot_sim" type="string" />
+        <param name="/input_scan_topic_name" value="/scan_robot_sim" type="string" />
+        <param name="/output_odom_topic_name" value="/odom" type="string" />
+        <param name="/output_scan_topic_name" value="/scan" type="string" />
+        <param name="/output_scan_points_topic_name" value="/scan_points" type="string" />
+<!--
+        <param name="/odom_linear_noise" value="0.4" type="double" />
+        <param name="/odom_angular_noise" value="0.15" type="double" />
+        <param name="/odom_linear_noise_stationary" value="0.85" type="double" />
+        <param name="/odom_angular_noise_stationary" value="0.85" type="double" />
+ -->
+        <param name="/odom_linear_noise" value="0.0" type="double" />
+        <param name="/odom_angular_noise" value="0.0" type="double" />
+        <param name="/odom_linear_noise_stationary" value="1.0" type="double" />
+        <param name="/odom_angular_noise_stationary" value="1.0" type="double" />
+        <param name="/scan_measurement_noise" value="0.05" type="double" />
+    </node >
 </launch >

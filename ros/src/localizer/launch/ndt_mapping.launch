@@ -1,0 +1,22 @@
+<!-- ndt mapping
+    Copyright © 2018 Naoki Akai. All rights reserved.
+ -->
+
+<launch >
+    <node name="ndt_mapping" pkg="localizer" type="ndt_mapping" output="screen" >
+        <param name="/input_scan_topic_name" value="/scan" type="string" />
+        <param name="/map_frame" value="/map" type="string" />
+        <param name="/laser_frame" value="/laser" type="string" />
+        <param name="/map_size_x" value="252.8" type="double" />
+        <param name="/map_size_y" value="198.4" type="double" />
+        <param name="/map_grid_size" value="0.05" type="double" />
+        <param name="/map_origin_x" value="-100.0" type="double" />
+        <param name="/map_origin_y" value="-100.0" type="double" />
+        <param name="/map_file_name" value="/tmp/ndt_map.txt" type="string" />
+        <param name="/mapping_interval_dist" value="0.5" type="double" />
+        <param name="/mapping_interval_angle" value="10.0" type="double" />
+        <param name="/xo" value="0.0" type="double" />
+        <param name="/yo" value="0.0" type="double" />
+        <param name="/yawo" value="0.0" type="double" />
+    </node >
+</launch >
