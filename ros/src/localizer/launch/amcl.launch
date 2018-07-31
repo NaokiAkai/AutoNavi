@@ -4,17 +4,14 @@
 
 <launch >
     <!-- arguments -->
-<!--
     <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
- -->
-    <arg name="map_yaml_file" default="/home/akai/Dropbox/work/AutoNavi/ros/data/tc2017_gt/ogm_0.yaml" />
     <arg name="map_frame" default="/map" />
     <arg name="laser_frame" default="/laser" />
     <arg name="base_link_frame" default="/base_link" />
     <arg name="map_topic_name" default="/amcl_map" />
     <arg name="input_odom_topic_name" default="/odom" />
     <arg name="input_scan_topic_name" default="/scan" />
-    <arg name="min_particle_num" default="200" />
+    <arg name="min_particle_num" default="500" />
     <arg name="max_particle_num" default="500" />
     <arg name="resample_threshold" default="0.5" />
     <arg name="scan_step" default="10" />
@@ -24,31 +21,33 @@
     <arg name="update_dist" default="0.2" />
     <arg name="update_yaw" default="2.0" />
     <arg name="update_time" default="10000000.0" />
-    <arg name="odom_noise_dist_dist" default="0.9" />
-    <arg name="odom_noise_head_dist" default="0.2" />
-    <arg name="odom_noise_dist_head" default="0.3" />
-    <arg name="odom_noise_head_head" default="1.4" />
-    <arg name="start_x" default="0.0" />
-    <arg name="start_y" default="0.0" />
-    <arg name="start_yaw" default="0.0" />
-    <arg name="initial_cov_xx" default="0.1" />
-    <arg name="initial_cov_yy" default="0.1" />
-    <arg name="initial_cov_yawyaw" default="0.5" />
+    <arg name="odom_noise_dist_dist" default="2.0" />
+    <arg name="odom_noise_head_dist" default="1.0" />
+    <arg name="odom_noise_dist_head" default="1.0" />
+    <arg name="odom_noise_head_head" default="2.0" />
+    <arg name="start_x" default="-26.299" />
+    <arg name="start_y" default="-11.194" />
+    <arg name="start_yaw" default="51.216" />
+    <arg name="initial_cov_xx" default="0.2" />
+    <arg name="initial_cov_yy" default="0.2" />
+    <arg name="initial_cov_yawyaw" default="1.0" />
     <arg name="pose_publish_hz" default="20.0" />
-    <arg name="use_kld_sampling" default="true" />
+    <arg name="use_kld_sampling" default="false" />
+    <arg name="add_random_particle" default="true" />
+    <arg name="add_random_particle_rate" default="0.1" />
     <arg name="dynamic_scan_point_threshold" default="0.95" />
     <arg name="use_nav_core_server" default="false" />
     <arg name="z_hit" default="0.9" />
     <arg name="z_short" default="0.1" />
     <arg name="z_max" default="0.05" />
     <arg name="z_rand" default="0.05" />
-    <arg name="z_hit_denom" default="0.05" />
+    <arg name="z_hit_denom" default="0.08" />
     <arg name="lambda_short" default="0.1" />
     <arg name="max_dist_prob" default="0.043937" />
     <arg name="z_rand_mult" default="0.033333" />
     <arg name="use_beam_model" default="false" />
-    <arg name="use_test_range_measurement" default="true" />
-    <arg name="use_dspd" default="false" />
+    <arg name="use_test_range_measurement" default="false" />
+    <arg name="use_dspd" default="true" />
 
     <!-- tf -->
     <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
@@ -62,12 +61,12 @@
 
     <!-- gyro odometry -->
     <node name="gyro_odom" pkg="localizer" type="gyro_odom" >
-        <param name="/input_imu_topic_name" value="/imu/data" type="string" />
+        <param name="/input_imu_topic_name" value="/mti/sensor/imu" type="string" />
         <param name="/input_odom_topic_name" value="/odom" type="string" />
         <param name="/output_odom_topic_name" value="/gyro_odom" type="string" />
         <param name="/parent_frame" value="/map" type="string" />
         <param name="/child_frame" value="/gyro_odom" type="string" />
-        <param name="/moving_average_filter_num" value="10" type="string" />
+        <param name="/moving_average_filter_num" value="3" type="string" />
     </node >
 
     <!-- amcl localizer -->
@@ -101,6 +100,8 @@
         <param name="/initial_cov_yawyaw" value="$(arg initial_cov_yawyaw)" type="double" />
         <param name="/pose_publish_hz" value="$(arg pose_publish_hz)" type="double" />
         <param name="/use_kld_sampling" value="$(arg use_kld_sampling)" type="bool" />
+        <param name="/add_random_particle" value="$(arg add_random_particle)" type="bool" />
+        <param name="/add_random_particle_rate" value="$(arg add_random_particle_rate)" type="double" />
         <param name="/use_test_range_measurement" value="$(arg use_test_range_measurement)" type="bool" />
         <param name="/dynamic_scan_point_threshold" value="$(arg dynamic_scan_point_threshold)" type="double" />
         <param name="/use_nav_core_server" value="$(arg use_nav_core_server)" type="bool" />

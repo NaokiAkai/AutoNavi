@@ -49,6 +49,8 @@ AMCL::AMCL():
     pose_publish_hz(20.0),
     use_kld_sampling(false),
     use_test_range_measurement(false),
+    add_random_particle(false),
+    add_random_particle_rate(0.1),
     dynamic_scan_point_threshold(0.9),
     z_hit(0.90),
     z_short(0.10),
@@ -96,6 +98,8 @@ AMCL::AMCL():
     nh.param("/amcl/pose_publish_hz", pose_publish_hz, pose_publish_hz);
     nh.param("/amcl/use_kld_sampling", use_kld_sampling, use_kld_sampling);
     nh.param("/amcl/use_test_range_measurement", use_test_range_measurement, use_test_range_measurement);
+    nh.param("/amcl/add_random_particle", add_random_particle, add_random_particle);
+    nh.param("/amcl/add_random_particle_rate", add_random_particle_rate, add_random_particle_rate);
     nh.param("/amcl/dynamic_scan_point_threshold", dynamic_scan_point_threshold, dynamic_scan_point_threshold);
     nh.param("/amcl/z_hit", z_hit, z_hit);
     nh.param("/amcl/z_short", z_short, z_short);
@@ -125,7 +129,7 @@ AMCL::AMCL():
     {
         use_beam_model = false;
         use_test_range_measurement = false;
-        ROS_INFO("beam model will be not used because use_dspd is true");
+        ROS_INFO("beam model will not be used because use_dspd is true");
     }
     // convert degree to radian
     update_yaw *= M_PI / 180.0;
@@ -136,8 +140,18 @@ AMCL::AMCL():
     robot_pose.y = start_y;
     robot_pose.yaw = start_yaw;
     particle_num = min_particle_num;
+    if (add_random_particle && use_kld_sampling)
+    {
+        use_kld_sampling = false;
+        ROS_INFO("KLD sampling will not be used because add_random_particle is true");
+    }
     if (!use_kld_sampling)
         particle_num = max_particle_num;
+    if (add_random_particle)
+    {
+        max_particle_num += (int)((double)max_particle_num * add_random_particle_rate);
+        ROS_INFO("ACML adds random particles about %.1lf %% when resampling", add_random_particle_rate * 100.0);
+    }
     // compute parameters
     norm_const_hit = 1.0 / sqrt(z_hit_denom * M_PI);
     // subscriber
@@ -184,6 +198,10 @@ void AMCL::reset_particles(void)
         particles[i].pose.x = robot_pose.x + nrand(initial_cov_xx);
         particles[i].pose.y = robot_pose.y + nrand(initial_cov_yy);
         particles[i].pose.yaw = robot_pose.yaw + nrand(initial_cov_yawyaw);
+        while (particles[i].pose.yaw < -M_PI)
+            particles[i].pose.yaw += 2.0 * M_PI;
+        while (particles[i].pose.yaw > M_PI)
+            particles[i].pose.yaw -= 2.0 * M_PI;
         particles[i].w = wo;
     }
     w_slow = w_fast = 0.0;
@@ -417,16 +435,17 @@ void AMCL::update_particle_pose_by_odom(void)
     // update robot and particle pose based on odometry
     static double prev_time;
     nav_msgs::Odometry odom = curr_odom;
+    double curr_time = odom.header.stamp.toSec();
     if (is_first_time)
     {
-        prev_time = odom.header.stamp.toSec();
+        prev_time = curr_time;
         is_first_time = false;
         return;
     }
-    double curr_time = odom.header.stamp.toSec();
     double d_time = curr_time - prev_time;
     if (d_time > (1.0 / pose_publish_hz) * 4.0)
     {
+        ROS_ERROR("update rate based on odometry is too late");
         prev_time = curr_time;
         return;
     }
@@ -439,9 +458,9 @@ void AMCL::update_particle_pose_by_odom(void)
     robot_pose.x += d_dist * cos(robot_pose.yaw);
     robot_pose.y += d_dist * sin(robot_pose.yaw);
     robot_pose.yaw += d_yaw;
-    if (robot_pose.yaw < -M_PI)
+    while (robot_pose.yaw < -M_PI)
         robot_pose.yaw += 2.0 * M_PI;
-    if (robot_pose.yaw > M_PI)
+    while (robot_pose.yaw > M_PI)
         robot_pose.yaw -= 2.0 * M_PI;
     for (int i = 0; i < particle_num; i++)
     {
@@ -456,6 +475,11 @@ void AMCL::update_particle_pose_by_odom(void)
             particles[i].pose.yaw -= 2.0 * M_PI;
     }
     prev_time = curr_time;
+
+    static FILE* fp_yaw;
+    if (fp_yaw == NULL)
+        fp_yaw = fopen("/tmp/delta_yaw.txt", "w");
+    fprintf(fp_yaw, "%lf %lf %lf %lf\n", curr_time, d_yaw, d_time, odom.twist.twist.angular.z);
 }
 
 void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
@@ -995,6 +1019,38 @@ void AMCL::resample_particles(void)
         }
         while (m < (int)m_chi || m < min_particle_num);
         particle_num = m;
+    }
+    else if (add_random_particle)
+    {
+        // number of particles without random particle rate will be generated first
+        particle_num = (int)((double)max_particle_num / (1.0 + add_random_particle_rate)) + 1;
+        for (int i = 0; i < particle_num; i++)
+        {
+            darts = (double)rand() / ((double)RAND_MAX + 1.0);
+            for (int j = 0; j < max_particle_num; j++)
+            {
+                if (darts < wb[j])
+                {
+                    particles[i] = tmp_particles[j];
+                    particles[i].w = wo;
+                    break;
+                }
+            }
+        }
+        // random particle will be generated
+        for (int i = particle_num; i < max_particle_num; i++)
+        {
+            particles[i].pose.x = robot_pose.x + nrand(initial_cov_xx * 0.1);
+            particles[i].pose.y = robot_pose.y + nrand(initial_cov_yy * 0.1);
+            particles[i].pose.yaw = robot_pose.yaw + nrand(initial_cov_yawyaw * 0.1);
+            while (particles[i].pose.yaw < -M_PI)
+                particles[i].pose.yaw += 2.0 * M_PI;
+            while (particles[i].pose.yaw > M_PI)
+                particles[i].pose.yaw -= 2.0 * M_PI;
+            particles[i].w = wo;
+        }
+        // particle_num is overwritten to calculate likelihood of all of the particles
+        particle_num = max_particle_num;
     }
     else
     {
