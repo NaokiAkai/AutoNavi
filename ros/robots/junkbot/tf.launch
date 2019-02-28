@@ -1,6 +1,6 @@
 <!-- tf scripts for the data collection platform used in Tsukuba Challenge 2017 -->
 <launch >
-	<node name="base_link_to_velodyne" pkg="tf" type="static_transform_publisher" args="0.05 0 0.5 0 0 0 base_link velodyne 100" />
-	<node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0.1 0 0.3 0 0 0 base_link laser 100" />
-	<node name="base_link_to_camera" pkg="tf" type="static_transform_publisher" args="0.1 -0.05 0.4 0 0 0 base_link camera 100" />
+    <node name="base_link_to_velodyne" pkg="tf" type="static_transform_publisher" args="0.05 0 0.5 0 0 0 base_link velodyne 100" />
+    <node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0.1 0 0.3 0 0 0 base_link laser 100" />
+    <node name="base_link_to_camera" pkg="tf" type="static_transform_publisher" args="0.1 -0.05 0.4 0 0 0 base_link camera 100" />
 </launch >
