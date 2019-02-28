@@ -46,11 +46,11 @@ NavCoreServer::NavCoreServer():
     count(0)
 {
     // read parameters
-    nh.param("/nav_core_server/map_frame", map_frame, map_frame);
-    nh.param("/nav_core_server/base_link_frame", base_link_frame, base_link_frame);
-    nh.param("/nav_core_server/root_dir_name", root_dir_name, root_dir_name);
-    nh.param("/nav_core_server/output_map_topic_name", output_map_topic_name, output_map_topic_name);
-    nh.param("/nav_core_server/output_path_topic_name", output_path_topic_name, output_path_topic_name);
+    nh.param("map_frame", map_frame, map_frame);
+    nh.param("base_link_frame", base_link_frame, base_link_frame);
+    nh.param("root_dir_name", root_dir_name, root_dir_name);
+    nh.param("output_map_topic_name", output_map_topic_name, output_map_topic_name);
+    nh.param("output_path_topic_name", output_path_topic_name, output_path_topic_name);
     // publisher
     map_pub = nh.advertise<nav_msgs::OccupancyGrid>(output_map_topic_name, 1, true);
     path_pub = nh.advertise<nav_msgs::Path>(output_path_topic_name, 1, true);

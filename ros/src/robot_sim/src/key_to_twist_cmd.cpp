@@ -32,12 +32,12 @@ Key2TwistCmd::Key2TwistCmd():
     max_steering_angle(0.698)
 {
     // read parameters
-    nh.param("/key_to_twist_cmd/output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
-    nh.param("/key_to_twist_cmd/trans_vel_step", trans_vel_step, trans_vel_step);
-    nh.param("/key_to_twist_cmd/angle_vel_step", angle_vel_step, angle_vel_step);
-    nh.param("/key_to_twist_cmd/output_hz", output_hz, output_hz);
-    nh.param("/key_to_twist_cmd/use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
-    nh.param("/key_to_twist_cmd/max_steering_angle", max_steering_angle, max_steering_angle);
+    nh.param("output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
+    nh.param("trans_vel_step", trans_vel_step, trans_vel_step);
+    nh.param("angle_vel_step", angle_vel_step, angle_vel_step);
+    nh.param("output_hz", output_hz, output_hz);
+    nh.param("use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
+    nh.param("max_steering_angle", max_steering_angle, max_steering_angle);
     // subscriber
     key_sub = nh.subscribe("/keyboard/keydown", 100, &Key2TwistCmd::key_callback, this);
     // publisher

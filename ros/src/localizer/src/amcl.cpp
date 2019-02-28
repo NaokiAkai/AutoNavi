@@ -9,8 +9,6 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_listener.h>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <grid_map_msgs/GridMap.h>
 #include <opencv2/opencv.hpp>
@@ -27,7 +25,7 @@ AMCL::AMCL():
     min_particle_num(100),
     max_particle_num(1000),
     resample_threshold(0.5),
-    scan_step(20),
+    scan_step(10),
     max_dist_to_obstacle(0.5),
     alpha_slow(0.0001),
     alpha_fast(0.1),
@@ -69,55 +67,57 @@ AMCL::AMCL():
     is_initial_pose(false)
 {
     // read parameters
-    nh.param("/amcl/map_frame", map_frame, map_frame);
-    nh.param("/amcl/laser_frame", laser_frame, laser_frame);
-    nh.param("/amcl/base_link_frame", base_link_frame, base_link_frame);
-    nh.param("/amcl/input_map_topic_name", input_map_topic_name, input_map_topic_name);
-    nh.param("/amcl/input_odom_topic_name", input_odom_topic_name, input_odom_topic_name);
-    nh.param("/amcl/input_scan_topic_name", input_scan_topic_name, input_scan_topic_name);
-    nh.param("/amcl/min_particle_num", min_particle_num, min_particle_num);
-    nh.param("/amcl/max_particle_num", max_particle_num, max_particle_num);
-    nh.param("/amcl/resample_threshold", resample_threshold, resample_threshold);
-    nh.param("/amcl/scan_step", scan_step, scan_step);
-    nh.param("/amcl/max_dist_to_obstacle", max_dist_to_obstacle, max_dist_to_obstacle);
-    nh.param("/amcl/alpha_slow", alpha_slow, alpha_slow);
-    nh.param("/amcl/alpha_fast", alpha_fast, alpha_fast);
-    nh.param("/amcl/update_dist", update_dist, update_dist);
-    nh.param("/amcl/update_yaw", update_yaw, update_yaw);
-    nh.param("/amcl/update_time", update_time, update_time);
-    nh.param("/amcl/odom_noise_dist_dist", odom_noise_dist_dist, odom_noise_dist_dist);
-    nh.param("/amcl/odom_noise_dist_head", odom_noise_dist_head, odom_noise_dist_head);
-    nh.param("/amcl/odom_noise_head_dist", odom_noise_head_dist, odom_noise_head_dist);
-    nh.param("/amcl/odom_noise_head_head", odom_noise_head_head, odom_noise_head_head);
-    nh.param("/amcl/start_x", start_x, start_x);
-    nh.param("/amcl/start_y", start_y, start_y);
-    nh.param("/amcl/start_yaw", start_yaw, start_yaw);
-    nh.param("/amcl/initial_cov_xx", initial_cov_xx, initial_cov_xx);
-    nh.param("/amcl/initial_cov_yy", initial_cov_yy, initial_cov_yy);
-    nh.param("/amcl/initial_cov_yawyaw", initial_cov_yawyaw, initial_cov_yawyaw);
-    nh.param("/amcl/pose_publish_hz", pose_publish_hz, pose_publish_hz);
-    nh.param("/amcl/use_kld_sampling", use_kld_sampling, use_kld_sampling);
-    nh.param("/amcl/use_test_range_measurement", use_test_range_measurement, use_test_range_measurement);
-    nh.param("/amcl/add_random_particle", add_random_particle, add_random_particle);
-    nh.param("/amcl/add_random_particle_rate", add_random_particle_rate, add_random_particle_rate);
-    nh.param("/amcl/dynamic_scan_point_threshold", dynamic_scan_point_threshold, dynamic_scan_point_threshold);
-    nh.param("/amcl/z_hit", z_hit, z_hit);
-    nh.param("/amcl/z_short", z_short, z_short);
-    nh.param("/amcl/z_max", z_max, z_max);
-    nh.param("/amcl/z_rand", z_rand, z_rand);
-    nh.param("/amcl/z_hit_denom", z_hit_denom, z_hit_denom);
-    nh.param("/amcl/lambda_short", lambda_short, lambda_short);
-    nh.param("/amcl/max_dist_prob", max_dist_prob, max_dist_prob);
-    nh.param("/amcl/z_rand_mult", z_rand_mult, z_rand_mult);
-    nh.param("/amcl/use_beam_model", use_beam_model, use_beam_model);
-    nh.param("/amcl/use_dspd", use_dspd, use_dspd);
-    // check values
+    nh.param("map_frame", map_frame, map_frame);
+    nh.param("laser_frame", laser_frame, laser_frame);
+    nh.param("base_link_frame", base_link_frame, base_link_frame);
+    nh.param("input_map_topic_name", input_map_topic_name, input_map_topic_name);
+    nh.param("input_odom_topic_name", input_odom_topic_name, input_odom_topic_name);
+    nh.param("input_scan_topic_name", input_scan_topic_name, input_scan_topic_name);
+    nh.param("min_particle_num", min_particle_num, min_particle_num);
+    nh.param("max_particle_num", max_particle_num, max_particle_num);
+    nh.param("resample_threshold", resample_threshold, resample_threshold);
+    nh.param("scan_step", scan_step, scan_step);
+    nh.param("max_dist_to_obstacle", max_dist_to_obstacle, max_dist_to_obstacle);
+    nh.param("alpha_slow", alpha_slow, alpha_slow);
+    nh.param("alpha_fast", alpha_fast, alpha_fast);
+    nh.param("update_dist", update_dist, update_dist);
+    nh.param("update_yaw", update_yaw, update_yaw);
+    nh.param("update_time", update_time, update_time);
+    nh.param("odom_noise_dist_dist", odom_noise_dist_dist, odom_noise_dist_dist);
+    nh.param("odom_noise_dist_head", odom_noise_dist_head, odom_noise_dist_head);
+    nh.param("odom_noise_head_dist", odom_noise_head_dist, odom_noise_head_dist);
+    nh.param("odom_noise_head_head", odom_noise_head_head, odom_noise_head_head);
+    nh.param("start_x", start_x, start_x);
+    nh.param("start_y", start_y, start_y);
+    nh.param("start_yaw", start_yaw, start_yaw);
+    nh.param("initial_cov_xx", initial_cov_xx, initial_cov_xx);
+    nh.param("initial_cov_yy", initial_cov_yy, initial_cov_yy);
+    nh.param("initial_cov_yawyaw", initial_cov_yawyaw, initial_cov_yawyaw);
+    nh.param("pose_publish_hz", pose_publish_hz, pose_publish_hz);
+    nh.param("use_kld_sampling", use_kld_sampling, use_kld_sampling);
+    nh.param("use_test_range_measurement", use_test_range_measurement, use_test_range_measurement);
+    nh.param("add_random_particle", add_random_particle, add_random_particle);
+    nh.param("add_random_particle_rate", add_random_particle_rate, add_random_particle_rate);
+    nh.param("dynamic_scan_point_threshold", dynamic_scan_point_threshold, dynamic_scan_point_threshold);
+    nh.param("z_hit", z_hit, z_hit);
+    nh.param("z_short", z_short, z_short);
+    nh.param("z_max", z_max, z_max);
+    nh.param("z_rand", z_rand, z_rand);
+    nh.param("z_hit_denom", z_hit_denom, z_hit_denom);
+    nh.param("lambda_short", lambda_short, lambda_short);
+    nh.param("max_dist_prob", max_dist_prob, max_dist_prob);
+    nh.param("z_rand_mult", z_rand_mult, z_rand_mult);
+    nh.param("use_beam_model", use_beam_model, use_beam_model);
+    nh.param("use_dspd", use_dspd, use_dspd);
+    // check values and flags
+    // check value of resample threshold
     if (resample_threshold < 0.0 || 1.0 < resample_threshold)
     {
         ROS_ERROR("resample_threshold must be included from 0 to 1 (0.5 is recommended)");
         exit(1);
     }
-    if (use_test_range_measurement)
+    // check dynamic scan point threshold when rejection algorithm will be used
+    if (use_test_range_measurement || use_dspd)
     {
         if (dynamic_scan_point_threshold < 0.0 || 1.0 < dynamic_scan_point_threshold)
         {
@@ -125,6 +125,7 @@ AMCL::AMCL():
             exit(1);
         }
     }
+    // beam model and test range measurement will not be used if use_dspd = true
     if (use_dspd)
     {
         use_beam_model = false;
@@ -162,9 +163,13 @@ AMCL::AMCL():
     // publisher
     pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/amcl_pose", 1);
     particles_pub = nh.advertise<geometry_msgs::PoseArray>("/amcl_particles", 1);
+    uscan_pub = nh.advertise<sensor_msgs::LaserScan>("/scan_used_for_localization", 1);
+    dscan_pub = nh.advertise<sensor_msgs::LaserScan>("/dynamic_scan", 1);
     upoints_pub = nh.advertise<sensor_msgs::PointCloud>("/points_used_for_localization", 1);
     dpoints_pub = nh.advertise<sensor_msgs::PointCloud>("/dynamic_scan_points", 1);
     likelihood_dist_map_pub = nh.advertise<grid_map_msgs::GridMap>("/likelihood_dist_map", 1);
+    matching_error_pub = nh.advertise<sensor_msgs::LaserScan>("/matching_errors", 1);
+    expected_distances_pub = nh.advertise<sensor_msgs::LaserScan>("/expected_scan", 1);
     // initialization
     amcl_init();
 }
@@ -172,6 +177,21 @@ AMCL::AMCL():
 double AMCL::nrand(double n)
 {
     return (n * sqrt(-2.0 * log((double)rand() / RAND_MAX)) * cos(2.0 * M_PI * rand() / RAND_MAX));
+}
+
+void AMCL::start_timer(void)
+{
+    timer_start = ros::Time::now().toSec();
+}
+
+void AMCL::stop_timer(void)
+{
+    timer_end = ros::Time::now().toSec();
+}
+
+double AMCL::get_timer_data(void)
+{
+    return (timer_end - timer_start);
 }
 
 void AMCL::xy2uv(double x, double y, int* u, int* v)
@@ -213,7 +233,7 @@ void AMCL::amcl_init(void)
     particles.resize(max_particle_num);
     reset_particles();
     // initilizatioin of tf to know relative position of base link and laser
-    tf::TransformListener tf_listener;
+//    tf::TransformListener tf_listener;
     tf::StampedTransform tf_base_link2laser;
     ros::Rate loop_rate(10);
     while (ros::ok())
@@ -244,6 +264,31 @@ void AMCL::amcl_init(void)
     base_link2laser.y = laser_point_in_base_link_frame.getY();
     base_link2laser.yaw = yaw;
     is_tf_initialized = true;
+}
+
+bool AMCL::get_pose_from_tf(std::string source_frame, std::string target_frame, ros::Time target_time, double duration, pose_t* pose, ros::Time *stamp)
+{
+    tf::StampedTransform tf_s2t;
+    try
+    {
+        ros::Time now = ros::Time::now();
+        tf_listener.waitForTransform(source_frame, target_frame, target_time, ros::Duration(duration));
+        tf_listener.lookupTransform(source_frame, target_frame, target_time, tf_s2t);
+    }
+    catch (tf::TransformException ex)
+    {
+        ROS_ERROR("%s", ex.what());
+        return false;
+    }
+    tf::Quaternion q(tf_s2t.getRotation().x(), tf_s2t.getRotation().y(), tf_s2t.getRotation().z(), tf_s2t.getRotation().w());
+    double roll, pitch, yaw;
+    tf::Matrix3x3 m(q);
+    m.getRPY(roll, pitch, yaw);
+    pose->x = tf_s2t.getOrigin().x();
+    pose->y = tf_s2t.getOrigin().y();
+    pose->yaw = yaw;
+    *stamp = tf_s2t.stamp_;
+    return true;
 }
 
 void AMCL::initial_pose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
@@ -484,7 +529,9 @@ void AMCL::update_particle_pose_by_odom(void)
 
 void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
 {
+    sensor_msgs::LaserScan uscan;
     sensor_msgs::PointCloud upoints;
+    uscan = scan;
     upoints.header = scan.header;
     for (int i = 0; i < (int)scan.ranges.size(); i++)
     {
@@ -505,8 +552,13 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
                 point.z = 0.0;
                 upoints.points.push_back(point);
             }
+            else
+            {
+                uscan.ranges[i] = scan.range_min;
+            }
         }
     }
+    uscan_pub.publish(uscan);
     upoints_pub.publish(upoints);
     if (use_test_range_measurement && is_map_data)
     {
@@ -593,11 +645,15 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
                 }
             }
         }
+        sensor_msgs::LaserScan dscan;
         sensor_msgs::PointCloud dpoints;
+        dscan = scan;
         dpoints.header = scan.header;
         for (int i = 0; i < (int)scan.ranges.size(); i += scan_step)
         {
-            if (p[i] / q[i] > dynamic_scan_point_threshold && is_valid_scan_points[i])
+            double w = p[i] / q[i];
+            dscan.intensities[i] = w;
+            if (w > dynamic_scan_point_threshold && is_valid_scan_points[i])
             {
                 double angle = scan.angle_min + scan.angle_increment * (double)i;
                 geometry_msgs::Point32 point;
@@ -607,7 +663,13 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
                 dpoints.points.push_back(point);
                 is_valid_scan_points[i] = false;
             }
+            else
+            {
+                dscan.ranges[i] = scan.range_min;
+                dscan.intensities[i] = 0.0;
+            }
         }
+        dscan_pub.publish(dscan);
         dpoints_pub.publish(dpoints);
     }
 }
@@ -711,22 +773,12 @@ double AMCL::compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan
                 x += dx;
                 y += dy;
             }
-//            if (range < 0.0)
-//                range = scan.range_max;
             double r = scan.ranges[i];
             double pz = z_max * max_dist_prob + z_rand * z_rand_mult;
-            if (r <= range)
+            if (0.0 <= r && r <= range)
                 pz += z_short * (1.0 / (1.0 - exp(-lambda_short * range))) * lambda_short * exp(-lambda_short * r);
-            x = r * cos(yaw) + xo;
-            y = r * sin(yaw) + yo;
-            int u, v;
-            xy2uv(x, y, &u, &v);
-            if (u <= 0 && u < (int)map.info.width && v <= 0 && v < (int)map.info.height)
-            {
-//                double z = (double)dist_map[u][v];
-                double z = dist_map.at<float>(v, u);
-                pz += z_hit_ * norm_const_hit * exp(-(z * z) / z_hit_denom);
-            }
+            double dr = r - range;
+            pz += z_hit_ * norm_const_hit * exp(-(dr * dr) / z_hit_denom);
             if (pz > 1.0)
                 pz = 1.0;
             w += log(pz);
@@ -775,7 +827,6 @@ double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, 
     int step = scan_step;
     if (use_all_scan)
         step = 1;
-//    for (int i = 0; i < scan.ranges.size(); i++)
     for (int i = 0; i < scan.ranges.size(); i += step)
     {
         double zz = 0.0, sum = 0.0, pz = 0.0, ssp_prob = 0.0, dsp_prob;
@@ -834,12 +885,9 @@ double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, 
             pz = pzs + pzd;
         }
         dsp_probs[p_index][i] = dsp_prob;
-        if (i % scan_step == 0)
-        {
-            if (pz > 1.0)
-                pz = 1.0;
-            w += log(pz);
-        }
+        if (pz > 1.0)
+            pz = 1.0;
+        w += log(pz);
     }
     return exp(w);
 }
@@ -869,10 +917,13 @@ void AMCL::evaluate_particles_with_dspd(sensor_msgs::LaserScan scan)
     // compute dynamic scan point probability again using all scan points with the maximum likelihood particle
     compute_weight_with_dspd(particles[max_particle_likelihood_num].pose, scan, max_particle_likelihood_num, true);
     // dynamic scan points detection
+    sensor_msgs::LaserScan dscan;
     sensor_msgs::PointCloud dpoints;
+    dscan = scan;
     dpoints.header = scan.header;
     for (int i = 0; i < scan.ranges.size(); i++)
     {
+        dscan.intensities[i] = dsp_probs[max_particle_likelihood_num][i];
         if (is_valid_scan_points[i] && dsp_probs[max_particle_likelihood_num][i] >= dynamic_scan_point_threshold)
         {
             geometry_msgs::Point32 p;
@@ -883,7 +934,13 @@ void AMCL::evaluate_particles_with_dspd(sensor_msgs::LaserScan scan)
             p.z = 0.0;
             dpoints.points.push_back(p);
         }
+        else
+        {
+            dscan.ranges[i] = scan.range_min;
+            dscan.intensities[i] = 0.0;
+        }
     }
+    dscan_pub.publish(dscan);
     dpoints_pub.publish(dpoints);
 }
 
@@ -1040,9 +1097,9 @@ void AMCL::resample_particles(void)
         // random particle will be generated
         for (int i = particle_num; i < max_particle_num; i++)
         {
-            particles[i].pose.x = robot_pose.x + nrand(initial_cov_xx * 0.1);
-            particles[i].pose.y = robot_pose.y + nrand(initial_cov_yy * 0.1);
-            particles[i].pose.yaw = robot_pose.yaw + nrand(initial_cov_yawyaw * 0.1);
+            particles[i].pose.x = robot_pose.x + nrand(initial_cov_xx * 0.5);
+            particles[i].pose.y = robot_pose.y + nrand(initial_cov_yy * 0.5);
+            particles[i].pose.yaw = robot_pose.yaw + nrand(initial_cov_yawyaw * 1.0);
             while (particles[i].pose.yaw < -M_PI)
                 particles[i].pose.yaw += 2.0 * M_PI;
             while (particles[i].pose.yaw > M_PI)
@@ -1084,6 +1141,72 @@ void AMCL::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
         }
         is_scan_data = true;
     }
+}
+
+void AMCL::plot_likelihood_distribution(pose_t pose, sensor_msgs::LaserScan scan)
+{
+    double dr = 0.6;
+    double reso = 0.1;
+    static FILE* gp;
+    if (gp == NULL)
+    {
+        gp = popen("/usr/bin/gnuplot", "w");
+        fprintf(gp, "unset key\n");
+        fprintf(gp, "set tics font 'Arial, %d'\n", 11);
+        fprintf(gp, "set xlabel font 'Arial, %d'\n", 11);
+        fprintf(gp, "set ylabel font 'Arial, %d'\n", 11);
+        fprintf(gp, "set key font 'Arial, %d'\n", 11);
+        fprintf(gp, "set grid\n");
+        fprintf(gp, "set xrange [%f:%f]\n", -(dr - reso), dr - reso);
+        fprintf(gp, "set yrange [%f:%f]\n", -(dr - reso), dr - reso);
+//        fprintf(gp, "set xlabel '{/Symbol D}x [m]'\n");
+//        fprintf(gp, "set ylabel '{/Symbol D}y [m]'\n");
+        fprintf(gp, "set xlabel 'dx [m]'\n");
+        fprintf(gp, "set ylabel 'dy [m]'\n");
+        fprintf(gp, "set size ratio 1 1\n");
+        fprintf(gp, "set pm3d map interpolate 10, 10\n");
+//        fprintf(gp, "set palette rgbformulae 22, 13, -31\n");
+        fprintf(gp, "set palette rgbformulae 21, 22, 23\n");
+        fprintf(gp, "set cbrange [0.0:1.0]\n");
+    }
+
+    std::vector<double> likelihoods;
+    double max = 0.0;
+    for (double x = pose.x - dr; x <= pose.x + dr; x += reso)
+    {
+        for (double y = pose.y - dr; y <= pose.y + dr; y += reso)
+        {
+            pose_t tmp_pose = pose;
+            tmp_pose.x = x;
+            tmp_pose.y = y;
+            double w;
+            if (use_dspd)
+                w = compute_weight_with_dspd(tmp_pose, scan, 0, false);
+            else if (use_beam_model)
+                w = compute_weight_using_beam_model(tmp_pose, scan);
+            else
+                w = compute_weight_using_likelihood_field_model(tmp_pose, scan);
+            likelihoods.push_back(w);
+            if (max < w)
+                max = w;
+        }
+    }
+    FILE* fp = fopen("/tmp/likelihood_distribution.txt", "w");
+    int i = 0;
+    for (double x = pose.x - dr; x <= pose.x + dr; x += reso)
+    {
+        for (double y = pose.y - dr; y <= pose.y + dr; y += reso)
+        {
+            double dx = x - pose.x;
+            double dy = y - pose.y;
+            fprintf(fp, "%lf %lf %lf\n", dx, dy, likelihoods[i] / max);
+            i++;
+        }
+        fprintf(fp, "\n");
+    }
+    fclose(fp);
+    fprintf(gp, "splot '/tmp/likelihood_distribution.txt' u 1:2:3 t ''\n");
+    fflush(gp);
 }
 
 void AMCL::publish_likelihood_distribution_map_vis(double range, double reso, sensor_msgs::LaserScan scan)
@@ -1184,4 +1307,89 @@ void AMCL::compute_scan_fractions(pose_t pose, sensor_msgs::LaserScan scan, doub
         *matched_scan = ms;
     fprintf(fp, "%lf %lf %lf\n", scan.header.stamp.toSec(), vs, ms);
     fflush(fp);
+}
+
+void AMCL::publish_matching_error_as_laser_scan(pose_t pose, sensor_msgs::LaserScan scan)
+{
+    double c = cos(pose.yaw);
+    double s = sin(pose.yaw);
+    double xo = base_link2laser.x * c - base_link2laser.y * s + pose.x;
+    double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
+    sensor_msgs::LaserScan errors = scan;
+    for (int i = 0; i < (int)scan.ranges.size(); i++)
+    {
+        if (!is_valid_scan_points[i])
+        {
+            errors.ranges[i] = scan.range_max;
+            errors.intensities[i] = 0.0;
+            continue;
+        }
+        double angle = scan.angle_min + scan.angle_increment * (double)i;
+        double yaw = angle + pose.yaw + base_link2laser.yaw;
+        double r = scan.ranges[i];
+        double x = r * cos(yaw) + xo;
+        double y = r * sin(yaw) + yo;
+        int u, v;
+        xy2uv(x, y, &u, &v);
+        if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
+        {
+//            errors.ranges[i] = ((double)dist_map[u][v]);
+            errors.ranges[i] = ((double)dist_map.at<float>(v, u));
+            errors.intensities[i] = 0.0;
+        }
+        else
+        {
+            errors.ranges[i] = scan.range_max;
+            errors.intensities[i] = 0.0;
+        }
+    }
+    matching_error_pub.publish(errors);
+}
+
+void AMCL::publish_expected_map_distances_as_laser_scan(pose_t pose)
+{
+    double c = cos(pose.yaw);
+    double s = sin(pose.yaw);
+    double xo = base_link2laser.x * c - base_link2laser.y * s + pose.x;
+    double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
+    sensor_msgs::LaserScan expected_distances = curr_scan;
+    for (int i = 0; i < (int)expected_distances.ranges.size(); i++)
+    {
+        if (is_valid_scan_points[i])
+        {
+            double angle = expected_distances.angle_min + expected_distances.angle_increment * (double)i;
+            double yaw = angle + pose.yaw + base_link2laser.yaw;
+            double dx = map.info.resolution * cos(yaw);
+            double dy = map.info.resolution * sin(yaw);
+            double x = xo;
+            double y = yo;
+            double range = 0.0;
+            for (double r = 0.0; r <= expected_distances.range_max; r += map.info.resolution)
+            {
+                int u, v;
+                xy2uv(x, y, &u, &v);
+                if (0 <= u && u < (int)map.info.width && 0 <= v && v < (int)map.info.height)
+                {
+                    int node = v * map.info.width + u;
+                    if ((int)map.data[node] == 100)
+                    {
+                        range = r;
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+                x += dx;
+                y += dy;
+            }
+            expected_distances.ranges[i] = range;
+        }
+        else
+        {
+            expected_distances.ranges[i] = 0.0;
+        }
+    }
+    expected_distances_pub.publish(expected_distances);
 }

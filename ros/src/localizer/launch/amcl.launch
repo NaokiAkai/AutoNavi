@@ -1,18 +1,22 @@
-<!-- amcl launch
+<!--
+    amcl launch
     Copyright © 2018 Naoki Akai. All rights reserved.
  -->
 
 <launch >
     <!-- arguments -->
-    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" /> -->
+    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" />
+    <!-- <arg name="map_yaml_file" default="/home/akai/Dropbox/work/gaze_proj/maps/nic6f/ogm.yaml" /> -->
     <arg name="map_frame" default="/map" />
     <arg name="laser_frame" default="/laser" />
+    <!-- <arg name="laser_frame" default="/velodyne32" /> -->
     <arg name="base_link_frame" default="/base_link" />
     <arg name="map_topic_name" default="/amcl_map" />
     <arg name="input_odom_topic_name" default="/odom" />
     <arg name="input_scan_topic_name" default="/scan" />
-    <arg name="min_particle_num" default="500" />
-    <arg name="max_particle_num" default="500" />
+    <arg name="min_particle_num" default="200" />
+    <arg name="max_particle_num" default="200" />
     <arg name="resample_threshold" default="0.5" />
     <arg name="scan_step" default="10" />
     <arg name="max_dist_to_obstacle" default="0.5" />
@@ -21,22 +25,35 @@
     <arg name="update_dist" default="0.2" />
     <arg name="update_yaw" default="2.0" />
     <arg name="update_time" default="10000000.0" />
-    <arg name="odom_noise_dist_dist" default="2.0" />
-    <arg name="odom_noise_head_dist" default="1.0" />
-    <arg name="odom_noise_dist_head" default="1.0" />
-    <arg name="odom_noise_head_head" default="2.0" />
+    <arg name="odom_noise_dist_dist" default="0.9" />
+    <arg name="odom_noise_head_dist" default="0.2" />
+    <arg name="odom_noise_dist_head" default="0.2" />
+    <arg name="odom_noise_head_head" default="1.0" />
+    <arg name="start_x" default="0.0" />
+    <arg name="start_y" default="0.0" />
+    <arg name="start_yaw" default="0.0" />
+    <!-- ICRA2019 CW -->
+<!--
     <arg name="start_x" default="-26.299" />
     <arg name="start_y" default="-11.194" />
     <arg name="start_yaw" default="51.216" />
+ -->
+    <!-- ICRA2019 CCW -->
+<!--
+    <arg name="start_x" default="-25.294" />
+    <arg name="start_y" default="-13.895" />
+    <arg name="start_yaw" default="-6.450" />
+ -->
     <arg name="initial_cov_xx" default="0.2" />
     <arg name="initial_cov_yy" default="0.2" />
     <arg name="initial_cov_yawyaw" default="1.0" />
     <arg name="pose_publish_hz" default="20.0" />
     <arg name="use_kld_sampling" default="false" />
-    <arg name="add_random_particle" default="true" />
+    <arg name="add_random_particle" default="false" />
     <arg name="add_random_particle_rate" default="0.1" />
-    <arg name="dynamic_scan_point_threshold" default="0.95" />
+    <arg name="dynamic_scan_point_threshold" default="0.9" />
     <arg name="use_nav_core_server" default="false" />
+    <arg name="plot_likelihood_distribution" default="false" />
     <arg name="z_hit" default="0.9" />
     <arg name="z_short" default="0.1" />
     <arg name="z_max" default="0.05" />
@@ -105,6 +122,7 @@
         <param name="/use_test_range_measurement" value="$(arg use_test_range_measurement)" type="bool" />
         <param name="/dynamic_scan_point_threshold" value="$(arg dynamic_scan_point_threshold)" type="double" />
         <param name="/use_nav_core_server" value="$(arg use_nav_core_server)" type="bool" />
+        <param name="/plot_likelihood_distribution" value="$(arg plot_likelihood_distribution)" type="bool" />
         <param name="/z_hit" value="$(arg z_hit)" type="double" />
         <param name="/z_short" value="$(arg z_short)" type="double" />
         <param name="/z_max" value="$(arg z_max)" type="double" />

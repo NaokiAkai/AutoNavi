@@ -47,16 +47,16 @@ PathFollower::PathFollower():
     tf_listener()
 {
     // read parameters
-    nh.param("/path_follower/map_frame", map_frame, map_frame);
-    nh.param("/path_follower/base_link_frame", base_link_frame, base_link_frame);
-    nh.param("/path_follower/input_path_topic_name", input_path_topic_name, input_path_topic_name);
-    nh.param("/path_follower/input_max_vel_topic_name", input_max_vel_topic_name, input_max_vel_topic_name);
-    nh.param("/path_follower/output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
-    nh.param("/path_follower/look_ahead_dist", look_ahead_dist, look_ahead_dist);
-    nh.param("/path_follower/max_vel", max_vel, max_vel);
-    nh.param("/path_follower/kv", kv, kv);
-    nh.param("/path_follower/cmd_publish_hz", cmd_publish_hz, cmd_publish_hz);
-    nh.param("/path_follower/use_nav_core_server", use_nav_core_server, use_nav_core_server);
+    nh.param("map_frame", map_frame, map_frame);
+    nh.param("base_link_frame", base_link_frame, base_link_frame);
+    nh.param("input_path_topic_name", input_path_topic_name, input_path_topic_name);
+    nh.param("input_max_vel_topic_name", input_max_vel_topic_name, input_max_vel_topic_name);
+    nh.param("output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
+    nh.param("look_ahead_dist", look_ahead_dist, look_ahead_dist);
+    nh.param("max_vel", max_vel, max_vel);
+    nh.param("kv", kv, kv);
+    nh.param("cmd_publish_hz", cmd_publish_hz, cmd_publish_hz);
+    nh.param("use_nav_core_server", use_nav_core_server, use_nav_core_server);
     // subscriber
     path_sub = nh.subscribe(input_path_topic_name, 1, &PathFollower::path_callback, this);
     max_vel_sub = nh.subscribe(input_max_vel_topic_name, 1, &PathFollower::max_vel_callback, this);

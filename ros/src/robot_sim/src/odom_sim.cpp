@@ -51,13 +51,13 @@ OdomSim::OdomSim():
     steering_angle(0.0)
 {
     // read parameters
-    nh.param("/odom_sim/input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
-    nh.param("/odom_sim/output_odom_topic_name", output_odom_topic_name, output_odom_topic_name);
-    nh.param("/odom_sim/map_frame", map_frame, map_frame);
-    nh.param("/odom_sim/odom_publish_hz", odom_publish_hz, odom_publish_hz);
-    nh.param("/odom_sim/use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
-    nh.param("/odom_sim/base_line", base_line, base_line);
-    nh.param("/odom_sim/record_ground_truth_trajectory", record_ground_truth_trajectory, record_ground_truth_trajectory);
+    nh.param("input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
+    nh.param("output_odom_topic_name", output_odom_topic_name, output_odom_topic_name);
+    nh.param("map_frame", map_frame, map_frame);
+    nh.param("odom_publish_hz", odom_publish_hz, odom_publish_hz);
+    nh.param("use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
+    nh.param("base_line", base_line, base_line);
+    nh.param("record_ground_truth_trajectory", record_ground_truth_trajectory, record_ground_truth_trajectory);
     // set initial state
     odom.header.frame_id = pose.header.frame_id = map_frame;
     odom.child_frame_id = "/ground_truth";

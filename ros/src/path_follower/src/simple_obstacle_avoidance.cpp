@@ -62,24 +62,24 @@ SOAN::SOAN():
     is_first_stop(true)
 {
     // read parameters
-    nh.param("/simple_obstacle_avoidance/input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
-    nh.param("/simple_obstacle_avoidance/input_scan_topic_name", input_scan_topic_name, input_scan_topic_name);
-    nh.param("/simple_obstacle_avoidance/output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
-    nh.param("/simple_obstacle_avoidance/local_map_size_x", local_map_size_x, local_map_size_x);
-    nh.param("/simple_obstacle_avoidance/local_map_size_y", local_map_size_y, local_map_size_y);
-    nh.param("/simple_obstacle_avoidance/local_map_pixel_size", local_map_pixel_size, local_map_pixel_size);
-    nh.param("/simple_obstacle_avoidance/robot_width", robot_width, robot_width);
-    nh.param("/simple_obstacle_avoidance/predict_time", predict_time, predict_time);
-    nh.param("/simple_obstacle_avoidance/step_time", step_time, step_time);
-    nh.param("/simple_obstacle_avoidance/kv", kv, kv);
-    nh.param("/simple_obstacle_avoidance/w_range", w_range, w_range);
-    nh.param("/simple_obstacle_avoidance/use_emergency_stop", use_emergency_stop, use_emergency_stop);
-    nh.param("/simple_obstacle_avoidance/stop_x_size", stop_x_size, stop_x_size);
-    nh.param("/simple_obstacle_avoidance/stop_y_size", stop_y_size, stop_y_size);
-    nh.param("/simple_obstacle_avoidance/stop_time", stop_time, stop_time);
-    nh.param("/simple_obstacle_avoidance/back_time", back_time, back_time);
-    nh.param("/simple_obstacle_avoidance/back_speed", back_speed, back_speed);
-    nh.param("/simple_obstacle_avoidance/cmd_publish_hz", cmd_publish_hz, cmd_publish_hz);
+    nh.param("input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
+    nh.param("input_scan_topic_name", input_scan_topic_name, input_scan_topic_name);
+    nh.param("output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
+    nh.param("local_map_size_x", local_map_size_x, local_map_size_x);
+    nh.param("local_map_size_y", local_map_size_y, local_map_size_y);
+    nh.param("local_map_pixel_size", local_map_pixel_size, local_map_pixel_size);
+    nh.param("robot_width", robot_width, robot_width);
+    nh.param("predict_time", predict_time, predict_time);
+    nh.param("step_time", step_time, step_time);
+    nh.param("kv", kv, kv);
+    nh.param("w_range", w_range, w_range);
+    nh.param("use_emergency_stop", use_emergency_stop, use_emergency_stop);
+    nh.param("stop_x_size", stop_x_size, stop_x_size);
+    nh.param("stop_y_size", stop_y_size, stop_y_size);
+    nh.param("stop_time", stop_time, stop_time);
+    nh.param("back_time", back_time, back_time);
+    nh.param("back_speed", back_speed, back_speed);
+    nh.param("cmd_publish_hz", cmd_publish_hz, cmd_publish_hz);
     // subscriber
     twist_sub = nh.subscribe(input_twist_topic_name, 100, &SOAN::twist_callback, this);
     scan_sub = nh.subscribe(input_scan_topic_name, 10, &SOAN::scan_callback, this);

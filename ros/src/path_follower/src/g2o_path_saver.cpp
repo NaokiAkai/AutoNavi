@@ -33,7 +33,7 @@ PathSaver::PathSaver(std::string fname):
     a9(0.01)
 {
     // read parameters
-    nh.param("/g2o_path_saver/input_path_topic_name", input_path_topic_name, input_path_topic_name);
+    nh.param("input_path_topic_name", input_path_topic_name, input_path_topic_name);
     // subscriber
     path_sub = nh.subscribe(input_path_topic_name, 1, &PathSaver::path_callback, this);
     // wait for path

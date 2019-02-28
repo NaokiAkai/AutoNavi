@@ -76,21 +76,21 @@ PathRegister::PathRegister():
     count(0)
 {
     // read parameters
-    nh.param("/nav_core_path_register/map_frame", map_frame, map_frame);
-    nh.param("/nav_core_path_register/laser_frame", laser_frame, laser_frame);
-    nh.param("/nav_core_path_register/base_link_frame", base_link_frame, base_link_frame);
-    nh.param("/nav_core_path_register/root_dir_name", root_dir_name, root_dir_name);
-    nh.param("/nav_core_path_register/output_map_topic_name", output_map_topic_name, output_map_topic_name);
-    nh.param("/nav_core_path_register/output_path_topic_name", output_path_topic_name, output_path_topic_name);
-    nh.param("/nav_core_path_register/input_odom_topic_name", input_odom_topic_name, input_odom_topic_name);
-    nh.param("/nav_core_path_register/input_scan_topic_name", input_scan_topic_name, input_scan_topic_name);
-    nh.param("/nav_core_path_register/map_size_x", map_size_x, map_size_x);
-    nh.param("/nav_core_path_register/map_size_y", map_size_y, map_size_y);
-    nh.param("/nav_core_path_register/map_resolution", map_resolution, map_resolution);
-    nh.param("/nav_core_path_register/map_origin_x", map_origin_x, map_origin_x);
-    nh.param("/nav_core_path_register/map_origin_y", map_origin_y, map_origin_y);
-    nh.param("/nav_core_path_register/update_interval_dist", update_interval_dist, update_interval_dist);
-    nh.param("/nav_core_path_register/update_interval_angle", update_interval_angle, update_interval_angle);
+    nh.param("map_frame", map_frame, map_frame);
+    nh.param("laser_frame", laser_frame, laser_frame);
+    nh.param("base_link_frame", base_link_frame, base_link_frame);
+    nh.param("root_dir_name", root_dir_name, root_dir_name);
+    nh.param("output_map_topic_name", output_map_topic_name, output_map_topic_name);
+    nh.param("output_path_topic_name", output_path_topic_name, output_path_topic_name);
+    nh.param("input_odom_topic_name", input_odom_topic_name, input_odom_topic_name);
+    nh.param("input_scan_topic_name", input_scan_topic_name, input_scan_topic_name);
+    nh.param("map_size_x", map_size_x, map_size_x);
+    nh.param("map_size_y", map_size_y, map_size_y);
+    nh.param("map_resolution", map_resolution, map_resolution);
+    nh.param("map_origin_x", map_origin_x, map_origin_x);
+    nh.param("map_origin_y", map_origin_y, map_origin_y);
+    nh.param("update_interval_dist", update_interval_dist, update_interval_dist);
+    nh.param("update_interval_angle", update_interval_angle, update_interval_angle);
     update_interval_angle *= M_PI / 180.0;
     robot_pose.x = robot_pose.y = robot_pose.yaw = 0.0;
     // subscriber

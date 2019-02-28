@@ -44,14 +44,20 @@ void wait_for_new_map(void)
 
 int main(int argc, char** argv)
 {
+    // initialize and read parameters
     ros::init(argc, argv, "amcl");
     amcl = new AMCL;
     bool use_nav_core_server = false;
-    amcl->nh.param("/amcl/use_nav_core_server", use_nav_core_server, use_nav_core_server);
+    amcl->nh.param("use_nav_core_server", use_nav_core_server, use_nav_core_server);
     if (use_nav_core_server)
         amcl->nh.setParam("/nav_params/reach_at_goal", false);
+    bool plot_likelihood_distribution = false;
+    amcl->nh.param("plot_likelihood_distribution", plot_likelihood_distribution, plot_likelihood_distribution);
+
+    // main loop
     ros::Rate loop_rate(amcl->pose_publish_hz);
     double prev_time = 0.0;
+//    std::vector<double> times;
     while (ros::ok())
     {
         ros::spinOnce();
@@ -64,6 +70,7 @@ int main(int argc, char** argv)
         }
         sensor_msgs::LaserScan scan = amcl->curr_scan;
         double curr_time = scan.header.stamp.toSec();
+        amcl->start_timer();
         amcl->check_scan_points_validity(scan);
         if (amcl->use_dspd)
             amcl->evaluate_particles_with_dspd(scan);
@@ -71,6 +78,8 @@ int main(int argc, char** argv)
             amcl->evaluate_particles_using_beam_model(scan);
         else
             amcl->evaluate_particles_using_likelihood_field_model(scan);
+        amcl->stop_timer();
+//        times.push_back(amcl->get_timer_data());
         amcl->compute_total_weight_and_effective_sample_size();
         amcl->estimate_robot_pose();
         amcl->compute_random_particle_rate();
@@ -85,12 +94,18 @@ int main(int argc, char** argv)
             printf("particle_num = %d\n", amcl->particle_num);
             printf("effective_sample_size = %lf, total_weight = %lf\n", amcl->effective_sample_size, amcl->total_weight);
             printf("random_particle_rate = %lf\n", amcl->random_particle_rate);
+            printf("estimation_time = %lf [msec]\n", amcl->get_timer_data() * 1000.0);
             printf("\n");
         }
         // publish localization result messages
         amcl->broadcast_tf();
         amcl->publish_pose();
         amcl->publish_particles();
+        amcl->publish_matching_error_as_laser_scan(amcl->robot_pose, scan);
+        amcl->publish_expected_map_distances_as_laser_scan(amcl->robot_pose);
+        // visualize likelihood distribution using gnuplot
+        if (plot_likelihood_distribution)
+            amcl->plot_likelihood_distribution(amcl->robot_pose, scan);
         // for cmmunication with nav_core_server
         if (use_nav_core_server)
         {
@@ -101,6 +116,13 @@ int main(int argc, char** argv)
         }
         loop_rate.sleep();
     }
+    if (plot_likelihood_distribution)
+        int val = system("killall -9 gnuplot");
+//    const auto ave = std::accumulate(std::begin(times), std::end(times), 0.0) / (double)times.size();
+//    const auto var = std::inner_product(std::begin(times), std::end(times), std::begin(times), 0.0) / (double)times.size() - ave * ave;
+//    std::cout << "#of particles: " << amcl->max_particle_num << std::endl;
+//    std::cout << "ave: " << ave * 1000.0 << " [msec]" << std::endl;
+//    std::cout << "std: " << sqrt(var) * 1000.0 << " [msec]" << std::endl;
 //    std::string fname("/tmp/amcl_map.txt");
 //    amcl->save_map_as_txt_file(fname);
     return 0;

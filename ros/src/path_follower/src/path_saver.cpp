@@ -21,7 +21,7 @@ PathSaver::PathSaver(std::string fname):
     input_path_topic_name("/recorded_path")
 {
     // read parameters
-    nh.param("/path_saver/input_path_topic_name", input_path_topic_name, input_path_topic_name);
+    nh.param("input_path_topic_name", input_path_topic_name, input_path_topic_name);
     // subscriber
     path_sub = nh.subscribe(input_path_topic_name, 1, &PathSaver::path_callback, this);
     // wait for path

@@ -27,7 +27,7 @@ PathServer::PathServer(std::string fname):
     service_path_topic_name("/static_target_path")
 {
     // read parameters
-    nh.param("/path_server/map_frame", map_frame, map_frame);
+    nh.param("map_frame", map_frame, map_frame);
     // server
     path_srv = nh.advertiseService(service_path_topic_name, &PathServer::path_callback, this);
     // publisher

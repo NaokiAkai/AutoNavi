@@ -32,11 +32,11 @@ PathRecorder::PathRecorder():
     tf_listener()
 {
     // read parameters
-    nh.param("/path_recorder/map_frame", map_frame, map_frame);
-    nh.param("/path_recorder/base_link_frame", base_link_frame, base_link_frame);
-    nh.param("/path_recorder/output_path_topic_name", output_path_topic_name, output_path_topic_name);
-    nh.param("/path_recorder/dist_interval", dist_interval, dist_interval);
-    nh.param("/path_recorder/angle_interval", angle_interval, angle_interval);
+    nh.param("map_frame", map_frame, map_frame);
+    nh.param("base_link_frame", base_link_frame, base_link_frame);
+    nh.param("output_path_topic_name", output_path_topic_name, output_path_topic_name);
+    nh.param("dist_interval", dist_interval, dist_interval);
+    nh.param("angle_interval", angle_interval, angle_interval);
     // convert degree to radian
     angle_interval *= M_PI / 180.0;
     // publisher

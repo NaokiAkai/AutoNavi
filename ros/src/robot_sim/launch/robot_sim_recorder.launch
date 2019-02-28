@@ -1,0 +1,10 @@
+<!-- robot sim recorder -->
+<launch >
+    <!-- recorder -->
+    <node name="robot_sim_recorder" pkg="robot_sim" type="robot_sim_recorder" >
+        <param name="root_dir" value="/tmp/robot_sim_data/" type="string" />
+        <param name="map_frame" value="/map" type="string" />
+        <param name="input_odom_topic_name" value="/odom" type="string" />
+        <param name="input_scan_topic_name" value="/scan" type="string" />
+    </node >
+</launch >

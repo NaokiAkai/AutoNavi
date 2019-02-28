@@ -36,12 +36,12 @@ Joy2TwistCmd::Joy2TwistCmd():
     max_steering_angle(0.698)
 {
     // read parameters
-    nh.param("/joy_to_twist_cmd/output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
-    nh.param("/joy_to_twist_cmd/max_linear_vel", max_linear_vel, max_linear_vel);
-    nh.param("/joy_to_twist_cmd/max_angular_vel", max_angular_vel, max_angular_vel);
-    nh.param("/joy_to_twist_cmd/output_hz", output_hz, output_hz);
-    nh.param("/joy_to_twist_cmd/use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
-    nh.param("/joy_to_twist_cmd/max_steering_angle", max_steering_angle, max_steering_angle);
+    nh.param("output_twist_topic_name", output_twist_topic_name, output_twist_topic_name);
+    nh.param("max_linear_vel", max_linear_vel, max_linear_vel);
+    nh.param("max_angular_vel", max_angular_vel, max_angular_vel);
+    nh.param("output_hz", output_hz, output_hz);
+    nh.param("use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
+    nh.param("max_steering_angle", max_steering_angle, max_steering_angle);
     // subscriber
     joy_sub = nh.subscribe("/joy", 100, &Joy2TwistCmd::joy_callback, this);
     // publisher
