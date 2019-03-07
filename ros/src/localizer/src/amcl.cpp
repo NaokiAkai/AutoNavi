@@ -823,7 +823,6 @@ double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, 
     double xo = base_link2laser.x * c - base_link2laser.y * s + pose.x;
     double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
     double zz_max = z_hit * norm_const_hit + z_max * max_dist_prob + z_rand * z_rand_mult;
-    double z_uni = 1.0 / scan.range_max / map.info.resolution;
     int step = scan_step;
     if (use_all_scan)
         step = 1;
@@ -833,8 +832,9 @@ double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, 
         if (!is_valid_scan_points[i])
         {
             zz = z_max * max_dist_prob + z_rand * z_rand_mult;
+            double z_unk = (1.0 / (1.0 - exp(-lambda_short * scan.range_max))) * lambda_short * exp(-lambda_short * scan.range_max);
             ssp_prob = zz * 0.5;
-            dsp_prob = z_uni * (zz_max - zz) * 0.5;
+            dsp_prob = z_unk * (zz_max - zz) * 0.5;
             sum = ssp_prob + dsp_prob;
             ssp_prob /= sum;
             dsp_prob /= sum;
@@ -842,7 +842,7 @@ double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, 
             if (i % scan_step == 0)
             {
                 double pzs = zz * ssp_prob;
-                double pzd = z_uni * (zz_max - zz) * dsp_prob;
+                double pzd = z_unk * (zz_max - zz) * dsp_prob;
                 pz = pzs + pzd;
                 if (pz > 1.0)
                     pz = 1.0;
@@ -862,26 +862,28 @@ double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, 
 //            double z = dist_map[u][v];
             double z = dist_map.at<float>(v, u);
             zz = z_hit * norm_const_hit * exp(-(z * z) / z_hit_denom) + z_max * max_dist_prob + z_rand * z_rand_mult;
+            double z_unk = (1.0 / (1.0 - exp(-lambda_short * scan.range_max))) * lambda_short * exp(-lambda_short * r);
             ssp_prob = zz * 0.5;
-            dsp_prob = z_uni * (zz_max - zz) * 0.5;
+            dsp_prob = z_unk * (zz_max - zz) * 0.5;
             sum = ssp_prob + dsp_prob;
             ssp_prob /= sum;
             dsp_prob /= sum;
             dsp_probs[p_index][i] = dsp_prob;
             double pzs = zz * ssp_prob;
-            double pzd = z_uni * (zz_max - zz) * dsp_prob;
+            double pzd = z_unk * (zz_max - zz) * dsp_prob;
             pz = pzs + pzd;
         }
         else
         {
             zz = z_max * max_dist_prob + z_rand * z_rand_mult;
+            double z_unk = (1.0 / (1.0 - exp(-lambda_short * scan.range_max))) * lambda_short * exp(-lambda_short * r);
             ssp_prob = zz * 0.5;
-            dsp_prob = z_uni * (zz_max - zz) * 0.5;
+            dsp_prob = z_unk * (zz_max - zz) * 0.5;
             sum = ssp_prob + dsp_prob;
             ssp_prob /= sum;
             dsp_prob /= sum;
             double pzs = zz * ssp_prob;
-            double pzd = z_uni * (zz_max - zz) * dsp_prob;
+            double pzd = z_unk * (zz_max - zz) * dsp_prob;
             pz = pzs + pzd;
         }
         dsp_probs[p_index][i] = dsp_prob;
@@ -1344,6 +1346,36 @@ void AMCL::publish_matching_error_as_laser_scan(pose_t pose, sensor_msgs::LaserS
         }
     }
     matching_error_pub.publish(errors);
+}
+
+std::vector<double> AMCL::get_residual_errors_as_std_vector(pose_t pose, sensor_msgs::LaserScan scan, int scan_step)
+{
+    double c = cos(pose.yaw);
+    double s = sin(pose.yaw);
+    double xo = base_link2laser.x * c - base_link2laser.y * s + pose.x;
+    double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
+    std::vector<double> residual_errors;
+    for (int i = 0; i < (int)scan.ranges.size(); i += scan_step)
+    {
+        if (!is_valid_scan_points[i])
+        {
+            residual_errors.push_back(-1.0);
+            continue;
+        }
+        double angle = scan.angle_min + scan.angle_increment * (double)i;
+        double yaw = angle + pose.yaw + base_link2laser.yaw;
+        double r = scan.ranges[i];
+        double x = r * cos(yaw) + xo;
+        double y = r * sin(yaw) + yo;
+        int u, v;
+        xy2uv(x, y, &u, &v);
+        if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
+//            residual_errors.push_back((double)dist_map[u][v]);
+            residual_errors.push_back((double)dist_map.at<float>(v, u));
+        else
+            residual_errors.push_back(-1.0);
+    }
+    return residual_errors;
 }
 
 void AMCL::publish_expected_map_distances_as_laser_scan(pose_t pose)

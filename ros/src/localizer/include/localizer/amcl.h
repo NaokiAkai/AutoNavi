@@ -103,6 +103,7 @@ public:
     void publish_likelihood_distribution_map_vis(double range, double reso, sensor_msgs::LaserScan scan);
     void compute_scan_fractions(pose_t pose, sensor_msgs::LaserScan scan, double* valid_scan, double* matched_scan);
     void publish_matching_error_as_laser_scan(pose_t pose, sensor_msgs::LaserScan scan);
+    std::vector<double> get_residual_errors_as_std_vector(pose_t pose, sensor_msgs::LaserScan scan, int scan_step);
     void publish_expected_map_distances_as_laser_scan(pose_t pose);
 };
 

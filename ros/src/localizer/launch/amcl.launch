@@ -5,12 +5,11 @@
 
 <launch >
     <!-- arguments -->
-    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" /> -->
-    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" />
-    <!-- <arg name="map_yaml_file" default="/home/akai/Dropbox/work/gaze_proj/maps/nic6f/ogm.yaml" /> -->
+    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" /> -->
+
     <arg name="map_frame" default="/map" />
     <arg name="laser_frame" default="/laser" />
-    <!-- <arg name="laser_frame" default="/velodyne32" /> -->
     <arg name="base_link_frame" default="/base_link" />
     <arg name="map_topic_name" default="/amcl_map" />
     <arg name="input_odom_topic_name" default="/odom" />
@@ -32,28 +31,16 @@
     <arg name="start_x" default="0.0" />
     <arg name="start_y" default="0.0" />
     <arg name="start_yaw" default="0.0" />
-    <!-- ICRA2019 CW -->
-<!--
-    <arg name="start_x" default="-26.299" />
-    <arg name="start_y" default="-11.194" />
-    <arg name="start_yaw" default="51.216" />
- -->
-    <!-- ICRA2019 CCW -->
-<!--
-    <arg name="start_x" default="-25.294" />
-    <arg name="start_y" default="-13.895" />
-    <arg name="start_yaw" default="-6.450" />
- -->
     <arg name="initial_cov_xx" default="0.2" />
     <arg name="initial_cov_yy" default="0.2" />
     <arg name="initial_cov_yawyaw" default="1.0" />
     <arg name="pose_publish_hz" default="20.0" />
     <arg name="use_kld_sampling" default="false" />
-    <arg name="add_random_particle" default="false" />
+    <arg name="add_random_particle" default="true" />
     <arg name="add_random_particle_rate" default="0.1" />
     <arg name="dynamic_scan_point_threshold" default="0.9" />
     <arg name="use_nav_core_server" default="false" />
-    <arg name="plot_likelihood_distribution" default="false" />
+    <arg name="plot_likelihood_distribution" default="true" />
     <arg name="z_hit" default="0.9" />
     <arg name="z_short" default="0.1" />
     <arg name="z_max" default="0.05" />
@@ -62,9 +49,9 @@
     <arg name="lambda_short" default="0.1" />
     <arg name="max_dist_prob" default="0.043937" />
     <arg name="z_rand_mult" default="0.033333" />
-    <arg name="use_beam_model" default="false" />
+    <arg name="use_beam_model" default="true" />
     <arg name="use_test_range_measurement" default="false" />
-    <arg name="use_dspd" default="true" />
+    <arg name="use_dspd" default="false" />
 
     <!-- tf -->
     <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />

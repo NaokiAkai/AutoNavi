@@ -119,10 +119,10 @@
         <param name="/output_scan_topic_name" value="/scan" type="string" />
         <param name="/output_scan_points_topic_name" value="/scan_points" type="string" />
         <param name="/output_semantic_scan_topic_name" value="/semantic_scan" type="string" />
-        <param name="/odom_linear_noise" value="0.3" type="double" />
-        <param name="/odom_angular_noise" value="0.15" type="double" />
-        <param name="/odom_linear_noise_stationary" value="0.95" type="double" />
-        <param name="/odom_angular_noise_stationary" value="0.95" type="double" />
+        <param name="/odom_linear_noise" value="0.45" type="double" />
+        <param name="/odom_angular_noise" value="0.35" type="double" />
+        <param name="/odom_linear_noise_stationary" value="0.93" type="double" />
+        <param name="/odom_angular_noise_stationary" value="0.93" type="double" />
         <param name="/scan_measurement_noise" value="0.05" type="double" />
     </node >
 </launch >
