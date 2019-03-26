@@ -87,6 +87,7 @@ AMCL::AMCL():
     nh.param("odom_noise_dist_head", odom_noise_dist_head, odom_noise_dist_head);
     nh.param("odom_noise_head_dist", odom_noise_head_dist, odom_noise_head_dist);
     nh.param("odom_noise_head_head", odom_noise_head_head, odom_noise_head_head);
+    nh.param("use_omni_odom", use_omni_odom, use_omni_odom);
     nh.param("start_x", start_x, start_x);
     nh.param("start_y", start_y, start_y);
     nh.param("start_yaw", start_yaw, start_yaw);
@@ -494,37 +495,66 @@ void AMCL::update_particle_pose_by_odom(void)
         prev_time = curr_time;
         return;
     }
-    double d_dist = odom.twist.twist.linear.x * d_time;
-    double d_yaw = odom.twist.twist.angular.z * d_time;
-    double d_dist2 = d_dist * d_dist;
-    double d_yaw2 = d_yaw * d_yaw;
-    delta_dist += d_dist;
-    delta_yaw += d_yaw;
-    robot_pose.x += d_dist * cos(robot_pose.yaw);
-    robot_pose.y += d_dist * sin(robot_pose.yaw);
-    robot_pose.yaw += d_yaw;
-    while (robot_pose.yaw < -M_PI)
-        robot_pose.yaw += 2.0 * M_PI;
-    while (robot_pose.yaw > M_PI)
-        robot_pose.yaw -= 2.0 * M_PI;
-    for (int i = 0; i < particle_num; i++)
+    if (!use_omni_odom)
     {
-        double dd = d_dist + nrand(d_dist2 * odom_noise_dist_dist + d_yaw2 * odom_noise_head_dist);
-        double dy = d_yaw + nrand(d_dist2 * odom_noise_dist_head + d_yaw2 * odom_noise_head_head);
-        particles[i].pose.x += dd * cos(particles[i].pose.yaw);
-        particles[i].pose.y += dd * sin(particles[i].pose.yaw);
-        particles[i].pose.yaw += dy;
-        while (particles[i].pose.yaw < -M_PI)
-            particles[i].pose.yaw += 2.0 * M_PI;
-        while (particles[i].pose.yaw > M_PI)
-            particles[i].pose.yaw -= 2.0 * M_PI;
+        double d_dist = odom.twist.twist.linear.x * d_time;
+        double d_yaw = odom.twist.twist.angular.z * d_time;
+        double d_dist2 = d_dist * d_dist;
+        double d_yaw2 = d_yaw * d_yaw;
+        delta_dist += d_dist;
+        delta_yaw += d_yaw;
+        robot_pose.x += d_dist * cos(robot_pose.yaw);
+        robot_pose.y += d_dist * sin(robot_pose.yaw);
+        robot_pose.yaw += d_yaw;
+        while (robot_pose.yaw < -M_PI)
+            robot_pose.yaw += 2.0 * M_PI;
+        while (robot_pose.yaw > M_PI)
+            robot_pose.yaw -= 2.0 * M_PI;
+        for (int i = 0; i < particle_num; i++)
+        {
+            double dd = d_dist + nrand(d_dist2 * odom_noise_dist_dist + d_yaw2 * odom_noise_head_dist);
+            double dy = d_yaw + nrand(d_dist2 * odom_noise_dist_head + d_yaw2 * odom_noise_head_head);
+            particles[i].pose.x += dd * cos(particles[i].pose.yaw);
+            particles[i].pose.y += dd * sin(particles[i].pose.yaw);
+            particles[i].pose.yaw += dy;
+            while (particles[i].pose.yaw < -M_PI)
+                particles[i].pose.yaw += 2.0 * M_PI;
+            while (particles[i].pose.yaw > M_PI)
+                particles[i].pose.yaw -= 2.0 * M_PI;
+        }
+    }
+    else
+    {
+        double d_dist_x = odom.twist.twist.linear.x * d_time;
+        double d_dist_y = odom.twist.twist.linear.y * d_time;
+        double d_yaw = odom.twist.twist.angular.z * d_time;
+        double d_dist_x2 = d_dist_x * d_dist_x;
+        double d_dist_y2 = d_dist_y * d_dist_y;
+        double d_yaw2 = d_yaw * d_yaw;
+        delta_dist += sqrt(d_dist_x2 + d_dist_y2);
+        delta_yaw += d_yaw;
+        robot_pose.x += d_dist_x * cos(robot_pose.yaw) + d_dist_y * sin(robot_pose.yaw);
+        robot_pose.y += d_dist_x * sin(robot_pose.yaw) + d_dist_y * cos(robot_pose.yaw);
+        robot_pose.yaw += d_yaw;
+        while (robot_pose.yaw < -M_PI)
+            robot_pose.yaw += 2.0 * M_PI;
+        while (robot_pose.yaw > M_PI)
+            robot_pose.yaw -= 2.0 * M_PI;
+        for (int i = 0; i < particle_num; i++)
+        {
+            double ddx = d_dist_x + nrand(d_dist_x2 * odom_noise_dist_dist + d_dist_y2 * odom_noise_dist_dist + d_yaw2 * odom_noise_head_dist);
+            double ddy = d_dist_y + nrand(d_dist_x2 * odom_noise_dist_dist + d_dist_y2 * odom_noise_dist_dist + d_yaw2 * odom_noise_head_dist);
+            double dy = d_yaw + nrand(d_dist_x2 * odom_noise_dist_head + d_dist_y2 * odom_noise_dist_head + d_yaw2 * odom_noise_head_head);
+            particles[i].pose.x += ddx * cos(particles[i].pose.yaw) + ddy * sin(particles[i].pose.yaw);
+            particles[i].pose.y += ddx * sin(particles[i].pose.yaw) + ddy * cos(particles[i].pose.yaw);
+            particles[i].pose.yaw += dy;
+            while (particles[i].pose.yaw < -M_PI)
+                particles[i].pose.yaw += 2.0 * M_PI;
+            while (particles[i].pose.yaw > M_PI)
+                particles[i].pose.yaw -= 2.0 * M_PI;
+        }
     }
     prev_time = curr_time;
-
-    static FILE* fp_yaw;
-    if (fp_yaw == NULL)
-        fp_yaw = fopen("/tmp/delta_yaw.txt", "w");
-    fprintf(fp_yaw, "%lf %lf %lf %lf\n", curr_time, d_yaw, d_time, odom.twist.twist.angular.z);
 }
 
 void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)

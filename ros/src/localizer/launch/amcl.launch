@@ -7,6 +7,7 @@
     <!-- arguments -->
     <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" /> -->
+    <!-- <arg name="map_yaml_file" default="/home/akai/Dropbox/work/gaze_proj/maps/nic6f/ogm.yaml" /> -->
 
     <arg name="map_frame" default="/map" />
     <arg name="laser_frame" default="/laser" />
@@ -28,6 +29,7 @@
     <arg name="odom_noise_head_dist" default="0.2" />
     <arg name="odom_noise_dist_head" default="0.2" />
     <arg name="odom_noise_head_head" default="1.0" />
+    <arg name="use_omni_odom" default="false" />
     <arg name="start_x" default="0.0" />
     <arg name="start_y" default="0.0" />
     <arg name="start_yaw" default="0.0" />
@@ -36,11 +38,11 @@
     <arg name="initial_cov_yawyaw" default="1.0" />
     <arg name="pose_publish_hz" default="20.0" />
     <arg name="use_kld_sampling" default="false" />
-    <arg name="add_random_particle" default="true" />
+    <arg name="add_random_particle" default="false" />
     <arg name="add_random_particle_rate" default="0.1" />
     <arg name="dynamic_scan_point_threshold" default="0.9" />
     <arg name="use_nav_core_server" default="false" />
-    <arg name="plot_likelihood_distribution" default="true" />
+    <arg name="plot_likelihood_distribution" default="false" />
     <arg name="z_hit" default="0.9" />
     <arg name="z_short" default="0.1" />
     <arg name="z_max" default="0.05" />
@@ -49,9 +51,9 @@
     <arg name="lambda_short" default="0.1" />
     <arg name="max_dist_prob" default="0.043937" />
     <arg name="z_rand_mult" default="0.033333" />
-    <arg name="use_beam_model" default="true" />
+    <arg name="use_beam_model" default="false" />
     <arg name="use_test_range_measurement" default="false" />
-    <arg name="use_dspd" default="false" />
+    <arg name="use_dspd" default="true" />
 
     <!-- tf -->
     <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
@@ -96,6 +98,7 @@
         <param name="/odom_noise_head_dist" value="$(arg odom_noise_head_dist)" type="double" />
         <param name="/odom_noise_dist_head" value="$(arg odom_noise_dist_head)" type="double" />
         <param name="/odom_noise_head_head" value="$(arg odom_noise_head_head)" type="double" />
+        <param name="/use_omni_odom" value="$(arg use_omni_odom)" type="bool" />
         <param name="/start_x" value="$(arg start_x)" type="double" />
         <param name="/start_y" value="$(arg start_y)" type="double" />
         <param name="/start_yaw" value="$(arg start_yaw)" type="double" />

@@ -41,6 +41,7 @@ public:
     double delta_dist, delta_yaw;
     double update_dist, update_yaw, update_time;
     double odom_noise_dist_dist, odom_noise_dist_head, odom_noise_head_dist, odom_noise_head_head;
+    bool use_omni_odom;
     double start_x, start_y, start_yaw;
     double initial_cov_xx, initial_cov_yy, initial_cov_yawyaw;
     double pose_publish_hz;
