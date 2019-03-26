@@ -13,7 +13,7 @@ private:
     std::string output_twist_topic_name;
     double trans_vel_step, angle_vel_step, output_hz;
     geometry_msgs::TwistStamped twist_cmd;
-    bool use_ackermann_simulator;
+    bool use_ackermann_simulator, use_omni_simulator;
     double max_steering_angle;
 
 public:
@@ -37,7 +37,14 @@ Key2TwistCmd::Key2TwistCmd():
     nh.param("angle_vel_step", angle_vel_step, angle_vel_step);
     nh.param("output_hz", output_hz, output_hz);
     nh.param("use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
+    nh.param("use_omni_simulator", use_omni_simulator, use_omni_simulator);
     nh.param("max_steering_angle", max_steering_angle, max_steering_angle);
+    // check variables
+    if (use_ackermann_simulator && use_omni_simulator)
+    {
+        ROS_ERROR("use_ackermann_simulator and use_omni_simulator are true. One must be false.");
+        exit(1);
+    }
     // subscriber
     key_sub = nh.subscribe("/keyboard/keydown", 100, &Key2TwistCmd::key_callback, this);
     // publisher
@@ -66,33 +73,49 @@ void Key2TwistCmd::key_callback(const keyboard::Key::ConstPtr &msg)
     }
     else if (msg->code == keyboard::Key::KEY_LEFT)
     {
-        if (!use_ackermann_simulator)
+        if (!use_ackermann_simulator && !use_omni_simulator)
         {
             twist_cmd.twist.angular.z += angle_vel_step;
         }
-        else
+        else if (use_ackermann_simulator)
         {
             twist_cmd.twist.angular.z += angle_vel_step;
             if (twist_cmd.twist.angular.z > max_steering_angle)
                 twist_cmd.twist.angular.z = max_steering_angle;
         }
+        else
+        {
+            twist_cmd.twist.linear.y += trans_vel_step;
+        }
     }
     else if (msg->code == keyboard::Key::KEY_RIGHT)
     {
-        if (!use_ackermann_simulator)
+        if (!use_ackermann_simulator && !use_omni_simulator)
         {
             twist_cmd.twist.angular.z -= angle_vel_step;
         }
-        else
+        else if (use_ackermann_simulator)
         {
             twist_cmd.twist.angular.z -= angle_vel_step;
             if (twist_cmd.twist.angular.z < -max_steering_angle)
                 twist_cmd.twist.angular.z = -max_steering_angle;
         }
+        else
+        {
+            twist_cmd.twist.linear.y -= trans_vel_step;
+        }
+    }
+    else if (msg->code == keyboard::Key::KEY_a)
+    {
+        twist_cmd.twist.angular.z += angle_vel_step;
+    }
+    else if (msg->code == keyboard::Key::KEY_s)
+    {
+        twist_cmd.twist.angular.z -= angle_vel_step;
     }
     else if (msg->code == keyboard::Key::KEY_SPACE)
     {
-        twist_cmd.twist.linear.x = twist_cmd.twist.angular.z = 0.0;
+        twist_cmd.twist.linear.x = twist_cmd.twist.linear.y = twist_cmd.twist.angular.z = 0.0;
     }
 }
 

@@ -20,7 +20,7 @@ private:
     geometry_msgs::PoseStamped pose;
     pose_t robot_pose;
     double odom_publish_hz;
-    bool use_ackermann_simulator;
+    bool use_ackermann_simulator, use_omni_simulator;
     double base_line, steering_angle;
     bool record_ground_truth_trajectory;
 
@@ -56,8 +56,15 @@ OdomSim::OdomSim():
     nh.param("map_frame", map_frame, map_frame);
     nh.param("odom_publish_hz", odom_publish_hz, odom_publish_hz);
     nh.param("use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
+    nh.param("use_omni_simulator", use_omni_simulator, use_omni_simulator);
     nh.param("base_line", base_line, base_line);
     nh.param("record_ground_truth_trajectory", record_ground_truth_trajectory, record_ground_truth_trajectory);
+    // check variables
+    if (use_ackermann_simulator && use_omni_simulator)
+    {
+        ROS_ERROR("use_ackermann_simulator and use_omni_simulator are true. One must be false.");
+        exit(1);
+    }
     // set initial state
     odom.header.frame_id = pose.header.frame_id = map_frame;
     odom.child_frame_id = "/ground_truth";
@@ -104,17 +111,18 @@ void OdomSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
         is_first = true;
         return;
     }
-    double delta_dist = msg->twist.linear.x * delta_time;
-    double delta_yaw;
-    if (!use_ackermann_simulator) // differential drive
+    double delta_dist, delta_yaw;
+    if (!use_ackermann_simulator && !use_omni_simulator) // differential drive
     {
+        delta_dist = msg->twist.linear.x * delta_time;
         delta_yaw = msg->twist.angular.z * delta_time;
         robot_pose.x += delta_dist * cos(robot_pose.yaw + delta_yaw / 2.0);
         robot_pose.y += delta_dist * sin(robot_pose.yaw + delta_yaw / 2.0);
         robot_pose.yaw += delta_yaw;
     }
-    else // ackermann steering
+    else if (use_ackermann_simulator) // ackermann steering
     {
+        delta_dist = msg->twist.linear.x * delta_time;
         steering_angle = msg->twist.angular.z; // unit of twist.angular.z must be radian
         double c = cos(robot_pose.yaw);
         double s = sin(robot_pose.yaw);
@@ -136,6 +144,17 @@ void OdomSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
             robot_pose.y += r * (c - c1);
         }
     }
+    else // omni directional
+    {
+        double delta_dist_x = msg->twist.linear.x * delta_time;
+        double delta_dist_y = msg->twist.linear.y * delta_time;
+        double theta = robot_pose.yaw + delta_yaw / 2.0;
+        delta_dist = sqrt(delta_dist_x * delta_dist_x + delta_dist_y * delta_dist_y);
+        delta_yaw = msg->twist.angular.z * delta_time;
+        robot_pose.x += delta_dist_x * cos(theta) + delta_dist_y * sin(theta);
+        robot_pose.y += delta_dist_x * sin(theta) + delta_dist_y * cos(theta);
+        robot_pose.yaw += delta_yaw;
+    }
     mod_yaw(&robot_pose.yaw);
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
     odom.header.stamp = pose.header.stamp = msg->header.stamp;
@@ -143,8 +162,9 @@ void OdomSim::twist_callback(const geometry_msgs::TwistStamped::ConstPtr& msg)
     odom.pose.pose.position.y = pose.pose.position.y = robot_pose.y;
     odom.pose.pose.position.z = pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = pose.pose.orientation = odom_quat;
-    odom.twist.twist.linear.x = delta_dist / delta_time;
-    odom.twist.twist.linear.y = odom.twist.twist.linear.z = 0.0;
+    odom.twist.twist.linear.x = msg->twist.linear.x;
+    odom.twist.twist.linear.y = msg->twist.linear.y;
+    odom.twist.twist.linear.z = 0.0;
     odom.twist.twist.angular.z = delta_yaw / delta_time;
     odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
     prev_time = curr_time;

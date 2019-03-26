@@ -122,15 +122,21 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
         return;
     }
     double curr_time = msg->header.stamp.toSec();
-    if (fabs(odom.twist.twist.linear.x) > 0.01 || fabs(odom.twist.twist.angular.z) > 0.002)
+    if (fabs(odom.twist.twist.linear.x) > 0.01 || fabs(odom.twist.twist.linear.y) > 0.01 || fabs(odom.twist.twist.angular.z) > 0.002)
     {
-        odom.twist.twist.linear.x += nrand(odom_linear_noise);
-        odom.twist.twist.angular.z += nrand(odom_angular_noise);
+        if (fabs(odom.twist.twist.linear.x) > 0.01)
+            odom.twist.twist.linear.x += nrand(odom_linear_noise);
+        if (fabs(odom.twist.twist.linear.y) > 0.01)
+            odom.twist.twist.linear.y += nrand(odom_linear_noise);
+        if (fabs(odom.twist.twist.angular.z) > 0.002)
+            odom.twist.twist.angular.z += nrand(odom_angular_noise);
         double delta_time = curr_time - prev_time;
-        double delta_dist = odom.twist.twist.linear.x * delta_time * odom_linear_noise_stationary;
+        double delta_dist_x = odom.twist.twist.linear.x * delta_time * odom_linear_noise_stationary;
+        double delta_dist_y = odom.twist.twist.linear.y * delta_time * odom_linear_noise_stationary;
         double delta_yaw = odom.twist.twist.angular.z * delta_time * odom_angular_noise_stationary;
-        robot_pose.x += delta_dist * cos(robot_pose.yaw + delta_yaw / 2.0);
-        robot_pose.y += delta_dist * sin(robot_pose.yaw + delta_yaw / 2.0);
+        double theta = robot_pose.yaw + delta_yaw / 2.0;
+        robot_pose.x += delta_dist_x * cos(theta) + delta_dist_y * sin(theta);
+        robot_pose.y += delta_dist_x * sin(theta) + delta_dist_y * cos(theta);
         robot_pose.yaw += delta_yaw;
         mod_yaw(&robot_pose.yaw);
         geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
@@ -138,7 +144,7 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
         odom.pose.pose.position.y = robot_pose.y;
         odom.pose.pose.position.z = 0.0;
         odom.pose.pose.orientation = odom_quat;
-        odom.twist.twist.linear.y = odom.twist.twist.linear.z = 0.0;
+        odom.twist.twist.linear.z = 0.0;
         odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
     }
     tf::Transform transform;
