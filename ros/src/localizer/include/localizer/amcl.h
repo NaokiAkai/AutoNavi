@@ -1,10 +1,17 @@
-// Copyright © 2018 Naoki Akai. All rights reserved.
+/****************************************************************************
+ * Copyright (C) 2018 Naoki Akai.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/.
+ ****************************************************************************/
 
 #ifndef __AMCL_H__
 #define __AMCL_H__
 
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
@@ -63,10 +70,11 @@ public:
     nav_msgs::Odometry curr_odom;
     sensor_msgs::LaserScan curr_scan;
     double z_hit, z_short, z_max, z_rand;
-    double z_hit_denom, lambda_short, max_dist_prob, z_rand_mult;
+    double z_hit_var, lambda_short, max_dist_prob, z_rand_mult;
     double norm_const_hit;
-    bool use_beam_model, use_dspd;
-    std::vector<std::vector<double> > dsp_probs;
+    bool use_beam_model, use_class_conditional_observation_model;
+    std::vector<double> unknown_probs;
+    std::vector<std::vector<double> > measurement_classes;
     tf::TransformListener tf_listener;
 
     AMCL();
@@ -93,17 +101,18 @@ public:
     void evaluate_particles_using_likelihood_field_model(sensor_msgs::LaserScan scan);
     double compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan scan);
     void evaluate_particles_using_beam_model(sensor_msgs::LaserScan scan);
-    double compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, int p_index, bool use_all_scan);
-    void evaluate_particles_with_dspd(sensor_msgs::LaserScan scan);
+    double compute_weight_with_class_conditional_observation_model(pose_t pose, sensor_msgs::LaserScan scan, bool use_all_scan);
+    void evaluate_particles_with_class_conditional_observation_model(sensor_msgs::LaserScan scan);
     void compute_total_weight_and_effective_sample_size(void);
     void compute_random_particle_rate(void);
     void estimate_robot_pose(void);
     void resample_particles(void);
+    void reset_moving_amounts(void);
     void scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);
     void plot_likelihood_distribution(pose_t pose, sensor_msgs::LaserScan scan);
     void publish_likelihood_distribution_map_vis(double range, double reso, sensor_msgs::LaserScan scan);
     void compute_scan_fractions(pose_t pose, sensor_msgs::LaserScan scan, double* valid_scan, double* matched_scan);
-    void publish_matching_error_as_laser_scan(pose_t pose, sensor_msgs::LaserScan scan);
+    void publish_residual_errors_as_laser_scan(pose_t pose, sensor_msgs::LaserScan scan);
     std::vector<double> get_residual_errors_as_std_vector(pose_t pose, sensor_msgs::LaserScan scan, int scan_step);
     void publish_expected_map_distances_as_laser_scan(pose_t pose);
 };

@@ -6,6 +6,8 @@
 <launch >
     <!-- arguments -->
     <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+    <!-- <arg name="map_yaml_file" default="$(find robot_sim)../../maps/ib_minami_3f/ogm.yaml" /> -->
+    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic6f/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="/home/akai/Dropbox/work/gaze_proj/maps/nic6f/ogm.yaml" /> -->
 
@@ -15,6 +17,7 @@
     <arg name="map_topic_name" default="/amcl_map" />
     <arg name="input_odom_topic_name" default="/odom" />
     <arg name="input_scan_topic_name" default="/scan" />
+    <arg name="input_e2e_particles_topic_name" default="/e2e_localization_particles" />
     <arg name="min_particle_num" default="200" />
     <arg name="max_particle_num" default="200" />
     <arg name="resample_threshold" default="0.5" />
@@ -26,9 +29,9 @@
     <arg name="update_yaw" default="2.0" />
     <arg name="update_time" default="10000000.0" />
     <arg name="odom_noise_dist_dist" default="0.9" />
-    <arg name="odom_noise_head_dist" default="0.2" />
-    <arg name="odom_noise_dist_head" default="0.2" />
-    <arg name="odom_noise_head_head" default="1.0" />
+    <arg name="odom_noise_head_dist" default="0.5" />
+    <arg name="odom_noise_dist_head" default="0.5" />
+    <arg name="odom_noise_head_head" default="1.3" />
     <arg name="use_omni_odom" default="false" />
     <arg name="start_x" default="0.0" />
     <arg name="start_y" default="0.0" />
@@ -38,7 +41,7 @@
     <arg name="initial_cov_yawyaw" default="1.0" />
     <arg name="pose_publish_hz" default="20.0" />
     <arg name="use_kld_sampling" default="false" />
-    <arg name="add_random_particle" default="false" />
+    <arg name="add_random_particle" default="true" />
     <arg name="add_random_particle_rate" default="0.1" />
     <arg name="dynamic_scan_point_threshold" default="0.9" />
     <arg name="use_nav_core_server" default="false" />
@@ -47,13 +50,13 @@
     <arg name="z_short" default="0.1" />
     <arg name="z_max" default="0.05" />
     <arg name="z_rand" default="0.05" />
-    <arg name="z_hit_denom" default="0.08" />
-    <arg name="lambda_short" default="0.1" />
+    <arg name="z_hit_var" default="0.08" />
+    <arg name="lambda_short" default="0.05" />
     <arg name="max_dist_prob" default="0.043937" />
-    <arg name="z_rand_mult" default="0.033333" />
+    <arg name="z_rand_mult" default="0.0033333" />
     <arg name="use_beam_model" default="false" />
     <arg name="use_test_range_measurement" default="false" />
-    <arg name="use_dspd" default="true" />
+    <arg name="use_class_conditional_observation_model" default="true" />
 
     <!-- tf -->
     <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
@@ -76,7 +79,6 @@
     </node >
 
     <!-- amcl localizer -->
-    <!-- <node name="amcl" pkg="localizer" type="amcl_dspd" output="screen" > -->
     <node name="amcl" pkg="localizer" type="amcl" output="screen" >
         <param name="/map_frame" value="$(arg map_frame)" type="string" />
         <param name="/laser_frame" value="$(arg laser_frame)" type="string" />
@@ -84,6 +86,7 @@
         <param name="/input_map_topic_name" value="$(arg map_topic_name)" type="string" />
         <param name="/input_odom_topic_name" value="$(arg input_odom_topic_name)" type="string" />
         <param name="/input_scan_topic_name" value="$(arg input_scan_topic_name)" type="string" />
+        <param name="/input_e2e_particles_topic_name" value="$(arg input_e2e_particles_topic_name)" type="string" />
         <param name="/min_particle_num" value="$(arg min_particle_num)" type="int" />
         <param name="/max_particle_num" value="$(arg max_particle_num)" type="int" />
         <param name="/resample_threshold" value="$(arg resample_threshold)" type="double" />
@@ -117,11 +120,11 @@
         <param name="/z_short" value="$(arg z_short)" type="double" />
         <param name="/z_max" value="$(arg z_max)" type="double" />
         <param name="/z_rand" value="$(arg z_rand)" type="double" />
-        <param name="/z_hit_denom" value="$(arg z_hit_denom)" type="double" />
+        <param name="/z_hit_var" value="$(arg z_hit_var)" type="double" />
         <param name="/lambda_short" value="$(arg lambda_short)" type="double" />
         <param name="/max_dist_prob" value="$(arg max_dist_prob)" type="double" />
         <param name="/z_rand_mult" value="$(arg z_rand_mult)" type="double" />
         <param name="/use_beam_model" value="$(arg use_beam_model)" type="bool" />
-        <param name="/use_dspd" value="$(arg use_dspd)" type="bool" />
+        <param name="/use_class_conditional_observation_model" value="$(arg use_class_conditional_observation_model)" type="bool" />
     </node >
 </launch >

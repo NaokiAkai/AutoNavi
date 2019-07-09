@@ -1,4 +1,10 @@
-// Copyright © 2018 Naoki Akai. All rights reserved.
+/****************************************************************************
+ * Copyright (C) 2018 Naoki Akai.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/.
+ ****************************************************************************/
 
 #include <ros/ros.h>
 #include <std_msgs/Header.h>
@@ -54,12 +60,12 @@ AMCL::AMCL():
     z_short(0.10),
     z_max(0.05),
     z_rand(0.05),
-    z_hit_denom(0.1),
+    z_hit_var(0.1),
     lambda_short(0.10),
     max_dist_prob(0.043937),
     z_rand_mult(0.033333),
     use_beam_model(false),
-    use_dspd(false),
+    use_class_conditional_observation_model(false),
     is_map_data(false),
     is_scan_data(false),
     is_first_time(true),
@@ -104,12 +110,12 @@ AMCL::AMCL():
     nh.param("z_short", z_short, z_short);
     nh.param("z_max", z_max, z_max);
     nh.param("z_rand", z_rand, z_rand);
-    nh.param("z_hit_denom", z_hit_denom, z_hit_denom);
+    nh.param("z_hit_var", z_hit_var, z_hit_var);
     nh.param("lambda_short", lambda_short, lambda_short);
     nh.param("max_dist_prob", max_dist_prob, max_dist_prob);
     nh.param("z_rand_mult", z_rand_mult, z_rand_mult);
     nh.param("use_beam_model", use_beam_model, use_beam_model);
-    nh.param("use_dspd", use_dspd, use_dspd);
+    nh.param("use_class_conditional_observation_model", use_class_conditional_observation_model, use_class_conditional_observation_model);
     // check values and flags
     // check value of resample threshold
     if (resample_threshold < 0.0 || 1.0 < resample_threshold)
@@ -118,7 +124,7 @@ AMCL::AMCL():
         exit(1);
     }
     // check dynamic scan point threshold when rejection algorithm will be used
-    if (use_test_range_measurement || use_dspd)
+    if (use_test_range_measurement || use_class_conditional_observation_model)
     {
         if (dynamic_scan_point_threshold < 0.0 || 1.0 < dynamic_scan_point_threshold)
         {
@@ -126,12 +132,12 @@ AMCL::AMCL():
             exit(1);
         }
     }
-    // beam model and test range measurement will not be used if use_dspd = true
-    if (use_dspd)
+    // beam model and test range measurement will not be used if use_class_conditional_observation_model = true
+    if (use_class_conditional_observation_model)
     {
         use_beam_model = false;
         use_test_range_measurement = false;
-        ROS_INFO("beam model will not be used because use_dspd is true");
+        ROS_INFO("beam model will not be used because use_class_conditional_observation_model is true");
     }
     // convert degree to radian
     update_yaw *= M_PI / 180.0;
@@ -155,7 +161,7 @@ AMCL::AMCL():
         ROS_INFO("ACML adds random particles about %.1lf %% when resampling", add_random_particle_rate * 100.0);
     }
     // compute parameters
-    norm_const_hit = 1.0 / sqrt(z_hit_denom * M_PI);
+    norm_const_hit = 1.0 / (sqrt(2.0 * M_PI) * z_hit_var);
     // subscriber
     pose_sub = nh.subscribe("/initialpose", 1, &AMCL::initial_pose_callback, this);
     map_sub = nh.subscribe(input_map_topic_name, 1, &AMCL::map_callback, this);
@@ -169,7 +175,7 @@ AMCL::AMCL():
     upoints_pub = nh.advertise<sensor_msgs::PointCloud>("/points_used_for_localization", 1);
     dpoints_pub = nh.advertise<sensor_msgs::PointCloud>("/dynamic_scan_points", 1);
     likelihood_dist_map_pub = nh.advertise<grid_map_msgs::GridMap>("/likelihood_dist_map", 1);
-    matching_error_pub = nh.advertise<sensor_msgs::LaserScan>("/matching_errors", 1);
+    matching_error_pub = nh.advertise<sensor_msgs::LaserScan>("/scan_residual_errors", 1);
     expected_distances_pub = nh.advertise<sensor_msgs::LaserScan>("/expected_scan", 1);
     // initialization
     amcl_init();
@@ -272,7 +278,6 @@ bool AMCL::get_pose_from_tf(std::string source_frame, std::string target_frame, 
     tf::StampedTransform tf_s2t;
     try
     {
-        ros::Time now = ros::Time::now();
         tf_listener.waitForTransform(source_frame, target_frame, target_time, ros::Duration(duration));
         tf_listener.lookupTransform(source_frame, target_frame, target_time, tf_s2t);
     }
@@ -383,6 +388,7 @@ void AMCL::map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     }
     dist_map = dist;
     is_map_data = true;
+    printf("got a map\n");
 }
 
 void AMCL::save_map_as_txt_file(std::string fname)
@@ -654,7 +660,7 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
                     {
 //                        double z = (double)dist_map[u][v];
                         double z = (double)dist_map.at<float>(v, u);
-                        p3 = z_hit_ * norm_const_hit * exp(-(z * z) / z_hit_denom);
+                        p3 = z_hit_ * norm_const_hit * exp(-(z * z) / (2.0 * z_hit_var));
                     }
                     double pz = p1 + p2 + p3;
                     if (pz > 1.0)
@@ -713,29 +719,32 @@ double AMCL::compute_weight_using_likelihood_field_model(pose_t pose, sensor_msg
     double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
     for (int i = 0; i < (int)scan.ranges.size(); i += scan_step)
     {
+        double pz;
         if (!is_valid_scan_points[i])
         {
-            double pz = z_max * max_dist_prob + z_rand * z_rand_mult;
-            w += log(pz);
-            continue;
+            pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
         }
-        double angle = scan.angle_min + scan.angle_increment * (double)i;
-        double yaw = angle + pose.yaw + base_link2laser.yaw;
-        double r = scan.ranges[i];
-        double x = r * cos(yaw) + xo;
-        double y = r * sin(yaw) + yo;
-        int u, v;
-        xy2uv(x, y, &u, &v);
-        double pz = 0.0;
-        if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
+        else
         {
-//            double z = (double)dist_map[u][v];
-            double z = dist_map.at<float>(v, u);
-            pz += z_hit * norm_const_hit * exp(-(z * z) / z_hit_denom);
+            double angle = scan.angle_min + scan.angle_increment * (double)i;
+            double yaw = angle + pose.yaw + base_link2laser.yaw;
+            double r = scan.ranges[i];
+            double x = r * cos(yaw) + xo;
+            double y = r * sin(yaw) + yo;
+            int u, v;
+            xy2uv(x, y, &u, &v);
+            if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
+            {
+//                double z = (double)dist_map[u][v];
+                double z = dist_map.at<float>(v, u);
+                pz = z_hit * norm_const_hit * exp(-(z * z) / (2.0 * z_hit_var)) * map.info.resolution + z_rand * z_rand_mult;
+                pz += z_max * 1.0 * map.info.resolution;
+            }
+            else
+            {
+                pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
+            }
         }
-        pz += z_max * max_dist_prob + z_rand * z_rand_mult;
-        if (pz > 1.0)
-            pz = 1.0;
         w += log(pz);
     }
     return exp(w);
@@ -774,6 +783,7 @@ double AMCL::compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan
     double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
     for (int i = 0; i < (int)scan.ranges.size(); i += scan_step)
     {
+        double pz;
         if (is_valid_scan_points[i])
         {
             double angle = scan.angle_min + scan.angle_increment * (double)i;
@@ -803,21 +813,25 @@ double AMCL::compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan
                 x += dx;
                 y += dy;
             }
-            double r = scan.ranges[i];
-            double pz = z_max * max_dist_prob + z_rand * z_rand_mult;
-            if (0.0 <= r && r <= range)
-                pz += z_short * (1.0 / (1.0 - exp(-lambda_short * range))) * lambda_short * exp(-lambda_short * r);
-            double dr = r - range;
-            pz += z_hit_ * norm_const_hit * exp(-(dr * dr) / z_hit_denom);
-            if (pz > 1.0)
-                pz = 1.0;
-            w += log(pz);
+            if (range < 0.0)
+            {
+                pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
+            }
+            else
+            {
+                double r = scan.ranges[i];
+                pz = z_max * 1.0 * map.info.resolution;
+                if (0.0 <= r && r <= range)
+                    pz += z_short * (1.0 / (1.0 - exp(-lambda_short * range))) * lambda_short * exp(-lambda_short * r) * map.info.resolution;
+                double dr = r - range;
+                pz += z_hit_ * norm_const_hit * exp(-(dr * dr) / (2.0 * z_hit_var)) * map.info.resolution;
+            }
         }
         else
         {
-            double pz = z_max * max_dist_prob + z_rand * z_rand_mult;
-            w += log(pz);
+            pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
         }
+        w += log(pz);
     }
     return exp(w);
 }
@@ -845,92 +859,67 @@ void AMCL::evaluate_particles_using_beam_model(sensor_msgs::LaserScan scan)
     }
 }
 
-double AMCL::compute_weight_with_dspd(pose_t pose, sensor_msgs::LaserScan scan, int p_index, bool use_all_scan)
+double AMCL::compute_weight_with_class_conditional_observation_model(pose_t pose, sensor_msgs::LaserScan scan, bool use_all_scan)
 {
     double w = 0.0;
     double c = cos(pose.yaw);
     double s = sin(pose.yaw);
     double xo = base_link2laser.x * c - base_link2laser.y * s + pose.x;
     double yo = base_link2laser.x * s + base_link2laser.y * c + pose.y;
-    double zz_max = z_hit * norm_const_hit + z_max * max_dist_prob + z_rand * z_rand_mult;
+    double p_known_prior = 0.5;
+    double p_unknown_prior = 1.0 - p_known_prior;
     int step = scan_step;
     if (use_all_scan)
         step = 1;
     for (int i = 0; i < scan.ranges.size(); i += step)
     {
-        double zz = 0.0, sum = 0.0, pz = 0.0, ssp_prob = 0.0, dsp_prob;
+        double pz_known, pz_unknown;
         if (!is_valid_scan_points[i])
         {
-            zz = z_max * max_dist_prob + z_rand * z_rand_mult;
-            double z_unk = (1.0 / (1.0 - exp(-lambda_short * scan.range_max))) * lambda_short * exp(-lambda_short * scan.range_max);
-            ssp_prob = zz * 0.5;
-            dsp_prob = z_unk * (zz_max - zz) * 0.5;
-            sum = ssp_prob + dsp_prob;
-            ssp_prob /= sum;
-            dsp_prob /= sum;
-            dsp_probs[p_index][i] = dsp_prob;
-            if (i % scan_step == 0)
-            {
-                double pzs = zz * ssp_prob;
-                double pzd = z_unk * (zz_max - zz) * dsp_prob;
-                pz = pzs + pzd;
-                if (pz > 1.0)
-                    pz = 1.0;
-                w += log(pz);
-            }
-            continue;
-        }
-        double angle = scan.angle_min + scan.angle_increment * (double)i;
-        double yaw = angle + pose.yaw;
-        double r = scan.ranges[i];
-        double x = r * cos(yaw) + xo;
-        double y = r * sin(yaw) + yo;
-        int u, v;
-        xy2uv(x, y, &u, &v);
-        if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
-        {
-//            double z = dist_map[u][v];
-            double z = dist_map.at<float>(v, u);
-            zz = z_hit * norm_const_hit * exp(-(z * z) / z_hit_denom) + z_max * max_dist_prob + z_rand * z_rand_mult;
-            double z_unk = (1.0 / (1.0 - exp(-lambda_short * scan.range_max))) * lambda_short * exp(-lambda_short * r);
-            ssp_prob = zz * 0.5;
-            dsp_prob = z_unk * (zz_max - zz) * 0.5;
-            sum = ssp_prob + dsp_prob;
-            ssp_prob /= sum;
-            dsp_prob /= sum;
-            dsp_probs[p_index][i] = dsp_prob;
-            double pzs = zz * ssp_prob;
-            double pzd = z_unk * (zz_max - zz) * dsp_prob;
-            pz = pzs + pzd;
+            pz_known = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
+            pz_unknown = 1.0 / (1.0 - exp(-lambda_short * scan.range_max)) * lambda_short * exp(-lambda_short * scan.range_max) * map.info.resolution;
         }
         else
         {
-            zz = z_max * max_dist_prob + z_rand * z_rand_mult;
-            double z_unk = (1.0 / (1.0 - exp(-lambda_short * scan.range_max))) * lambda_short * exp(-lambda_short * r);
-            ssp_prob = zz * 0.5;
-            dsp_prob = z_unk * (zz_max - zz) * 0.5;
-            sum = ssp_prob + dsp_prob;
-            ssp_prob /= sum;
-            dsp_prob /= sum;
-            double pzs = zz * ssp_prob;
-            double pzd = z_unk * (zz_max - zz) * dsp_prob;
-            pz = pzs + pzd;
+            double angle = scan.angle_min + scan.angle_increment * (double)i;
+            double yaw = angle + pose.yaw;
+            double r = scan.ranges[i];
+            double x = r * cos(yaw) + xo;
+            double y = r * sin(yaw) + yo;
+            int u, v;
+            xy2uv(x, y, &u, &v);
+            if (0 <= u && u < map.info.width && 0 <= v && v < map.info.height)
+            {
+//                double z = dist_map[u][v];
+                double z = dist_map.at<float>(v, u);
+                pz_known = z_hit * norm_const_hit * exp(-(z * z) / (2.0 * z_hit_var)) * map.info.resolution + z_rand * z_rand_mult;
+                pz_unknown = 1.0 / (1.0 - exp(-lambda_short * scan.range_max)) * lambda_short * exp(-lambda_short * r) * map.info.resolution;
+            }
+            else
+            {
+                pz_known = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
+                pz_unknown = 1.0 / (1.0 - exp(-lambda_short * scan.range_max)) * lambda_short * exp(-lambda_short * scan.range_max) * map.info.resolution;
+            }
         }
-        dsp_probs[p_index][i] = dsp_prob;
-        if (pz > 1.0)
-            pz = 1.0;
-        w += log(pz);
+        double p_known = pz_known * p_known_prior;
+        double p_unknown = pz_unknown * p_unknown_prior;
+        double sum = p_known + p_unknown;
+        if (use_all_scan)
+            unknown_probs[i] = p_unknown / sum;
+        if (i % scan_step == 0)
+            w += log(sum);
     }
     return exp(w);
 }
 
-void AMCL::evaluate_particles_with_dspd(sensor_msgs::LaserScan scan)
+// consider two classes; known and unknown
+void AMCL::evaluate_particles_with_class_conditional_observation_model(sensor_msgs::LaserScan scan)
 {
     double max;
     for (int i = 0; i < particle_num; i++)
     {
         // partial scan points are used to calculate likelihood in order to accelerate computation time
-        double weight = compute_weight_with_dspd(particles[i].pose, scan, i, false);
+        double weight = compute_weight_with_class_conditional_observation_model(particles[i].pose, scan, false);
         particles[i].w *= weight;
         if (i == 0)
         {
@@ -947,16 +936,18 @@ void AMCL::evaluate_particles_with_dspd(sensor_msgs::LaserScan scan)
         }
     }
     // compute dynamic scan point probability again using all scan points with the maximum likelihood particle
-    compute_weight_with_dspd(particles[max_particle_likelihood_num].pose, scan, max_particle_likelihood_num, true);
+    compute_weight_with_class_conditional_observation_model(particles[max_particle_likelihood_num].pose, scan, true);
     // dynamic scan points detection
     sensor_msgs::LaserScan dscan;
     sensor_msgs::PointCloud dpoints;
     dscan = scan;
     dpoints.header = scan.header;
+    if (dscan.ranges.size() != dscan.intensities.size())
+        dscan.intensities.resize((int)dscan.ranges.size());
     for (int i = 0; i < scan.ranges.size(); i++)
     {
-        dscan.intensities[i] = dsp_probs[max_particle_likelihood_num][i];
-        if (is_valid_scan_points[i] && dsp_probs[max_particle_likelihood_num][i] >= dynamic_scan_point_threshold)
+        dscan.intensities[i] = unknown_probs[i];
+        if (is_valid_scan_points[i] && unknown_probs[i] >= dynamic_scan_point_threshold)
         {
             geometry_msgs::Point32 p;
             double r = scan.ranges[i];
@@ -968,7 +959,7 @@ void AMCL::evaluate_particles_with_dspd(sensor_msgs::LaserScan scan)
         }
         else
         {
-            dscan.ranges[i] = scan.range_min;
+            dscan.ranges[i] = scan.range_min - 0.1;
             dscan.intensities[i] = 0.0;
         }
     }
@@ -986,7 +977,8 @@ void AMCL::compute_total_weight_and_effective_sample_size(void)
     for (int i = 0; i < particle_num; i++)
     {
         double w = particles[i].w / total_weight;
-        if (isnan(w) != 0)    w = wo;
+        if (std::isnan(w) != 0)
+            w = wo;
         particles[i].w = w;
         sum += w * w;
     }
@@ -1159,19 +1151,28 @@ void AMCL::resample_particles(void)
     }
 }
 
+void AMCL::reset_moving_amounts(void)
+{
+    delta_dist = 0.0;
+    delta_yaw = 0.0;
+}
+
 void AMCL::scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     curr_scan = *msg;
     if (!is_scan_data)
     {
-        is_valid_scan_points.resize(msg->ranges.size());
-        if (use_dspd)
+        is_valid_scan_points.resize((int)msg->ranges.size());
+        if (use_class_conditional_observation_model)
         {
-            dsp_probs.resize(max_particle_num);
-            for (int i = 0; i < dsp_probs.size(); i++)
-                dsp_probs[i].resize(msg->ranges.size());
+            unknown_probs.resize((int)msg->ranges.size());
+            measurement_classes.resize((int)msg->ranges.size());
+            for (int i = 0; i < (int)msg->ranges.size(); i++)
+                measurement_classes[i].resize(3);
+            printf("size of unknown_probs is = %d\n", (int)unknown_probs.size());
         }
         is_scan_data = true;
+        printf("got a first scan\n");
     }
 }
 
@@ -1212,8 +1213,8 @@ void AMCL::plot_likelihood_distribution(pose_t pose, sensor_msgs::LaserScan scan
             tmp_pose.x = x;
             tmp_pose.y = y;
             double w;
-            if (use_dspd)
-                w = compute_weight_with_dspd(tmp_pose, scan, 0, false);
+            if (use_class_conditional_observation_model)
+                w = compute_weight_with_class_conditional_observation_model(tmp_pose, scan, false);
             else if (use_beam_model)
                 w = compute_weight_using_beam_model(tmp_pose, scan);
             else
@@ -1341,7 +1342,7 @@ void AMCL::compute_scan_fractions(pose_t pose, sensor_msgs::LaserScan scan, doub
     fflush(fp);
 }
 
-void AMCL::publish_matching_error_as_laser_scan(pose_t pose, sensor_msgs::LaserScan scan)
+void AMCL::publish_residual_errors_as_laser_scan(pose_t pose, sensor_msgs::LaserScan scan)
 {
     double c = cos(pose.yaw);
     double s = sin(pose.yaw);

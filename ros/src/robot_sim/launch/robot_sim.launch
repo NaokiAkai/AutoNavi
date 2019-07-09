@@ -51,7 +51,7 @@
 
         <!-- twist command generator -->
         <node name="key_to_twist_cmd" pkg="robot_sim" type="key_to_twist_cmd" output="log" unless="$(arg use_joystick_controller)" >
-            <param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
+            <param name="/output_twist_topic_name" value="/twist_cmd_dev" type="string" />
             <param name="/trans_vel_step" value="0.2" type="double" />
             <param name="/angle_vel_step" value="0.03" type="double" />
             <param name="/output_hz" value="40.0" type="double" />
@@ -65,15 +65,23 @@
 
         <!-- twist command generator -->
         <node name="joy_to_twist_cmd" pkg="robot_sim" type="joy_to_twist_cmd" output="log" if="$(arg use_joystick_controller)" >
-            <param name="/output_twist_topic_name" value="/twist_cmd" type="string" />
-            <param name="/max_linear_vel" value="1.4" type="double" />
-            <param name="/max_angular_vel" value="0.8" type="double" />
+            <param name="/output_twist_topic_name" value="/twist_cmd_dev" type="string" />
+            <param name="/max_linear_vel" value="2.6" type="double" />
+            <param name="/max_angular_vel" value="1.2" type="double" />
             <param name="/output_hz" value="40.0" type="double" />
             <param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
             <param name="/use_omni_simulator" value="$(arg use_omni_simulator)" type="bool" />
             <param name="/max_steering_angle" value="0.698" type="double" />
         </node >
     </group >
+
+    <!-- velocity selector -->
+    <node name="velocity_selector" pkg="robot_sim" type="velocity_selector" output="log" >
+        <param name="/input_dev_cmd_name" value="/twist_cmd_dev" type="string" />
+        <param name="/input_path_follow_cmd_name" value="/twist_cmd_path_follow" type="string" />
+        <param name="/output_twist_cmd_name" value="/twist_cmd" type="string" />
+        <param name="/cmd_publish_hz" value="40.0" type="double" />
+    </node >
 
     <!-- odometry simulator -->
     <node name="odom_sim" pkg="robot_sim" type="odom_sim" output="log" >

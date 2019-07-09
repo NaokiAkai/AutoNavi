@@ -1,4 +1,10 @@
-// Copyright © 2018 Naoki Akai. All rights reserved.
+/****************************************************************************
+ * Copyright (C) 2018 Naoki Akai.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/.
+ ****************************************************************************/
 
 #include <ros/ros.h>
 #include <std_msgs/Float32.h>
@@ -19,7 +25,7 @@ private:
     tf::TransformListener tf_listener;
     double look_ahead_dist, max_vel, kv;
     double cmd_publish_hz;
-    bool use_nav_core_server;
+    bool iterate_following, use_nav_core_server;
     int nearest_path_index, prev_nearest_path_index;
 
 public:
@@ -37,12 +43,13 @@ PathFollower::PathFollower():
     base_link_frame("/base_link"),
     input_path_topic_name("/target_path"),
     input_max_vel_topic_name("/max_vel"),
-    output_twist_topic_name("/twist_cmd"),
+    output_twist_topic_name("/twist_cmd_path_follow"),
     look_ahead_dist(1.0),
     max_vel(1.0),
     kv(0.6),
     cmd_publish_hz(20.0),
     prev_nearest_path_index(-1),
+    iterate_following(false),
     use_nav_core_server(false),
     tf_listener()
 {
@@ -56,6 +63,7 @@ PathFollower::PathFollower():
     nh.param("max_vel", max_vel, max_vel);
     nh.param("kv", kv, kv);
     nh.param("cmd_publish_hz", cmd_publish_hz, cmd_publish_hz);
+    nh.param("iterate_following", iterate_following, iterate_following);
     nh.param("use_nav_core_server", use_nav_core_server, use_nav_core_server);
     // subscriber
     path_sub = nh.subscribe(input_path_topic_name, 1, &PathFollower::path_callback, this);
@@ -99,7 +107,10 @@ void PathFollower::spin(void)
         // x, y, and yaw mean 2d robot pose
         double x = map2base_link.getOrigin().x();
         double y = map2base_link.getOrigin().y();
-        tf::Quaternion q(map2base_link.getRotation().x(), map2base_link.getRotation().y(), map2base_link.getRotation().z(), map2base_link.getRotation().w());
+        tf::Quaternion q(map2base_link.getRotation().x(),
+            map2base_link.getRotation().y(),
+            map2base_link.getRotation().z(),
+            map2base_link.getRotation().w());
         double roll, pitch, yaw;
         tf::Matrix3x3 m(q);
         m.getRPY(roll, pitch, yaw);
@@ -161,6 +172,7 @@ void PathFollower::spin(void)
             // reach at the goal point or no path data
             cmd_vel.linear.x = twist_cmd.twist.linear.x = 0.0;
             cmd_vel.angular.z = twist_cmd.twist.angular.z = 0.0;
+            twist_cmd.twist.linear.z = -1.0; // linear.z is used as priority
             eo = 0.0;
             if (path.poses.size() != 0 && !stop && use_nav_core_server)
                 wait_for_new_path();
@@ -182,8 +194,10 @@ void PathFollower::spin(void)
             if (e > M_PI)    e -= 2.0 * M_PI;
             cmd_vel.linear.x = twist_cmd.twist.linear.x = max_vel - kv * fabs(e);
             cmd_vel.angular.z = twist_cmd.twist.angular.z = 0.4 * e + 0.01 * eo;
+            twist_cmd.twist.linear.z = 1.0; // linear.z is used as priority
             eo = e;
         }
+        // publish commands
         cmd_pub.publish(cmd_vel);
         twist_pub.publish(twist_cmd);
         // print debug message
@@ -191,7 +205,13 @@ void PathFollower::spin(void)
         printf("target path point: x = %.3lf [m], y = %.3lf [m]\n", path.poses[target_path_index].pose.position.x, path.poses[target_path_index].pose.position.y);
         printf("target path index = %d, path point num = %d\n", target_path_index, (int)path.poses.size());
         printf("twist command: vel = %.3lf [m/sec], ang_vel = %.3lf [rad/sec]\n", twist_cmd.twist.linear.x, twist_cmd.twist.angular.z);
+        printf("param: stop = %d, iterate_following = %d\n", stop, iterate_following);
         printf("\n");
+        // check iteration for path following
+        nh.getParam("/path_follower/iterate_following", iterate_following);
+        if (target_path_index < 0 && (int)path.poses.size() != 0 && iterate_following)
+            prev_nearest_path_index = 0;
+        // sleep
         loop_rate.sleep();
     }
 }

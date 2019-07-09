@@ -1,4 +1,10 @@
-// Copyright © 2018 Naoki Akai. All rights reserved.
+/****************************************************************************
+ * Copyright (C) 2018 Naoki Akai.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/.
+ ****************************************************************************/
 
 #include <ros/ros.h>
 #include <std_msgs/Header.h>
@@ -57,7 +63,6 @@ int main(int argc, char** argv)
     // main loop
     ros::Rate loop_rate(amcl->pose_publish_hz);
     double prev_time = 0.0;
-//    std::vector<double> times;
     while (ros::ok())
     {
         ros::spinOnce();
@@ -72,14 +77,13 @@ int main(int argc, char** argv)
         double curr_time = scan.header.stamp.toSec();
         amcl->start_timer();
         amcl->check_scan_points_validity(scan);
-        if (amcl->use_dspd)
-            amcl->evaluate_particles_with_dspd(scan);
+        if (amcl->use_class_conditional_observation_model)
+            amcl->evaluate_particles_with_class_conditional_observation_model(scan);
         else if (amcl->use_beam_model)
             amcl->evaluate_particles_using_beam_model(scan);
         else
             amcl->evaluate_particles_using_likelihood_field_model(scan);
         amcl->stop_timer();
-//        times.push_back(amcl->get_timer_data());
         amcl->compute_total_weight_and_effective_sample_size();
         amcl->estimate_robot_pose();
         amcl->compute_random_particle_rate();
@@ -89,7 +93,7 @@ int main(int argc, char** argv)
 //            amcl->compute_scan_fractions(amcl->robot_pose, scan, NULL, NULL);
             amcl->resample_particles();
             prev_time = curr_time;
-            amcl->delta_dist = amcl->delta_yaw = 0.0;
+            amcl->reset_moving_amounts();
             printf("x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", amcl->robot_pose.x, amcl->robot_pose.y, amcl->robot_pose.yaw * 180.0 / M_PI);
             printf("particle_num = %d\n", amcl->particle_num);
             printf("effective_sample_size = %lf, total_weight = %lf\n", amcl->effective_sample_size, amcl->total_weight);
@@ -101,8 +105,8 @@ int main(int argc, char** argv)
         amcl->broadcast_tf();
         amcl->publish_pose();
         amcl->publish_particles();
-        amcl->publish_matching_error_as_laser_scan(amcl->robot_pose, scan);
-        amcl->publish_expected_map_distances_as_laser_scan(amcl->robot_pose);
+        amcl->publish_residual_errors_as_laser_scan(amcl->robot_pose, scan);
+         amcl->publish_expected_map_distances_as_laser_scan(amcl->robot_pose);
         // visualize likelihood distribution using gnuplot
         if (plot_likelihood_distribution)
             amcl->plot_likelihood_distribution(amcl->robot_pose, scan);
@@ -118,12 +122,5 @@ int main(int argc, char** argv)
     }
     if (plot_likelihood_distribution)
         int val = system("killall -9 gnuplot");
-//    const auto ave = std::accumulate(std::begin(times), std::end(times), 0.0) / (double)times.size();
-//    const auto var = std::inner_product(std::begin(times), std::end(times), std::begin(times), 0.0) / (double)times.size() - ave * ave;
-//    std::cout << "#of particles: " << amcl->max_particle_num << std::endl;
-//    std::cout << "ave: " << ave * 1000.0 << " [msec]" << std::endl;
-//    std::cout << "std: " << sqrt(var) * 1000.0 << " [msec]" << std::endl;
-//    std::string fname("/tmp/amcl_map.txt");
-//    amcl->save_map_as_txt_file(fname);
     return 0;
 }

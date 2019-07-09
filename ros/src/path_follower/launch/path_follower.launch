@@ -4,19 +4,20 @@
 
 <launch >
     <!-- arguments -->
-    <arg name="path_file" default="$(find path_follower)/../../maps/nic_garage/path.txt" />
+    <arg name="path_file" default="$(find path_follower)/../../maps/nic6f/path.txt" />
     <arg name="use_simple_obstacle_avoidance" default="false" />
     <arg name="map_frame" default="/map" />
     <arg name="path_topic_name" default="/target_path" />
     <arg name="service_path_topic_name" default="/static_target_path" />
     <arg name="base_link_frame" default="/base_link" />
     <arg name="input_max_vel_topic_name" default="/max_vel" />
-    <arg name="output_twist_topic_name" default="/twist_cmd" />
+    <arg name="output_twist_topic_name" default="/twist_cmd_path_follow" />
     <arg name="look_ahead_dist" default="2.5" />
-    <arg name="max_vel" default="1.2" />
+    <arg name="max_vel" default="1.5" />
     <arg name="kv" default="1.0" />
     <arg name="cmd_publish_hz" default="30.0" />
     <arg name="stop" default="true" />
+    <arg name="iterate_following" default="false" />
     <arg name="use_nav_core_server" default="false" />
     <arg name="input_scan_topic_name" default="/scan" />
     <arg name="local_map_size_x" default="10.0" />
@@ -27,7 +28,7 @@
     <arg name="step_time" default="0.1" />
     <arg name="kv_avoid" default="0.8" />
     <arg name="w_range" default="0.4" />
-    <arg name="use_emergency_stop" default="true" />
+    <arg name="use_emergency_stop" default="false" />
     <arg name="stop_x_size" default="0.5" />
     <arg name="stop_y_size" default="0.3" />
     <arg name="stop_time" default="3.0" />
@@ -54,6 +55,7 @@
         <param name="/kv" value="$(arg kv)" type="double" />
         <param name="/cmd_publish_hz" value="$(arg cmd_publish_hz)" type="double" />
         <param name="/stop" value="$(arg stop)" type="bool" />
+        <param name="/iterate_following" value="$(arg iterate_following)" type="string" />
         <param name="/use_nav_core_server" value="$(arg use_nav_core_server)" type="bool" />
     </node >
 

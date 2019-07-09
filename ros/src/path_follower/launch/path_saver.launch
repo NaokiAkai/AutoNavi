@@ -4,11 +4,11 @@
 
 <launch >
     <!-- arguments -->
-    <arg name="path_file" default="$(find path_follower)/../../maps/nic_garage/path.txt" />
-    <arg name="/input_path_topic_name" default="/recorded_path" />
+    <arg name="path_file" default="$(find path_follower)/../../maps/nic6f/path.txt" />
+    <arg name="input_path_topic_name" default="/recorded_path" />
 
     <!-- path saver -->
-    <node name="path_saver" pkg="path_follower" type="path_saver" args="$(arg path_file)" >
+    <node name="path_saver" pkg="path_follower" type="path_saver" args="$(arg path_file)" output="screen" >
         <param name="/input_path_topic_name" value="$(arg input_path_topic_name)" type="string" />
     </node >
 </launch >

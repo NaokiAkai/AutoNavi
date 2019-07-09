@@ -1,4 +1,10 @@
-// Copyright © 2018 Naoki Akai. All rights reserved.
+/****************************************************************************
+ * Copyright (C) 2018 Naoki Akai.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/.
+ ****************************************************************************/
 
 #ifndef __NDT_H__
 #define __NDT_H__
