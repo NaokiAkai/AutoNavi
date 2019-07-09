@@ -52,6 +52,9 @@ target_link_libraries(key_to_twist_cmd ${catkin_LIBRARIES})
 add_executable(joy_to_twist_cmd src/joy_to_twist_cmd.cpp)
 target_link_libraries(joy_to_twist_cmd ${catkin_LIBRARIES})
 
+add_executable(velocity_selector src/velocity_selector.cpp)
+target_link_libraries(velocity_selector ${catkin_LIBRARIES})
+
 add_executable(add_noise_to_sensor_data src/add_noise_to_sensor_data.cpp)
 target_link_libraries(add_noise_to_sensor_data ${catkin_LIBRARIES})
 add_dependencies(add_noise_to_sensor_data robot_sim_gencpp)
