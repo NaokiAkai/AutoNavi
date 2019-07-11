@@ -101,8 +101,8 @@ public:
     void evaluate_particles_using_likelihood_field_model(sensor_msgs::LaserScan scan);
     double compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan scan);
     void evaluate_particles_using_beam_model(sensor_msgs::LaserScan scan);
-    double compute_weight_with_class_conditional_observation_model(pose_t pose, sensor_msgs::LaserScan scan, bool use_all_scan);
-    void evaluate_particles_with_class_conditional_observation_model(sensor_msgs::LaserScan scan);
+    double compute_weight_using_class_conditional_observation_model(pose_t pose, sensor_msgs::LaserScan scan, bool use_all_scan);
+    void evaluate_particles_using_class_conditional_observation_model(sensor_msgs::LaserScan scan);
     void compute_total_weight_and_effective_sample_size(void);
     void compute_random_particle_rate(void);
     void estimate_robot_pose(void);

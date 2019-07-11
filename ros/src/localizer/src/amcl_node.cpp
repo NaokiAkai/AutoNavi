@@ -78,7 +78,7 @@ int main(int argc, char** argv)
         amcl->start_timer();
         amcl->check_scan_points_validity(scan);
         if (amcl->use_class_conditional_observation_model)
-            amcl->evaluate_particles_with_class_conditional_observation_model(scan);
+            amcl->evaluate_particles_using_class_conditional_observation_model(scan);
         else if (amcl->use_beam_model)
             amcl->evaluate_particles_using_beam_model(scan);
         else

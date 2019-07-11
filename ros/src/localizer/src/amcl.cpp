@@ -859,7 +859,7 @@ void AMCL::evaluate_particles_using_beam_model(sensor_msgs::LaserScan scan)
     }
 }
 
-double AMCL::compute_weight_with_class_conditional_observation_model(pose_t pose, sensor_msgs::LaserScan scan, bool use_all_scan)
+double AMCL::compute_weight_using_class_conditional_observation_model(pose_t pose, sensor_msgs::LaserScan scan, bool use_all_scan)
 {
     double w = 0.0;
     double c = cos(pose.yaw);
@@ -913,13 +913,13 @@ double AMCL::compute_weight_with_class_conditional_observation_model(pose_t pose
 }
 
 // consider two classes; known and unknown
-void AMCL::evaluate_particles_with_class_conditional_observation_model(sensor_msgs::LaserScan scan)
+void AMCL::evaluate_particles_using_class_conditional_observation_model(sensor_msgs::LaserScan scan)
 {
     double max;
     for (int i = 0; i < particle_num; i++)
     {
         // partial scan points are used to calculate likelihood in order to accelerate computation time
-        double weight = compute_weight_with_class_conditional_observation_model(particles[i].pose, scan, false);
+        double weight = compute_weight_using_class_conditional_observation_model(particles[i].pose, scan, false);
         particles[i].w *= weight;
         if (i == 0)
         {
@@ -936,7 +936,7 @@ void AMCL::evaluate_particles_with_class_conditional_observation_model(sensor_ms
         }
     }
     // compute dynamic scan point probability again using all scan points with the maximum likelihood particle
-    compute_weight_with_class_conditional_observation_model(particles[max_particle_likelihood_num].pose, scan, true);
+    compute_weight_using_class_conditional_observation_model(particles[max_particle_likelihood_num].pose, scan, true);
     // dynamic scan points detection
     sensor_msgs::LaserScan dscan;
     sensor_msgs::PointCloud dpoints;
@@ -1214,7 +1214,7 @@ void AMCL::plot_likelihood_distribution(pose_t pose, sensor_msgs::LaserScan scan
             tmp_pose.y = y;
             double w;
             if (use_class_conditional_observation_model)
-                w = compute_weight_with_class_conditional_observation_model(tmp_pose, scan, false);
+                w = compute_weight_using_class_conditional_observation_model(tmp_pose, scan, false);
             else if (use_beam_model)
                 w = compute_weight_using_beam_model(tmp_pose, scan);
             else
