@@ -745,6 +745,8 @@ double AMCL::compute_weight_using_likelihood_field_model(pose_t pose, sensor_msg
                 pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
             }
         }
+        if (pz > 1.0)
+            pz = 1.0;
         w += log(pz);
     }
     return exp(w);
@@ -831,6 +833,8 @@ double AMCL::compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan
         {
             pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
         }
+        if (pz > 1.0)
+            pz = 1.0;
         w += log(pz);
     }
     return exp(w);
@@ -907,7 +911,11 @@ double AMCL::compute_weight_using_class_conditional_observation_model(pose_t pos
         if (use_all_scan)
             unknown_probs[i] = p_unknown / sum;
         if (i % scan_step == 0)
+        {
+            if (sum > 1.0)
+                sum = 1.0;
             w += log(sum);
+        }
     }
     return exp(w);
 }
