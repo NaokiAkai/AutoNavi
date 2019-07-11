@@ -1,0 +1,16 @@
+<!--
+    gyro odometry launch
+    Copyright © 2018 Naoki Akai. All rights reserved.
+ -->
+
+<launch >
+    <!-- gyro odometry -->
+    <node name="gyro_odom" pkg="localizer" type="gyro_odom" >
+        <param name="/input_imu_topic_name" value="/mti/sensor/imu" type="string" />
+        <param name="/input_odom_topic_name" value="/odom" type="string" />
+        <param name="/output_odom_topic_name" value="/gyro_odom" type="string" />
+        <param name="/parent_frame" value="/map" type="string" />
+        <param name="/child_frame" value="/gyro_odom" type="string" />
+        <param name="/moving_average_filter_num" value="3" type="string" />
+    </node >
+</launch >

@@ -1,6 +1,6 @@
 <!-- robot sim -->
 <launch >
-    <!-- arguments -->
+    <!-- map -->
     <arg name="map_dir" default="$(find robot_sim)/../../maps/nic_garage/" />
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic1f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic6f/" /> -->
@@ -10,6 +10,7 @@
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/tctsls/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/tc2017/" /> -->
 
+    <!-- arguments -->
     <arg name="map_yaml_file" default="$(arg map_dir)/ogm.yaml" />
     <arg name="use_ground_truth_tf" default="false" />
     <arg name="use_joystick_controller" default="false" />
