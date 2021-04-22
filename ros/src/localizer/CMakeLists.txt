@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   tf_conversions
   grid_map_ros
+  robot_sim
 )
 
 find_package(OpenCV REQUIRED)

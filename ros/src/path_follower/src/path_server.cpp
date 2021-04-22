@@ -42,7 +42,7 @@ PathServer::PathServer(std::string fname):
     FILE* fp = fopen(fname.c_str(), "r");
     if (fp == NULL)
     {
-        ROS_ERROR("path_server could not open the give file -> %s", fname.c_str());
+        ROS_ERROR("path_server could not open the given file -> %s", fname.c_str());
         exit(-1);
     }
     geometry_msgs::PoseStamped pose;

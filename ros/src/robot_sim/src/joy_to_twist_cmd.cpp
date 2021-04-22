@@ -41,6 +41,7 @@ Joy2TwistCmd::Joy2TwistCmd():
     max_angular_vel(0.6),
     output_hz(40.0),
     use_ackermann_simulator(false),
+    use_omni_simulator(false),
     max_steering_angle(0.698)
 {
     // read parameters

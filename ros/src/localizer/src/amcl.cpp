@@ -32,6 +32,7 @@ AMCL::AMCL():
     max_particle_num(1000),
     resample_threshold(0.5),
     scan_step(10),
+    range_reso(0.1),
     max_dist_to_obstacle(0.5),
     alpha_slow(0.0001),
     alpha_fast(0.1),
@@ -83,6 +84,7 @@ AMCL::AMCL():
     nh.param("max_particle_num", max_particle_num, max_particle_num);
     nh.param("resample_threshold", resample_threshold, resample_threshold);
     nh.param("scan_step", scan_step, scan_step);
+    nh.param("range_reso", range_reso, range_reso);
     nh.param("max_dist_to_obstacle", max_dist_to_obstacle, max_dist_to_obstacle);
     nh.param("alpha_slow", alpha_slow, alpha_slow);
     nh.param("alpha_fast", alpha_fast, alpha_fast);
@@ -663,6 +665,7 @@ void AMCL::check_scan_points_validity(sensor_msgs::LaserScan scan)
                         p3 = z_hit_ * norm_const_hit * exp(-(z * z) / (2.0 * z_hit_var));
                     }
                     double pz = p1 + p2 + p3;
+                    pz *= range_reso;
                     if (pz > 1.0)
                         pz = 1.0;
                     if (range < 0.0)
@@ -745,6 +748,7 @@ double AMCL::compute_weight_using_likelihood_field_model(pose_t pose, sensor_msg
                 pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
             }
         }
+        pz *= range_reso;
         if (pz > 1.0)
             pz = 1.0;
         w += log(pz);
@@ -833,6 +837,7 @@ double AMCL::compute_weight_using_beam_model(pose_t pose, sensor_msgs::LaserScan
         {
             pz = z_max * 1.0 * map.info.resolution + z_rand * z_rand_mult;
         }
+        pz *= range_reso;
         if (pz > 1.0)
             pz = 1.0;
         w += log(pz);
@@ -905,8 +910,8 @@ double AMCL::compute_weight_using_class_conditional_observation_model(pose_t pos
                 pz_unknown = 1.0 / (1.0 - exp(-lambda_short * scan.range_max)) * lambda_short * exp(-lambda_short * scan.range_max) * map.info.resolution;
             }
         }
-        double p_known = pz_known * p_known_prior;
-        double p_unknown = pz_unknown * p_unknown_prior;
+        double p_known = pz_known * range_reso * p_known_prior;
+        double p_unknown = pz_unknown * range_reso * p_unknown_prior;
         double sum = p_known + p_unknown;
         if (use_all_scan)
             unknown_probs[i] = p_unknown / sum;

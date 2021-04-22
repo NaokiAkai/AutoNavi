@@ -35,6 +35,7 @@ Key2TwistCmd::Key2TwistCmd():
     angle_vel_step(0.03),
     output_hz(40.0),
     use_ackermann_simulator(false),
+    use_omni_simulator(false),
     max_steering_angle(0.698)
 {
     // read parameters

@@ -43,6 +43,7 @@ public:
     int particle_num, min_particle_num, max_particle_num;
     double resample_threshold;
     int scan_step;
+    double range_reso;
     double max_dist_to_obstacle;
     double alpha_slow, alpha_fast;
     double delta_dist, delta_yaw;

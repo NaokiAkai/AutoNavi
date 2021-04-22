@@ -46,6 +46,10 @@ add_executable(laser_sim src/laser_sim.cpp)
 target_link_libraries(laser_sim ${catkin_LIBRARIES})
 add_dependencies(laser_sim robot_sim_gencpp)
 
+add_executable(gps_sim src/gps_sim.cpp)
+target_link_libraries(gps_sim ${catkin_LIBRARIES})
+add_dependencies(gps_sim robot_sim_gencpp)
+
 add_executable(key_to_twist_cmd src/key_to_twist_cmd.cpp)
 target_link_libraries(key_to_twist_cmd ${catkin_LIBRARIES})
 

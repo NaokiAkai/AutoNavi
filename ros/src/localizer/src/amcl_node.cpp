@@ -106,7 +106,7 @@ int main(int argc, char** argv)
         amcl->publish_pose();
         amcl->publish_particles();
         amcl->publish_residual_errors_as_laser_scan(amcl->robot_pose, scan);
-         amcl->publish_expected_map_distances_as_laser_scan(amcl->robot_pose);
+        amcl->publish_expected_map_distances_as_laser_scan(amcl->robot_pose);
         // visualize likelihood distribution using gnuplot
         if (plot_likelihood_distribution)
             amcl->plot_likelihood_distribution(amcl->robot_pose, scan);

@@ -1,9 +1,9 @@
 <!-- robot sim -->
 <launch >
     <!-- map -->
-    <arg name="map_dir" default="$(find robot_sim)/../../maps/nic_garage/" />
+    <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic_garage/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic1f/" /> -->
-    <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic6f/" /> -->
+    <arg name="map_dir" default="$(find robot_sim)/../../maps/nic6f/" />
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/es1f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/es2f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/mate1f/" /> -->
@@ -137,5 +137,14 @@
         <param name="/odom_linear_noise_stationary" value="0.95" type="double" />
         <param name="/odom_angular_noise_stationary" value="0.95" type="double" />
         <param name="/scan_measurement_noise" value="0.05" type="double" />
+    </node >
+
+    <!-- simulate gps pose (just adding random noise to the ground truth base link pose) -->
+    <node name="gps_sim" pkg="robot_sim" type="gps_sim" output="log" >
+        <param name="/output_pose_topic_name" value="/gps_pose" type="string" />
+        <param name="/gps_noise_x" value="1.0" type="double" />
+        <param name="/gps_noise_y" value="1.0" type="double" />
+        <param name="/gps_cov_xx" value="1.0" type="double" />
+        <param name="/gps_cov_yy" value="2.0" type="double" />
     </node >
 </launch >

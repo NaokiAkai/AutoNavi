@@ -5,11 +5,11 @@
 
 <launch >
     <!-- map -->
-    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
+    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" /> -->
+    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/mate1f/ogm.yaml" />
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)../../maps/ib_minami_3f/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic6f/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" /> -->
-    <!-- <arg name="map_yaml_file" default="/home/akai/Dropbox/work/gaze_proj/maps/nic6f/ogm.yaml" /> -->
 
     <!-- arguments -->
     <arg name="map_frame" default="/map" />
@@ -22,6 +22,7 @@
     <arg name="max_particle_num" default="200" />
     <arg name="resample_threshold" default="0.5" />
     <arg name="scan_step" default="10" />
+    <arg name="range_reso" default="0.1" />
     <arg name="max_dist_to_obstacle" default="0.5" />
     <arg name="alpha_slow" default="0.0001" />
     <arg name="alpha_fast" default="0.1" />
@@ -80,6 +81,7 @@
         <param name="/max_particle_num" value="$(arg max_particle_num)" type="int" />
         <param name="/resample_threshold" value="$(arg resample_threshold)" type="double" />
         <param name="/scan_step" value="$(arg scan_step)" type="int" />
+        <param name="/range_reso" value="$(arg range_reso)" type="double" />
         <param name="/max_dist_to_obstacle" value="$(arg max_dist_to_obstacle)" type="double" />
         <param name="/alpha_slow" value="$(arg alpha_slow)" type="double" />
         <param name="/alpha_fast" value="$(arg alpha_fast)" type="double" />

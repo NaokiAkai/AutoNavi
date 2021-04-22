@@ -201,12 +201,22 @@ void PathFollower::spin(void)
         cmd_pub.publish(cmd_vel);
         twist_pub.publish(twist_cmd);
         // print debug message
-        printf("robot pose: x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", x, y, yaw * 180.0 / M_PI);
-        printf("target path point: x = %.3lf [m], y = %.3lf [m]\n", path.poses[target_path_index].pose.position.x, path.poses[target_path_index].pose.position.y);
-        printf("target path index = %d, path point num = %d\n", target_path_index, (int)path.poses.size());
-        printf("twist command: vel = %.3lf [m/sec], ang_vel = %.3lf [rad/sec]\n", twist_cmd.twist.linear.x, twist_cmd.twist.angular.z);
-        printf("param: stop = %d, iterate_following = %d\n", stop, iterate_following);
-        printf("\n");
+        if (target_path_index >= 0)
+        {
+            printf("robot pose: x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", x, y, yaw * 180.0 / M_PI);
+            printf("target path point: x = %.3lf [m], y = %.3lf [m]\n", path.poses[target_path_index].pose.position.x, path.poses[target_path_index].pose.position.y);
+            printf("target path index = %d, path point num = %d\n", target_path_index, (int)path.poses.size());
+            printf("twist command: vel = %.3lf [m/sec], ang_vel = %.3lf [rad/sec]\n", twist_cmd.twist.linear.x, twist_cmd.twist.angular.z);
+            printf("param: stop = %d, iterate_following = %d\n", stop, iterate_following);
+            printf("\n");
+        }
+        else
+        {
+            printf("arrived at the end of the path.\n");
+            printf("robot pose: x = %.3lf [m], y = %.3lf [m], yaw = %.3lf [deg]\n", x, y, yaw * 180.0 / M_PI);
+            printf("param: stop = %d, iterate_following = %d\n", stop, iterate_following);
+            printf("\n");
+        }
         // check iteration for path following
         nh.getParam("/path_follower/iterate_following", iterate_following);
         if (target_path_index < 0 && (int)path.poses.size() != 0 && iterate_following)

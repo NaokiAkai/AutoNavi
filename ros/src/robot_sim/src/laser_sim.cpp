@@ -13,6 +13,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
 #include <geometry_msgs/Point32.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <visualization_msgs/Marker.h>
@@ -31,7 +32,7 @@ class LaserSim
 private:
     ros::NodeHandle nh;
     ros::Subscriber map_sub, semantic_map_sub;
-    ros::Publisher scan_pub, object_ids_pub, points_pub, semantic_scan_pub, map_pub, landmark_rate_pub;
+    ros::Publisher scan_pub, pose_pub, object_ids_pub, points_pub, semantic_scan_pub, map_pub, landmark_rate_pub;
     std::string input_map_topic_name, input_semantic_map_topic_name;
     std::string output_scan_topic_name, output_scan_points_topic_name, output_scan_object_ids_topic_name, output_semantic_scan_topic_name;
     std::string map_frame, laser_frame, base_link_frame;
@@ -168,6 +169,7 @@ LaserSim::LaserSim():
     semantic_map_sub = nh.subscribe(input_semantic_map_topic_name, 1, &LaserSim::semantic_map_callback, this);
     // Publisher
     scan_pub = nh.advertise<sensor_msgs::LaserScan>(output_scan_topic_name, 100);
+    pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/scanned_ground_truth_pose", 100);
     object_ids_pub = nh.advertise<robot_sim::ScanObjectID>(output_scan_object_ids_topic_name, 100);
     points_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZRGB> >(output_scan_points_topic_name, 100);
     semantic_scan_pub = nh.advertise<robot_sim::SemanticScan>(output_semantic_scan_topic_name, 100);
@@ -483,6 +485,15 @@ void LaserSim::publish_scan(void)
     transform.setRotation(q);
     static tf::TransformBroadcaster br;
     br.sendTransform(tf::StampedTransform(transform, robot_pose_stamp, map_frame, "/scanned_ground_truth"));
+    // publish scanned pose
+    geometry_msgs::PoseStamped scanned_pose;
+    scanned_pose.header.stamp = robot_pose_stamp;
+    scanned_pose.header.frame_id = map_frame;
+    scanned_pose.pose.position.x = robot_pose.x;
+    scanned_pose.pose.position.y = robot_pose.y;
+    scanned_pose.pose.position.z = 0.0;
+    scanned_pose.pose.orientation = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
+    pose_pub.publish(scanned_pose);
     // publish scan
     scan.header.stamp = robot_pose_stamp;
     scan.header.frame_id = laser_frame;
