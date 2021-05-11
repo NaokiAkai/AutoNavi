@@ -24,8 +24,8 @@ private:
     ros::Time robot_pose_stamp;
     pose_t robot_pose;
     tf::TransformListener tf_listener;
-    double gps_noise_x, gps_noise_y;
-    double gps_cov_xx, gps_cov_yy;
+    double gps_noise_x, gps_noise_y, gps_noise_yaw;
+    double gps_cov_xx, gps_cov_yy, gps_cov_yawyaw;
     double pose_publish_hz;
 
 public:
@@ -47,8 +47,10 @@ GPSSim::GPSSim():
     map_frame("/world"),
     gps_noise_x(1.0),
     gps_noise_y(1.0),
+    gps_noise_yaw(1.0 * M_PI / 180.0),
     gps_cov_xx(1.0),
     gps_cov_yy(1.0),
+    gps_cov_yawyaw(1.0 * M_PI / 180.0),
     pose_publish_hz(10.0)
 {
     // initialize random values
@@ -57,8 +59,10 @@ GPSSim::GPSSim():
     nh.param("output_pose_topic_name", output_pose_topic_name, output_pose_topic_name);
     nh.param("gps_noise_x", gps_noise_x, gps_noise_x);
     nh.param("gps_noise_y", gps_noise_y, gps_noise_y);
+    nh.param("gps_noise_yaw", gps_noise_yaw, gps_noise_yaw);
     nh.param("gps_cov_xx", gps_cov_xx, gps_cov_xx);
     nh.param("gps_cov_yy", gps_cov_yy, gps_cov_yy);
+    nh.param("gps_cov_yawyaw", gps_cov_yawyaw, gps_cov_yawyaw);
     // Publisher
     pose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>(output_pose_topic_name, 100);
     // main loop
@@ -107,12 +111,15 @@ void GPSSim::publish_pose(void)
     gps_pose.pose.pose.position.x = robot_pose.x + nrand(gps_noise_x);
     gps_pose.pose.pose.position.y = robot_pose.y + nrand(gps_noise_y);
     gps_pose.pose.pose.position.z = 0.0;
-    gps_pose.pose.pose.orientation.x = 0.0;
-    gps_pose.pose.pose.orientation.y = 0.0;
-    gps_pose.pose.pose.orientation.z = 0.0;
-    gps_pose.pose.pose.orientation.w = 1.0;
+    double yaw = robot_pose.yaw + nrand(gps_noise_yaw);
+    while (yaw < M_PI)
+        yaw += 2.0 * M_PI;
+    while (yaw > M_PI)
+        yaw -= 2.0 * M_PI;
+    gps_pose.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
     gps_pose.pose.covariance[0] = gps_cov_xx;
     gps_pose.pose.covariance[7] = gps_cov_yy;
+    gps_pose.pose.covariance[35] = gps_cov_yawyaw;
     pose_pub.publish(gps_pose);
 }
 

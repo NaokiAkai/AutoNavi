@@ -142,9 +142,11 @@
     <!-- simulate gps pose (just adding random noise to the ground truth base link pose) -->
     <node name="gps_sim" pkg="robot_sim" type="gps_sim" output="log" >
         <param name="/output_pose_topic_name" value="/gps_pose" type="string" />
-        <param name="/gps_noise_x" value="1.0" type="double" />
-        <param name="/gps_noise_y" value="1.0" type="double" />
-        <param name="/gps_cov_xx" value="1.0" type="double" />
-        <param name="/gps_cov_yy" value="2.0" type="double" />
+        <param name="/gps_noise_x" value="0.2" type="double" />
+        <param name="/gps_noise_y" value="0.2" type="double" />
+        <param name="/gps_noise_yaw" value="0.3" type="double" />
+        <param name="/gps_cov_xx" value="0.3" type="double" />
+        <param name="/gps_cov_yy" value="0.3" type="double" />
+        <param name="/gps_cov_yawyaw" value="0.5" type="double" />
     </node >
 </launch >
