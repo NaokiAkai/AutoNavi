@@ -11,13 +11,12 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/Point32.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <velodyne_pointcloud/point_types.h>
-#include <velodyne_pointcloud/rawdata.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <message_filters/subscriber.h>
@@ -99,7 +98,7 @@ AddNoise::AddNoise():
     // publisher
     odom_pub = nh.advertise<nav_msgs::Odometry>(output_odom_topic_name, 100);
     scan_pub = nh.advertise<sensor_msgs::LaserScan>(output_scan_topic_name, 100);
-    points_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZRGB> >(output_scan_points_topic_name, 100);
+    points_pub = nh.advertise<sensor_msgs::PointCloud2>(output_scan_points_topic_name, 100);
     semantic_scan_pub = nh.advertise<robot_sim::SemanticScan>(output_semantic_scan_topic_name, 100);
     // wait for topics
     ros::spin();
@@ -109,8 +108,6 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
 {
     static double prev_time;
     nav_msgs::Odometry odom = *msg;
-//    odom.header.frame_id = "/odom";
-    odom.child_frame_id = "/odom_frame";
     if (!is_odom_initialized)
     {
         prev_time = msg->header.stamp.toSec();
@@ -145,21 +142,24 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
         robot_pose.y += delta_dist_x * sin(theta) + delta_dist_y * cos(theta);
         robot_pose.yaw += delta_yaw;
         mod_yaw(&robot_pose.yaw);
-        geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
-        odom.pose.pose.position.x = robot_pose.x;
-        odom.pose.pose.position.y = robot_pose.y;
-        odom.pose.pose.position.z = 0.0;
-        odom.pose.pose.orientation = odom_quat;
-        odom.twist.twist.linear.z = 0.0;
-        odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
     }
+    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
+    odom.pose.pose.position.x = robot_pose.x;
+    odom.pose.pose.position.y = robot_pose.y;
+    odom.pose.pose.position.z = 0.0;
+    odom.pose.pose.orientation = odom_quat;
+    odom.twist.twist.linear.z = 0.0;
+    odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
     tf::Transform transform;
     tf::Quaternion q;
     transform.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
     q.setRPY(0.0, 0.0, robot_pose.yaw);
     transform.setRotation(q);
     static tf::TransformBroadcaster br;
-    br.sendTransform(tf::StampedTransform(transform, msg->header.stamp, odom.header.frame_id, odom.child_frame_id));
+    // NOTE: warning will occur if the same time stamp (msg->header.stamp) is used for the tf broadcast
+    // this makes redundant timestamp
+//    br.sendTransform(tf::StampedTransform(transform, msg->header.stamp, odom.header.frame_id, odom.child_frame_id));
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), odom.header.frame_id, odom.child_frame_id));
     prev_time = curr_time;
     odom_pub.publish(odom);
 }
@@ -198,7 +198,10 @@ void AddNoise::scan_callback(const sensor_msgs::LaserScan::ConstPtr& scan_msg,
         }
     }
     scan_pub.publish(scan);
-    points_pub.publish(points);
+    sensor_msgs::PointCloud2 points_msg;
+    pcl::toROSMsg(points, points_msg);
+    points_msg.header = scan_msg->header;
+    points_pub.publish(points_msg);
     semantic_scan_pub.publish(semantic_scan);
 }
 

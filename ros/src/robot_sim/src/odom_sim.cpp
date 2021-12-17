@@ -21,7 +21,7 @@ private:
     ros::Publisher odom_pub, pose_pub;
     std::string input_twist_topic_name;
     std::string output_odom_topic_name;
-    std::string map_frame;
+    std::string map_frame, odom_frame;
     nav_msgs::Odometry odom;
     geometry_msgs::PoseStamped pose;
     pose_t robot_pose;
@@ -51,7 +51,8 @@ OdomSim::OdomSim():
     nh("~"),
     input_twist_topic_name("/twist_cmd"),
     output_odom_topic_name("/odom_robot_sim"),
-    map_frame("/world"),
+    map_frame("map"),
+    odom_frame("odom"),
     odom_publish_hz(50.0),
     use_ackermann_simulator(false),
     base_line(1.0),
@@ -62,6 +63,7 @@ OdomSim::OdomSim():
     nh.param("input_twist_topic_name", input_twist_topic_name, input_twist_topic_name);
     nh.param("output_odom_topic_name", output_odom_topic_name, output_odom_topic_name);
     nh.param("map_frame", map_frame, map_frame);
+    nh.param("odom_frame", odom_frame, odom_frame);
     nh.param("odom_publish_hz", odom_publish_hz, odom_publish_hz);
     nh.param("use_ackermann_simulator", use_ackermann_simulator, use_ackermann_simulator);
     nh.param("use_omni_simulator", use_omni_simulator, use_omni_simulator);
@@ -75,7 +77,7 @@ OdomSim::OdomSim():
     }
     // set initial state
     odom.header.frame_id = pose.header.frame_id = map_frame;
-    odom.child_frame_id = "/ground_truth";
+    odom.child_frame_id = odom_frame;
     robot_pose.x = robot_pose.y = robot_pose.yaw = 0.0;
     odom.pose.pose.position.x = pose.pose.position.x = robot_pose.x;
     odom.pose.pose.position.y = pose.pose.position.y = robot_pose.y;

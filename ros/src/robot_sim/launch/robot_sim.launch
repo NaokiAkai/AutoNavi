@@ -1,14 +1,16 @@
 <!-- robot sim -->
 <launch >
     <!-- map -->
-    <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic_garage/" /> -->
+    <arg name="map_dir" default="$(find robot_sim)/../../maps/nic_garage/" />
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic1f/" /> -->
-    <arg name="map_dir" default="$(find robot_sim)/../../maps/nic6f/" />
+    <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic6f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/es1f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/es2f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/mate1f/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/tctsls/" /> -->
     <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/tc2017/" /> -->
+    <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/nic1f_2107/" /> -->
+    <!-- <arg name="map_dir" default="$(find robot_sim)/../../maps/ib1f/" /> -->
 
     <!-- arguments -->
     <arg name="map_yaml_file" default="$(arg map_dir)/ogm.yaml" />
@@ -26,8 +28,8 @@
 
     <!-- tf -->
     <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" />
-    <node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0.4395 -0.004 0.4 0 0 0 base_link laser 100" />
-    <node name="laser_to_velodyne" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser velodyne 100" />
+    <node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link laser 100" />
+    <!-- <node name="laser_to_velodyne" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 laser velodyne 100" /> -->
     <node name="ground_truth_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 ground_truth base_link 100" if="$(arg use_ground_truth_tf)"/>
 
     <!-- map server -->
@@ -88,7 +90,8 @@
     <node name="odom_sim" pkg="robot_sim" type="odom_sim" output="log" >
         <param name="/input_twist_topic_name" value="/twist_cmd" type="string" />
         <param name="/output_odom_topic_name" value="/odom_robot_sim" type="string" />
-        <param name="/map_frame" value="/world" type="string" />
+        <param name="/map_frame" value="map" type="string" />
+        <param name="/odom_frame" value="odom" type="string" />
         <param name="/odom_publish_hz" value="50.0" type="double" />
         <param name="/use_ackermann_simulator" value="$(arg use_ackermann_simulator)" type="bool" />
         <param name="/use_omni_simulator" value="$(arg use_omni_simulator)" type="bool" />
@@ -104,9 +107,9 @@
         <param name="/output_scan_points_topic_name" value="/scan_points_robot_sim" type="string" />
         <param name="/output_scan_object_ids_topic_name" value="/scan_object_ids" type="string" />
         <param name="/output_semantic_scan_topic_name" value="/semantic_scan_robot_sim" type="string" />
-        <param name="/map_frame" value="/world" type="string" />
-        <param name="/laser_frame" value="/laser" type="string" />
-        <param name="/base_link_frame" value="/base_link" type="string" />
+        <param name="/map_frame" value="map" type="string" />
+        <param name="/laser_frame" value="laser" type="string" />
+        <param name="/base_link_frame" value="base_link" type="string" />
         <param name="/moving_object_num" value="$(arg moving_objects_num)" type="int" />
         <param name="/moving_object_mean_x" value="0.0" type="double" />
         <param name="/moving_object_mean_y" value="0.0" type="double" />
@@ -132,10 +135,10 @@
         <param name="/output_scan_topic_name" value="/scan" type="string" />
         <param name="/output_scan_points_topic_name" value="/scan_points" type="string" />
         <param name="/output_semantic_scan_topic_name" value="/semantic_scan" type="string" />
-        <param name="/odom_linear_noise" value="0.3" type="double" />
-        <param name="/odom_angular_noise" value="0.15" type="double" />
-        <param name="/odom_linear_noise_stationary" value="0.95" type="double" />
-        <param name="/odom_angular_noise_stationary" value="0.95" type="double" />
+        <param name="/odom_linear_noise" value="0.4" type="double" />
+        <param name="/odom_angular_noise" value="0.2" type="double" />
+        <param name="/odom_linear_noise_stationary" value="0.8" type="double" />
+        <param name="/odom_angular_noise_stationary" value="0.8" type="double" />
         <param name="/scan_measurement_noise" value="0.05" type="double" />
     </node >
 

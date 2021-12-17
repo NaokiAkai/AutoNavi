@@ -12,6 +12,7 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/Point32.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/transform_broadcaster.h>
@@ -21,8 +22,6 @@
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <velodyne_pointcloud/point_types.h>
-#include <velodyne_pointcloud/rawdata.h>
 #include <robot_sim/ScanObjectID.h>
 #include <robot_sim/SemanticScan.h>
 #include <robot_sim/common.h>
@@ -111,9 +110,9 @@ LaserSim::LaserSim():
     output_scan_points_topic_name("/scan_points_robot_sim"),
     output_scan_object_ids_topic_name("/scan_object_ids"),
     output_semantic_scan_topic_name("/semantic_scan_robot_sim"),
-    map_frame("/world"),
-    laser_frame("/laser"),
-    base_link_frame("/base_link"),
+    map_frame("map"),
+    laser_frame("laser"),
+    base_link_frame("base_link"),
     moving_object_num(50),
     moving_object_mean_x(0.0),
     moving_object_mean_y(0.0),
@@ -171,7 +170,7 @@ LaserSim::LaserSim():
     scan_pub = nh.advertise<sensor_msgs::LaserScan>(output_scan_topic_name, 100);
     pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/scanned_ground_truth_pose", 100);
     object_ids_pub = nh.advertise<robot_sim::ScanObjectID>(output_scan_object_ids_topic_name, 100);
-    points_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZRGB> >(output_scan_points_topic_name, 100);
+    points_pub = nh.advertise<sensor_msgs::PointCloud2>(output_scan_points_topic_name, 100);
     semantic_scan_pub = nh.advertise<robot_sim::SemanticScan>(output_semantic_scan_topic_name, 100);
     map_pub = nh.advertise<nav_msgs::OccupancyGrid>("/laser_sim_map", 10);
     landmark_rate_pub = nh.advertise<visualization_msgs::Marker>("/landmark_rate_marker", 10);
@@ -503,7 +502,11 @@ void LaserSim::publish_scan(void)
     points.height = 1;
     pcl_conversions::toPCL(robot_pose_stamp, points.header.stamp);
     points.header.frame_id = laser_frame;
-    points_pub.publish(points);
+    sensor_msgs::PointCloud2 points_msg;
+    pcl::toROSMsg(points, points_msg);
+    points_msg.header.stamp = robot_pose_stamp;
+    points_msg.header.frame_id = laser_frame;
+    points_pub.publish(points_msg);
     // publish object ids
     object_ids.header.stamp = robot_pose_stamp;
     object_ids_pub.publish(object_ids);
