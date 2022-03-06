@@ -5,21 +5,21 @@
 
 <launch >
     <!-- map -->
-    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" /> -->
+    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic_garage/ogm.yaml" />
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/mate1f/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)../../maps/ib_minami_3f/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic6f/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/tctsls/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/e2bs4f/ogm.yaml" /> -->
-    <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic1f_2107/ogm.yaml" />
+    <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/nic1f_2107/ogm.yaml" /> -->
     <!-- <arg name="map_yaml_file" default="$(find robot_sim)/../../maps/ib1f/ogm.yaml" /> -->
 
     <!-- arguments -->
-    <arg name="map_frame" default="/map" />
-    <arg name="laser_frame" default="/laser" />
-    <arg name="base_link_frame" default="/base_link" />
+    <arg name="map_frame" default="map" />
+    <arg name="laser_frame" default="laser" />
+    <arg name="base_link_frame" default="base_link" />
     <arg name="map_topic_name" default="/amcl_map" />
-    <arg name="input_odom_topic_name" default="/ypspur_ros/odom" />
+    <arg name="input_odom_topic_name" default="/odom" />
     <arg name="input_scan_topic_name" default="/scan" />
     <arg name="min_particle_num" default="200" />
     <arg name="max_particle_num" default="200" />
@@ -64,8 +64,8 @@
 
     <!-- tf -->
     <!-- <node name="world_to_map" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 world map 100" /> -->
-    <node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 amcl_frame $(arg base_link_frame) 100" />
-    <node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg base_link_frame) $(arg laser_frame) 100" />
+    <!-- <node name="amcl_frame_to_base_link" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 amcl_frame $(arg base_link_frame) 100" /> -->
+    <!-- <node name="base_link_to_laser" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg base_link_frame) $(arg laser_frame) 100" /> -->
 
     <!-- map server -->
     <node name="amcl_map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" unless="$(arg use_nav_core_server)">

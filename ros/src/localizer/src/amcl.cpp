@@ -22,9 +22,9 @@
 
 AMCL::AMCL():
     nh("~"),
-    map_frame("/world"),
-    laser_frame("/laser"),
-    base_link_frame("/base_link"),
+    map_frame("map"),
+    laser_frame("laser"),
+    base_link_frame("base_link"),
     input_map_topic_name("/amcl_map"),
     input_odom_topic_name("/odom"),
     input_scan_topic_name("/scan"),
@@ -425,13 +425,27 @@ void AMCL::save_map_as_txt_file(std::string fname)
 
 void AMCL::broadcast_tf(void)
 {
-    tf::Transform tf;
-    tf::Quaternion q;
     static tf::TransformBroadcaster br;
-    tf.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
-    q.setRPY(0.0, 0.0, robot_pose.yaw);
-    tf.setRotation(q);
-    br.sendTransform(tf::StampedTransform(tf, ros::Time::now(), map_frame, "/amcl_frame"));
+
+    geometry_msgs::Pose map_to_base_pose;
+    map_to_base_pose.position.x = robot_pose.x;
+    map_to_base_pose.position.y = robot_pose.y;
+    map_to_base_pose.position.z = 0.0;
+    map_to_base_pose.orientation = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
+    tf2::Transform map_to_base_trans;
+    tf2::convert(map_to_base_pose, map_to_base_trans);
+
+    geometry_msgs::Pose odom_to_base_pose = curr_odom.pose.pose;
+    tf2::Transform odom_to_base_trans;
+    tf2::convert(odom_to_base_pose, odom_to_base_trans);
+
+    tf2::Transform map_to_odom_trans = map_to_base_trans * odom_to_base_trans.inverse();
+    geometry_msgs::TransformStamped map_to_odom_stamped_trans;
+    map_to_odom_stamped_trans.header.frame_id = map_frame;
+    map_to_odom_stamped_trans.header.stamp = ros::Time::now();
+    map_to_odom_stamped_trans.child_frame_id = curr_odom.header.frame_id;
+    tf2::convert(map_to_odom_trans, map_to_odom_stamped_trans.transform);
+    br.sendTransform(map_to_odom_stamped_trans);
 }
 
 void AMCL::publish_pose(void)

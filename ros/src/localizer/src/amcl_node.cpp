@@ -71,6 +71,7 @@ int main(int argc, char** argv)
         if (!amcl->is_map_data || !amcl->is_scan_data || !amcl->is_tf_initialized)
         {
             ROS_ERROR("initialization is not finished yet");
+            loop_rate.sleep();
             continue;
         }
         sensor_msgs::LaserScan scan = amcl->curr_scan;

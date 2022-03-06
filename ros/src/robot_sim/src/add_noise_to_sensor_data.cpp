@@ -150,6 +150,7 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
     odom.pose.pose.orientation = odom_quat;
     odom.twist.twist.linear.z = 0.0;
     odom.twist.twist.angular.x = odom.twist.twist.angular.y = 0.0;
+/*
     tf::Transform transform;
     tf::Quaternion q;
     transform.setOrigin(tf::Vector3(robot_pose.x, robot_pose.y, 0.0));
@@ -160,6 +161,16 @@ void AddNoise::odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
     // this makes redundant timestamp
 //    br.sendTransform(tf::StampedTransform(transform, msg->header.stamp, odom.header.frame_id, odom.child_frame_id));
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), odom.header.frame_id, odom.child_frame_id));
+ */
+    geometry_msgs::TransformStamped odom_trans;
+    odom_trans.header = msg->header;
+    odom_trans.child_frame_id = msg->child_frame_id;
+    odom_trans.transform.translation.x = robot_pose.x;
+    odom_trans.transform.translation.y = robot_pose.y;
+    odom_trans.transform.translation.z = 0.0;
+    odom_trans.transform.rotation = tf::createQuaternionMsgFromYaw(robot_pose.yaw);
+    static tf::TransformBroadcaster br;
+    br.sendTransform(odom_trans);
     prev_time = curr_time;
     odom_pub.publish(odom);
 }
